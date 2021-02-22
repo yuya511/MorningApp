@@ -1,0 +1,147 @@
+//
+//  SingUpViewController.swift
+//  MorningApp
+//
+//  Created by 山本優也 on 2021/02/21.
+//
+
+import UIKit
+import Firebase
+
+class SingUpViewController: UIViewController {
+    
+    @IBOutlet weak var profileImageButton: UIButton!
+    @IBOutlet weak var emailTextFiled: UITextField!
+    @IBOutlet weak var passwordTextFiled: UITextField!
+    @IBOutlet weak var usernameTextFiled: UITextField!
+    @IBOutlet weak var RegisterButton: UIButton!
+    @IBOutlet weak var alreadyHaveAccountButton: UIButton!
+    
+    
+    
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        profileImageButton.layer.cornerRadius = 85
+        profileImageButton.layer.borderWidth = 1
+        profileImageButton.layer.borderColor = UIColor.rgb(red: 240, green: 240, blue: 240).cgColor
+        RegisterButton.layer.cornerRadius = 10
+        
+        profileImageButton.addTarget(self, action: #selector(tappedProfileImageButton), for: .touchUpInside)
+        
+        emailTextFiled.delegate = self
+        passwordTextFiled.delegate = self
+        usernameTextFiled.delegate = self
+        
+        RegisterButton.isEnabled = false
+        RegisterButton.backgroundColor = .rgb(red: 150, green: 150, blue: 150)
+        RegisterButton.addTarget(self, action: #selector(tappedRegisterButton), for: .touchUpInside)
+    }
+    
+    @objc private func tappedProfileImageButton() {
+        let imagePickerController = UIImagePickerController()
+        imagePickerController.delegate = self
+        imagePickerController.allowsEditing = true
+        
+        self.present(imagePickerController, animated: true, completion: nil)
+    }
+    
+    @objc private func tappedRegisterButton() {
+        createUserToFiresore()
+        
+    }
+    
+    private func createUserToFiresore() {
+        guard let email = emailTextFiled.text else { return }
+        guard let password = passwordTextFiled.text else { return }
+        
+        Auth.auth().createUser(withEmail: email, password: password) { (res, err) in
+            if let err = err {
+                print("認証情報の保存に失敗しました。\(err)")
+            }
+            
+            print(" DEBUG_PRINT: 認証情報の保存に成功しました。")
+            
+            guard let uid = res?.user.uid else { return }
+            guard let username = self.usernameTextFiled.text else { return }
+            let docData = [
+                "email": email,
+                "username": username,
+                "createdAt": Timestamp()
+            ] as [String : Any]
+            //uidをドキュメントに指定
+            Firestore.firestore().collection("users").document(uid).setData(docData) {
+                (err) in
+                if let err = err {
+                    print("Firestoreへの保存に失敗しました。\(err)")
+                    return
+                }
+            }
+            
+            print("DEBUG_PRINT: Firestoreへの情報の保存に成功しました。")
+            
+            guard let image = self.profileImageButton.imageView?.image else { return }
+            //画像をjpgに変更
+            guard let uploadImage = image.jpegData(compressionQuality: 0.3) else { return }
+            //画像の保存場所を指定
+            //guard let uid = res?.user.uid else { return }
+            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(uid + ".jpg")
+            //storageに画像を保存する
+            let metadata = StorageMetadata()
+            metadata.contentType = "image/jpeg"
+            imageRef.putData(uploadImage, metadata: metadata) { (metadata, err) in
+                if let err = err {
+                    print("画像のアップロードに失敗しました。\(err)")
+                    return
+                }
+                
+                print("DEBUG_PRINT: 画像の保存に成功しました。")
+            }
+            
+            self.dismiss(animated: true, completion: nil)
+        }
+        
+        
+    }
+    
+}
+
+extension SingUpViewController:UITextFieldDelegate {
+    
+    func textFieldDidChangeSelection(_ textField: UITextField) {
+        let emailIsEmpty = emailTextFiled.text?.isEmpty ?? false
+        let passwordIsEmpty = passwordTextFiled.text?.isEmpty ?? false
+        let usernameIsEmpty = usernameTextFiled.text?.isEmpty ?? false
+        
+        if emailIsEmpty || passwordIsEmpty || usernameIsEmpty {
+            RegisterButton.isEnabled = false
+            RegisterButton.backgroundColor = .rgb(red: 150, green: 150, blue: 150)
+        } else {
+            RegisterButton.isEnabled = true
+            RegisterButton.backgroundColor = .rgb(red: 0, green: 130, blue:255)
+        }
+    }
+  
+}
+
+extension SingUpViewController:UIImagePickerControllerDelegate,UINavigationControllerDelegate {
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        if let editImage = info[.editedImage] as? UIImage {
+            profileImageButton.setImage(editImage.withRenderingMode(.alwaysOriginal), for: .normal)
+        } else if let originalImage = info[.originalImage] as? UIImage {
+            profileImageButton.setImage(originalImage.withRenderingMode(.alwaysOriginal), for: .normal)
+        }
+        
+        profileImageButton.setTitle("", for: .normal)
+        profileImageButton.imageView?.contentMode = .scaleAspectFill
+        profileImageButton.contentHorizontalAlignment = .fill
+        profileImageButton.contentVerticalAlignment = .fill
+        profileImageButton.clipsToBounds = true
+        dismiss(animated: true, completion: nil)
+    }
+    
+}
+
+

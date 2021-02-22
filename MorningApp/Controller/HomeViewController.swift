@@ -6,17 +6,19 @@
 //
 
 import UIKit
+import Firebase
 
 class HomeViewController: UIViewController {
     
+    
     private let cellId = "cellId"
+    private var users = [User]()
+    
     private var messages = [String]()
     
     private lazy var chatInputAccessoryView: ChatInputAccessory = {
         
         let view = ChatInputAccessory()
-        let tabBarController: UITabBarController = UITabBarController()
-        let tabBarHeight = tabBarController.tabBar.frame.size.height
         view.frame = .init(x: 0, y: 0, width: view.frame.width, height: 100)
         view.delegate = self
         return view
@@ -32,6 +34,37 @@ class HomeViewController: UIViewController {
         HomeTableView.dataSource = self
         HomeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
         HomeTableView.backgroundColor = .rgb(red: 215, green: 215, blue: 230)
+        
+       if Auth.auth().currentUser?.uid == nil {
+            let storyboar = UIStoryboard(name: "SingUp",bundle: nil)
+            let singUpViewController = storyboar.instantiateViewController(identifier: "SingUpViewController") as! SingUpViewController
+            singUpViewController.modalPresentationStyle = .fullScreen
+            self.present(singUpViewController, animated: true, completion: nil)
+        }
+        
+    
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        fetchUserInfoFromFirestore()
+    }
+    
+    private func fetchUserInfoFromFirestore() {
+        Firestore.firestore().collection("users").getDocuments { (snapshots, err) in
+            if let err = err {
+                print("DEBUG_PRINT:userの情報の取得に失敗しました。\(err)")
+                return
+            }
+            
+            snapshots?.documents.forEach({ (snapshot) in
+                let dic = snapshot.data()
+                let user = User.init(dic: dic)
+                
+                self.users.append(user)
+               
+            })
+        }
     }
     
     override var inputAccessoryView: UIView? {
@@ -48,9 +81,11 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: ChatInputAccessoryDelegate {
     func tappedSendButton(text: String) {
-        messages.append(text)
-        chatInputAccessoryView.removeText()
-        HomeTableView.reloadData()
+//        messages.append(text)
+//        chatInputAccessoryView.removeText()
+//        HomeTableView.reloadData()
+        
+        Firestore.firestore()
     }
 }
 
