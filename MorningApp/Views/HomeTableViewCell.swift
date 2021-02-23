@@ -33,7 +33,7 @@ class HomeTableViewCell: UITableViewCell {
         userImgeView.layer.cornerRadius = 25
         userTextView.layer.cornerRadius = 10
         usernameLabel.textAlignment = NSTextAlignment.center
-        setUserData()
+//        setUserData()
         
     }
 
@@ -42,28 +42,40 @@ class HomeTableViewCell: UITableViewCell {
 
     }
     
-    func setUserData() {
-       
-        guard let uid = Auth.auth().currentUser?.uid else {
-            print("DEBUG_PRINT: uidがありません。")
-            return
-        }
-        
-        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(uid + ".jpg")
+    func setUserData(_ chatrooms: Chatroom) {
+        //画像の表示
+        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(chatrooms.uid! + ".jpg")
         userImgeView.sd_setImage(with: imageRef)
         
-        let userRef = Firestore.firestore().collection("users").document(uid)
-        userRef.getDocument { (document, err) in
-            if let err = err {
-                print(err)
-                return
-            }
-            guard let dic = document?.data() else { return }
-            print("DEBUG_PRINT: \(dic)")
-            let username =  dic["username"]
-            self.usernameLabel.text = username as? String
+        //ユーザーの名前
+        self.usernameLabel.text = chatrooms.name
+        
+        //メッセージの表示
+        self.userTextView.text = chatrooms.text
+        
+        //日時の表示
+        self.dateLabel.text = ""
+        if let date = chatrooms.date {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .none
+            formatter.timeStyle = .short
+            let dateString = formatter.string(from: date)
+            self.dateLabel.text = dateString
         }
         
+        
+//        let userRef = Firestore.firestore().collection("users").document(uid)
+//        userRef.getDocument { (document, err) in
+//            if let err = err {
+//                print(err)
+//                return
+//            }
+//            guard let dic = document?.data() else { return }
+//            print("DEBUG_PRINT: \(dic)")
+//            let username =  dic["username"]
+//            self.usernameLabel.text = username as? String
+//        }
+//
         
         
     }
