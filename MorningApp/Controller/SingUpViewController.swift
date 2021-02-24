@@ -22,6 +22,16 @@ class SingUpViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+       setUpViews()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        navigationController?.navigationBar.isHidden = true
+    }
+    
+    private func setUpViews() {
         
         profileImageButton.layer.cornerRadius = 85
         profileImageButton.layer.borderWidth = 1
@@ -29,6 +39,8 @@ class SingUpViewController: UIViewController {
         RegisterButton.layer.cornerRadius = 10
         
         profileImageButton.addTarget(self, action: #selector(tappedProfileImageButton), for: .touchUpInside)
+        
+        alreadyHaveAccountButton.addTarget(self, action: #selector(tappedAlredyHaveAccountButton), for: .touchUpInside)
         
         emailTextFiled.delegate = self
         passwordTextFiled.delegate = self
@@ -47,9 +59,14 @@ class SingUpViewController: UIViewController {
         self.present(imagePickerController, animated: true, completion: nil)
     }
     
+    @objc private func tappedAlredyHaveAccountButton() {
+        let storyboard = UIStoryboard(name: "Login", bundle: nil)
+        let LoginViewController = storyboard.instantiateViewController(withIdentifier: "LoginViewController")
+        self.navigationController?.pushViewController(LoginViewController, animated: true)
+    }
+    
     @objc private func tappedRegisterButton() {
         createUserToFiresore()
-        
     }
     
     private func createUserToFiresore() {
