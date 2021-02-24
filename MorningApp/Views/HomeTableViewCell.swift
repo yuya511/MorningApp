@@ -10,30 +10,23 @@ import FirebaseUI
 import Firebase
 
 class HomeTableViewCell: UITableViewCell {
-    var usertext: String? {
-        didSet {
-            guard let text = usertext else { return }
-            let width = estimateFrameForTextView(text: text).width + 20
-            
-            userTextWidthConstraint.constant = width
-            userTextView.text = text
-        }
-    }
-    
 
     @IBOutlet weak var userImgeView: UIImageView!
     @IBOutlet weak var userTextView: UITextView!
-    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var myTextView: UITextView!
+    @IBOutlet weak var userDateLabel: UILabel!
+    @IBOutlet weak var myDateLabel: UILabel!
     @IBOutlet weak var userTextWidthConstraint: NSLayoutConstraint!
+    @IBOutlet weak var myTextWidthConstraint: NSLayoutConstraint!
     @IBOutlet var usernameLabel: UILabel!
     
     override func awakeFromNib() {
         super.awakeFromNib()
         backgroundColor = .clear
-        userImgeView.layer.cornerRadius = 25
+        userImgeView.layer.cornerRadius = 17.5
         userTextView.layer.cornerRadius = 10
+        myTextView.layer.cornerRadius = 10
         usernameLabel.textAlignment = NSTextAlignment.center
-//        setUserData()
         
     }
 
@@ -42,10 +35,17 @@ class HomeTableViewCell: UITableViewCell {
 
     }
     
+    private func checkWhichUserMessage() {
+       
+        
+    }
+    
     func setUserData(_ chatrooms: Chatroom) {
         //画像の表示
-        let imageRef = Storage.storage().reference().child(Const.ImagePath).child(chatrooms.uid! + ".jpg")
-        userImgeView.sd_setImage(with: imageRef)
+        if let uid = chatrooms.uid {
+            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(uid + ".jpg")
+            userImgeView.sd_setImage(with: imageRef)
+        }
         
         //ユーザーの名前
         self.usernameLabel.text = chatrooms.name
@@ -54,28 +54,59 @@ class HomeTableViewCell: UITableViewCell {
         self.userTextView.text = chatrooms.text
         
         //日時の表示
-        self.dateLabel.text = ""
+        self.userDateLabel.text = ""
         if let date = chatrooms.date {
             let formatter = DateFormatter()
             formatter.dateStyle = .none
             formatter.timeStyle = .short
+            formatter.locale = Locale(identifier: "ja_JP")
             let dateString = formatter.string(from: date)
-            self.dateLabel.text = dateString
+            self.userDateLabel.text = dateString
         }
         
+        //テキストサイズに揃える
+        guard let text = chatrooms.text else { return }
+        let width = estimateFrameForTextView(text: text).width + 20
+        userTextWidthConstraint.constant = width
+        userTextView.text = text
         
-//        let userRef = Firestore.firestore().collection("users").document(uid)
-//        userRef.getDocument { (document, err) in
-//            if let err = err {
-//                print(err)
-//                return
-//            }
-//            guard let dic = document?.data() else { return }
-//            print("DEBUG_PRINT: \(dic)")
-//            let username =  dic["username"]
-//            self.usernameLabel.text = username as? String
-//        }
-//
+        //メッセージの切り分け
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        if uid == chatrooms.uid {
+            userTextView.isHidden = true
+            userDateLabel.isHidden = true
+            usernameLabel.isHidden = true
+            userImgeView.isHidden = true
+            
+            myTextView.isHidden = false
+            myDateLabel.isHidden = false
+            
+            self.myTextView.text = chatrooms.text
+            //テキストサイズに揃える
+            guard let text = chatrooms.text else { return }
+            let width = estimateFrameForTextView(text: text).width + 20
+            myTextWidthConstraint.constant = width
+            myTextView.text = text
+            
+            self.myDateLabel.text = ""
+            if let date = chatrooms.date {
+                let formatter = DateFormatter()
+                formatter.dateStyle = .none
+                formatter.timeStyle = .short
+                formatter.locale = Locale(identifier: "ja_JP")
+                let dateString = formatter.string(from: date)
+                self.myDateLabel.text = dateString
+            }
+            
+        } else {
+            userTextView.isHidden = false
+            userDateLabel.isHidden = false
+            usernameLabel.isHidden = false
+            userImgeView.isHidden = false
+            
+            myTextView.isHidden = true
+            myDateLabel.isHidden = true
+        }
         
         
     }

@@ -64,7 +64,6 @@ class HomeViewController: UIViewController {
                     return
                 }
                 self.chat = querysnapshot!.documents.map { document in
-                    print("DEBUG_PRINT: documentの取得\(document)")
                     let chatData = Chatroom(document: document)
                     return chatData
                 }
@@ -112,13 +111,10 @@ class HomeViewController: UIViewController {
 
 }
 
+//アクセサリービューで作ったデリゲートメソッド
 extension HomeViewController: ChatInputAccessoryDelegate {
-    
     func tappedSendButton(text: String) {
-        messages.append(text)
-        //messages.append(text)
         chatInputAccessoryView.removeText()
-        HomeTableView.reloadData()
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let userRef = Firestore.firestore().collection("users").document(uid)
