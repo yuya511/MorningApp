@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import SVProgressHUD
 
 class LoginViewController: UIViewController {
     
@@ -22,12 +23,14 @@ class LoginViewController: UIViewController {
         dontHaveAccountButton.addTarget(self, action: #selector(tappedDontHaveAccountButton), for: .touchUpInside)
         loginButton.addTarget(self, action: #selector(tappedLoginButton), for: .touchUpInside)
     }
+    
     @objc private func tappedDontHaveAccountButton() {
         self.navigationController?.popViewController(animated: true)
-        
     }
     
     @objc private func tappedLoginButton() {
+        SVProgressHUD.show()
+        
         guard let email = emailTextField.text else { return }
         guard let password = passwordTextFiled.text else { return }
         
@@ -37,7 +40,13 @@ class LoginViewController: UIViewController {
                 return
             }
             print("DEBUG_PRINT: ログインに成功しました。")
+            SVProgressHUD.dismiss()
+            
             self.dismiss(animated: true, completion: nil)
         }
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
     }
 }

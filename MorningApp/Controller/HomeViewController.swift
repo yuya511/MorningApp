@@ -128,6 +128,8 @@ class HomeViewController: UIViewController {
     override var canBecomeFirstResponder: Bool {
         return true
     }
+    
+   
 
 }
 

@@ -26,6 +26,10 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.rootViewController = nav
         
         guard let _ = (scene as? UIWindowScene) else { return }
+        
+        // SVProgressHUDをXcode11以上で実行するための環境調整コード
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        appDelegate.window = self.window
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

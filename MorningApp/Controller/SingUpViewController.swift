@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import SVProgressHUD
 
 class SingUpViewController: UIViewController {
     
@@ -73,6 +74,8 @@ class SingUpViewController: UIViewController {
         guard let email = emailTextFiled.text else { return }
         guard let password = passwordTextFiled.text else { return }
         
+        SVProgressHUD.show()
+        
         Auth.auth().createUser(withEmail: email, password: password) { (res, err) in
             if let err = err {
                 print("認証情報の保存に失敗しました。\(err)")
@@ -115,11 +118,16 @@ class SingUpViewController: UIViewController {
                 
                 print("DEBUG_PRINT: 画像の保存に成功しました。")
             }
-            
+            SVProgressHUD.dismiss()
             self.dismiss(animated: true, completion: nil)
         }
         
         
+    }
+    
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
     }
     
 }
