@@ -21,13 +21,20 @@ class HomeViewController: UIViewController {
     private var messages = [String]()
     
     
+    private let chatInputAccessoryHeight: CGFloat = 100
+    private let tableViewContentInset: UIEdgeInsets = .init(top: 60, left: 0, bottom: 0, right: 0)
+    private let tableViewIndicateorInset: UIEdgeInsets = .init(top: 60, left: 0, bottom: 0, right: 0)
+    private var safeAreaBottom: CGFloat {
+        self.view.safeAreaInsets.bottom
+    }
+    
     @IBOutlet weak var HomeTableView: UITableView!
     
     
     //インプットアクセサリービューの設置
     private lazy var chatInputAccessoryView: ChatInputAccessory = {
         let view = ChatInputAccessory()
-        view.frame = .init(x: 0, y: 0, width: view.frame.width, height: 100)
+        view.frame = .init(x: 0, y: 0, width: view.frame.width, height: chatInputAccessoryHeight)
         view.delegate = self
         return view
     }()
@@ -36,17 +43,15 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        HomeTableView.delegate = self
-        HomeTableView.dataSource = self
-        
+        setUpHomeTableView()
+        setUpNotification()
+        //ナビゲーションバーの設定
         navigationController?.navigationBar.barTintColor = .rgb(red: 39, green: 49, blue: 69)
-        
         let logoutBarButton = UIBarButtonItem(title: "ログアウト", style: .plain, target: self, action: #selector(tappedLoginButton))
         navigationItem.rightBarButtonItem = logoutBarButton
         navigationItem.rightBarButtonItem?.tintColor = .white
         //カスタムセルの登録
         HomeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
-        HomeTableView.backgroundColor = .rgb(red: 215, green: 215, blue: 230)
         
        if Auth.auth().currentUser?.uid == nil {
             let storyboar = UIStoryboard(name: "SingUp",bundle: nil)
@@ -55,6 +60,47 @@ class HomeViewController: UIViewController {
             nav.modalPresentationStyle = .fullScreen
             self.present(nav, animated: true, completion: nil)
         }
+    }
+    
+    private func setUpNotification() {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    private func setUpHomeTableView() {
+        //HomeTableViewの設定
+        HomeTableView.delegate = self
+        HomeTableView.dataSource = self
+        HomeTableView.backgroundColor = .rgb(red: 215, green: 215, blue: 230)
+        HomeTableView.contentInset = .init(top: 60, left: 0, bottom: 0, right: 0)
+        HomeTableView.scrollIndicatorInsets = .init(top: 60, left: 0, bottom: 0, right: 0)
+
+        HomeTableView.keyboardDismissMode = .interactive
+        HomeTableView.transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: 0)
+        
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        //keyboardの高さを取得
+        guard let userInfo = notification.userInfo else { return }
+        if let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as AnyObject).cgRectValue {
+            
+            if keyboardFrame.height <= chatInputAccessoryHeight { return }
+            
+            let top = keyboardFrame.height - safeAreaBottom
+            var moveY = -(top - HomeTableView.contentOffset.y)
+            if HomeTableView.contentOffset.y != -60 { moveY += 60 }
+            let contentInset = UIEdgeInsets(top: top, left: 0, bottom: 0, right: 0)
+            
+            HomeTableView.contentInset = contentInset
+            HomeTableView.scrollIndicatorInsets = contentInset
+            HomeTableView.contentOffset = CGPoint(x: 0, y: moveY)
+        }
+    }
+    
+    @objc func keyboardWillHide() {
+        HomeTableView.contentInset = tableViewContentInset
+        HomeTableView.scrollIndicatorInsets = tableViewIndicateorInset
     }
     
     @objc private func tappedLoginButton() {
@@ -77,7 +123,7 @@ class HomeViewController: UIViewController {
         print("DEBUG_PRINT: viewWillAppear")
         
         if Auth.auth().currentUser != nil {
-            let chatroomsRef = Firestore.firestore().collection(Const.ChatRooms).order(by: "date", descending: false)
+            let chatroomsRef = Firestore.firestore().collection(Const.ChatRooms).order(by: "date", descending: true)
             listener = chatroomsRef.addSnapshotListener() { ( querysnapshot, err) in
                 if let err = err {
                     print("DEBUG_PRINT: snapshotの取得に失敗しました。\(err)")
@@ -178,7 +224,9 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = HomeTableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! HomeTableViewCell
-//        cell.usertext = messages[indexPath.row]
+        
+        cell.transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: 0)
+
         cell.setUserData(chat[indexPath.row])
         
         return cell

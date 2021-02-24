@@ -23,7 +23,7 @@
                             <constraint firstAttribute="width" secondItem="7z9-7v-Avg" secondAttribute="height" multiplier="1:1" id="tKy-2P-SJl"/>
                         </constraints>
                     </imageView>
-                    <textView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="メッセージが表示される" textAlignment="natural" selectable="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WdR-yj-wwT">
+                    <textView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" text="メッセージが表示される" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="WdR-yj-wwT">
                         <rect key="frame" x="50" y="15" width="220" height="115"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
@@ -48,7 +48,7 @@
                         <nil key="textColor"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <textView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="D21-Bo-sSh">
+                    <textView hidden="YES" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="D21-Bo-sSh">
                         <rect key="frame" x="201" y="15" width="220" height="115"/>
                         <color key="backgroundColor" red="0.60392156862745094" green="0.8784313725490196" blue="0.38039215686274508" alpha="0.89803921568627454" colorSpace="calibratedRGB"/>
                         <constraints>

@@ -78,6 +78,7 @@ class SingUpViewController: UIViewController {
         
         Auth.auth().createUser(withEmail: email, password: password) { (res, err) in
             if let err = err {
+                SVProgressHUD.dismiss()
                 print("認証情報の保存に失敗しました。\(err)")
             }
             
@@ -94,6 +95,7 @@ class SingUpViewController: UIViewController {
             Firestore.firestore().collection("users").document(uid).setData(docData) {
                 (err) in
                 if let err = err {
+                    SVProgressHUD.dismiss()
                     print("Firestoreへの保存に失敗しました。\(err)")
                     return
                 }
@@ -101,17 +103,17 @@ class SingUpViewController: UIViewController {
             
             print("DEBUG_PRINT: Firestoreへの情報の保存に成功しました。")
             
-            guard let image = self.profileImageButton.imageView?.image else { return }
+            let image = self.profileImageButton.imageView?.image ?? UIImage(named: "男シルエットイラスト")
             //画像をjpgに変更
-            guard let uploadImage = image.jpegData(compressionQuality: 0.3) else { return }
+            guard let uploadImage = image?.jpegData(compressionQuality: 0.3) else { return }
             //画像の保存場所を指定
-            //guard let uid = res?.user.uid else { return }
             let imageRef = Storage.storage().reference().child(Const.ImagePath).child(uid + ".jpg")
             //storageに画像を保存する
             let metadata = StorageMetadata()
             metadata.contentType = "image/jpeg"
             imageRef.putData(uploadImage, metadata: metadata) { (metadata, err) in
                 if let err = err {
+                    SVProgressHUD.dismiss()
                     print("画像のアップロードに失敗しました。\(err)")
                     return
                 }
