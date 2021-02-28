@@ -12,13 +12,15 @@ class HomeViewController: UIViewController {
     
     
     private let cellId = "cellId"
+    private let cellId02 = "cellId02"
     
     
     private var users = [User]()
     private var chat: [Chatroom] = []
+    private var stamps: Bool?
+    
     //監視するやつ
     private var listener: ListenerRegistration?
-    private var messages = [String]()
     
     
     private let chatInputAccessoryHeight: CGFloat = 100
@@ -45,22 +47,44 @@ class HomeViewController: UIViewController {
         
         setUpHomeTableView()
         setUpNotification()
-        //ナビゲーションバーの設定
-        navigationController?.navigationBar.barTintColor = .rgb(red: 39, green: 49, blue: 69)
-        let logoutBarButton = UIBarButtonItem(title: "ログアウト", style: .plain, target: self, action: #selector(tappedLoginButton))
-        navigationItem.rightBarButtonItem = logoutBarButton
-        navigationItem.rightBarButtonItem?.tintColor = .white
-        //カスタムセルの登録
-        HomeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
         
-       if Auth.auth().currentUser?.uid == nil {
-            let storyboar = UIStoryboard(name: "SingUp",bundle: nil)
-            let singUpViewController = storyboar.instantiateViewController(identifier: "SingUpViewController") as! SingUpViewController
-            let nav = UINavigationController(rootViewController: singUpViewController)
-            nav.modalPresentationStyle = .fullScreen
-            self.present(nav, animated: true, completion: nil)
-        }
+        
     }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        print("DEBUG_PRINT: viewWillAppear")
+        
+        if Auth.auth().currentUser != nil {
+            let chatroomsRef = Firestore.firestore().collection(Const.ChatRooms).order(by: "date", descending: true)
+            listener = chatroomsRef.addSnapshotListener() { ( querysnapshot, err) in
+                if let err = err {
+                    print("DEBUG_PRINT: snapshotの取得に失敗しました。\(err)")
+                    return
+                }
+                self.chat = querysnapshot!.documents.map { document in
+                    let chatData = Chatroom(document: document)
+                    self.stamps = chatData.stamp
+                    print("DEBUG_PRINT: \(self.stamps!)")
+                    return chatData
+                }
+                
+                self.HomeTableView.reloadData()
+            }
+        }
+        
+        //userモデルのデータベースへの保存
+        fetchUserInfoFromFirestore()
+    }
+    
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        print("DEBUG_PRINT: viewWillDisappear")
+        listener?.remove()
+    }
+    
     
     private func setUpNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -74,9 +98,79 @@ class HomeViewController: UIViewController {
         HomeTableView.backgroundColor = .rgb(red: 215, green: 215, blue: 230)
         HomeTableView.contentInset = .init(top: 60, left: 0, bottom: 0, right: 0)
         HomeTableView.scrollIndicatorInsets = .init(top: 60, left: 0, bottom: 0, right: 0)
-
-        HomeTableView.keyboardDismissMode = .interactive
+        //下に表示されるように逆さまにしている。
         HomeTableView.transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: 0)
+        HomeTableView.keyboardDismissMode = .interactive
+        
+        //ログインの確認
+        if Auth.auth().currentUser?.uid == nil {
+            let storyboar = UIStoryboard(name: "SingUp",bundle: nil)
+            let singUpViewController = storyboar.instantiateViewController(identifier: "SingUpViewController") as! SingUpViewController
+            let nav = UINavigationController(rootViewController: singUpViewController)
+            nav.modalPresentationStyle = .fullScreen
+            self.present(nav, animated: true, completion: nil)
+        }
+        
+        //ナビゲーションバーの設定
+        navigationController?.navigationBar.barTintColor = .rgb(red: 39, green: 49, blue: 69)
+        let logoutBarButton = UIBarButtonItem(title: "ログアウト", style: .plain, target: self, action: #selector(tappedLoginButton))
+        navigationItem.leftBarButtonItem = logoutBarButton
+        navigationItem.leftBarButtonItem?.tintColor = .white
+
+    
+        let MorningButton = UIBarButtonItem(title: "起きた", style: .plain, target: self, action: #selector(tappedMorningButton))
+        navigationItem.rightBarButtonItem = MorningButton
+        navigationItem.rightBarButtonItem?.tintColor = .white
+        
+        //カスタムセルの登録
+        HomeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
+        HomeTableView.register(UINib(nibName: "MorningTableViewCell", bundle: nil), forCellReuseIdentifier: cellId02)
+        
+    }
+    
+    @objc func tappedMorningButton() {
+        
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let userRef = Firestore.firestore().collection("users").document(uid)
+        userRef.getDocument { (document, err) in
+            if let err = err {
+                print(err)
+                return
+            }
+            guard let dic = document?.data() else { return }
+            guard let username = dic["username"] else { return }
+            
+            let chatroomRef = Firestore.firestore().collection(Const.ChatRooms).document()
+            
+            let chatroomDic = [
+                "name": username,
+                "text": "",
+                "stamp": true,
+                "date": Timestamp(),
+                "uid": uid,
+            ] as [String : Any]
+            chatroomRef.setData(chatroomDic)
+            print("tappedMorningButtonの情報が保存されました")
+        }
+        self.HomeTableView.reloadData()
+        
+    }
+    
+    @objc private func tappedLoginButton() {
+        do {
+            try Auth.auth().signOut()
+            let storyboard = UIStoryboard(name: "SingUp", bundle: nil)
+            let singupViewController = storyboard.instantiateViewController(withIdentifier: "SingUpViewController")
+            let nav = UINavigationController(rootViewController: singupViewController)
+            nav.modalPresentationStyle = .fullScreen
+            self.present(nav, animated: true, completion: nil)
+        } catch {
+            print("ログアウトに失敗しました。\(error)")
+        }
+        
+    }
+    
+    @objc private func tappedMenuButton() {
         
     }
     
@@ -103,49 +197,6 @@ class HomeViewController: UIViewController {
         HomeTableView.scrollIndicatorInsets = tableViewIndicateorInset
     }
     
-    @objc private func tappedLoginButton() {
-        do {
-            try Auth.auth().signOut()
-            let storyboard = UIStoryboard(name: "SingUp", bundle: nil)
-            let singupViewController = storyboard.instantiateViewController(withIdentifier: "SingUpViewController")
-            let nav = UINavigationController(rootViewController: singupViewController)
-            nav.modalPresentationStyle = .fullScreen
-            self.present(nav, animated: true, completion: nil)
-        } catch {
-            print("ログアウトに失敗しました。\(error)")
-        }
-        
-        
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        print("DEBUG_PRINT: viewWillAppear")
-        
-        if Auth.auth().currentUser != nil {
-            let chatroomsRef = Firestore.firestore().collection(Const.ChatRooms).order(by: "date", descending: true)
-            listener = chatroomsRef.addSnapshotListener() { ( querysnapshot, err) in
-                if let err = err {
-                    print("DEBUG_PRINT: snapshotの取得に失敗しました。\(err)")
-                    return
-                }
-                self.chat = querysnapshot!.documents.map { document in
-                    let chatData = Chatroom(document: document)
-                    return chatData
-                }
-                self.HomeTableView.reloadData()
-            }
-        }
-        
-        
-        fetchUserInfoFromFirestore()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        print("DEBUG_PRINT: viewWillDisappear")
-        listener?.remove()
-    }
     
     private func fetchUserInfoFromFirestore() {
         //userモデルのデータベースへの保存
@@ -174,10 +225,10 @@ class HomeViewController: UIViewController {
     override var canBecomeFirstResponder: Bool {
         return true
     }
-    
-   
 
 }
+
+
 
 //アクセサリービューで作ったデリゲートメソッド
 extension HomeViewController: ChatInputAccessoryDelegate {
@@ -199,8 +250,9 @@ extension HomeViewController: ChatInputAccessoryDelegate {
             let chatroomDic = [
                 "name": username,
                 "text": text,
-                "uid": uid,
+                "stamp": false,
                 "date": Timestamp(),
+                "uid": uid,
             ] as [String : Any]
             chatroomRef.setData(chatroomDic)
             print("chatroomの情報が保存されました")
@@ -224,14 +276,27 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = HomeTableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! HomeTableViewCell
-        
-        cell.transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: 0)
+            //セルを逆さまにしている
+            cell.transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: 0)
 
-        cell.setUserData(chat[indexPath.row])
+            cell.setUserData(chat[indexPath.row])
+        let chatData = chat[indexPath.row]
+
+        let cell02 = HomeTableView.dequeueReusableCell(withIdentifier: cellId02, for: indexPath) as! MorningTableViewCell
+            //セルを逆さまにしている
+            cell02.transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: 0)
+            cell02.setUserData(chat[indexPath.row])
         
-        return cell
+
+            switch chatData.stamp {
+            case true:
+                return cell02
+            case false:
+                return cell
+            default:
+                return cell
+            }
         
     }
-    
-}
 
+}

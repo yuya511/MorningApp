@@ -10,14 +10,14 @@ import Firebase
 
 class Chatroom: NSObject {
     
-    let id: String
     let name: String?
     let text: String?
     let date: Date?
+    let stamp: Bool?
+    
     let uid: String?
     
     init(document: QueryDocumentSnapshot) {
-        self.id = document.documentID
         
         let chatDic = document.data()
         
@@ -25,6 +25,8 @@ class Chatroom: NSObject {
         self.text = chatDic["text"] as? String  ?? ""
         let timestamp = chatDic["date"] as? Timestamp
         self.date = timestamp?.dateValue()
+        self.stamp = chatDic["stamp"] as? Bool ?? false
+        
         
         self.uid = document["uid"] as? String ?? ""
     }

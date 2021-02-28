@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="cYg-dw-B4I">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="eqc-G8-Rbf">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
@@ -40,11 +40,10 @@
             </objects>
             <point key="canvasLocation" x="1105.7971014492755" y="201.5625"/>
         </scene>
-        <!--Home-->
+        <!--Navigation Controller-->
         <scene sceneID="TuC-8H-fbI">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="eqc-G8-Rbf" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Home" id="raa-7L-YVE"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="pjy-V1-wuT">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
