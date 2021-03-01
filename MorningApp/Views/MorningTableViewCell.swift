@@ -17,6 +17,8 @@ class MorningTableViewCell: UITableViewCell {
     @IBOutlet weak var stampImageView: UIImageView!
     @IBOutlet weak var morningDateLabel: UILabel!
     
+    @IBOutlet weak var myMorningImageView: UIImageView!
+    @IBOutlet weak var myMoriningDateLabel: UILabel!
     
 
     override func awakeFromNib() {
@@ -36,8 +38,6 @@ class MorningTableViewCell: UITableViewCell {
         //ユーザーの名前
         self.morningNameLabel.text = chatrooms.name
         
-       
-        
         //日時の表示
         self.morningDateLabel.text = ""
         if let date = chatrooms.date {
@@ -53,42 +53,33 @@ class MorningTableViewCell: UITableViewCell {
         //メッセージの切り分け
         guard let uid = Auth.auth().currentUser?.uid else { return }
         if uid == chatrooms.uid {
-//            userTextView.isHidden = true
-//            userDateLabel.isHidden = true
-//            usernameLabel.isHidden = true
-//            userImgeView.isHidden = true
-//
-//            myTextView.isHidden = false
-//            myDateLabel.isHidden = false
-//
-//            self.myTextView.text = chatrooms.text
-//            //テキストサイズに揃える
-//            guard let text = chatrooms.text else { return }
-//            let width = estimateFrameForTextView(text: text).width + 20
-//            myTextWidthConstraint.constant = width
-//            myTextView.text = text
-//
-//            self.myDateLabel.text = ""
-//            if let date = chatrooms.date {
-//                let formatter = DateFormatter()
-//                formatter.dateStyle = .none
-//                formatter.timeStyle = .short
-//                formatter.locale = Locale(identifier: "ja_JP")
-//                let dateString = formatter.string(from: date)
-//                self.myDateLabel.text = dateString
+            morningImageView.isHidden = true
+            morningNameLabel.isHidden = true
+            morningDateLabel.isHidden = true
+            stampImageView.isHidden = true
+            
+            myMorningImageView.isHidden = false
+            myMoriningDateLabel.isHidden = false
+            
+           
+            self.myMoriningDateLabel.text = ""
+            if let date = chatrooms.date {
+                let formatter = DateFormatter()
+                formatter.dateStyle = .none
+                formatter.timeStyle = .short
+                formatter.locale = Locale(identifier: "ja_JP")
+                let dateString = formatter.string(from: date)
+                self.myMoriningDateLabel.text = dateString
             }
             
-//        } else {
-//            userTextView.isHidden = false
-//            userDateLabel.isHidden = false
-//            usernameLabel.isHidden = false
-//            userImgeView.isHidden = false
-//
-//            myTextView.isHidden = true
-//            myDateLabel.isHidden = true
-//        }
-        
-        
+        } else {
+            stampImageView.isHidden = false
+            morningDateLabel.isHidden = false
+            morningNameLabel.isHidden = false
+            morningImageView.isHidden = false
+            
+            myMoriningDateLabel.isHidden = true
+            myMorningImageView.isHidden = true
+        }
     }
-
 }

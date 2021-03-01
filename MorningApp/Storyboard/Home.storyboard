@@ -20,6 +20,13 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
+                            <containerView opaque="NO" contentMode="scaleToFill" id="sp4-Yr-Ain">
+                                <rect key="frame" x="242" y="88" width="172" height="193"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <connections>
+                                    <segue destination="WK7-5F-EDT" kind="embed" id="fEc-fO-zQy"/>
+                                </connections>
+                            </containerView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="IYl-95-UZp"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -30,7 +37,15 @@
                             <constraint firstItem="s7h-O2-z90" firstAttribute="leading" secondItem="IYl-95-UZp" secondAttribute="leading" id="zPp-hr-UDY"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="s0l-nR-ZW7"/>
+                    <navigationItem key="navigationItem" id="s0l-nR-ZW7">
+                        <barButtonItem key="leftBarButtonItem" title="Item" image="line.horizontal.3" catalog="system" id="Nsl-eK-OiZ">
+                            <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <connections>
+                                <action selector="menuTappedButton:" destination="cYg-dw-B4I" id="zyH-iN-UGy"/>
+                                <segue destination="AWA-bY-Tda" kind="presentation" modalPresentationStyle="overCurrentContext" modalTransitionStyle="crossDissolve" id="dgQ-MV-3gY"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <connections>
                         <outlet property="HomeTableView" destination="s7h-O2-z90" id="cxO-K4-cLb"/>
@@ -58,8 +73,80 @@
             </objects>
             <point key="canvasLocation" x="195.6521739130435" y="201.5625"/>
         </scene>
+        <!--Menu View Controller-->
+        <scene sceneID="i5D-Fm-3kg">
+            <objects>
+                <viewController id="AWA-bY-Tda" customClass="menuViewController" customModule="MorningApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" tag="1" contentMode="scaleToFill" id="Spd-3f-wYn">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w7p-50-9Xq">
+                                <rect key="frame" x="0.0" y="44" width="300" height="769"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="300" id="EOi-cx-gdK"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="CnH-9B-MXv"/>
+                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="CnH-9B-MXv" firstAttribute="bottom" secondItem="w7p-50-9Xq" secondAttribute="bottom" id="BnM-NC-SGX"/>
+                            <constraint firstItem="w7p-50-9Xq" firstAttribute="top" secondItem="CnH-9B-MXv" secondAttribute="top" id="hDq-sF-iHa"/>
+                            <constraint firstItem="w7p-50-9Xq" firstAttribute="leading" secondItem="CnH-9B-MXv" secondAttribute="leading" id="qd8-pq-adW"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="menuView" destination="w7p-50-9Xq" id="Sgl-Yg-lf0"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="h6D-55-VYY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1909" y="21"/>
+        </scene>
+        <!--Container Controller-->
+        <scene sceneID="X8A-9j-yMG">
+            <objects>
+                <viewController storyboardIdentifier="ContainerController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="WK7-5F-EDT" customClass="ContainerController" customModule="MorningApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="v0h-HJ-21l">
+                        <rect key="frame" x="0.0" y="0.0" width="172" height="193"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JV5-Tc-cKF">
+                                <rect key="frame" x="56" y="54" width="100" height="100"/>
+                                <color key="backgroundColor" red="0.21960783" green="0.61577682244848486" blue="0.65537804631486296" alpha="0.69700502152080346" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="JV5-Tc-cKF" secondAttribute="height" multiplier="1:1" id="Ua4-Ax-5Yu"/>
+                                    <constraint firstAttribute="width" constant="100" id="nRm-iS-czf"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
+                                <state key="normal" title="起きた！">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="MorningButton:" destination="WK7-5F-EDT" eventType="touchUpInside" id="Lrt-MX-aH1"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="0EJ-T4-bzI"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="JV5-Tc-cKF" secondAttribute="trailing" id="GUC-vL-F17"/>
+                            <constraint firstItem="JV5-Tc-cKF" firstAttribute="top" secondItem="v0h-HJ-21l" secondAttribute="topMargin" constant="10" id="cRl-ZD-Bvg"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="editButton" destination="JV5-Tc-cKF" id="sr1-ne-sCa"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="jCd-zF-mzl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1732" y="458"/>
+        </scene>
     </scenes>
     <resources>
+        <image name="line.horizontal.3" catalog="system" width="128" height="64"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

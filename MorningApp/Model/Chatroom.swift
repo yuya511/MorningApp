@@ -14,7 +14,6 @@ class Chatroom: NSObject {
     let text: String?
     let date: Date?
     let stamp: Bool?
-    
     let uid: String?
     
     init(document: QueryDocumentSnapshot) {

@@ -10,6 +10,10 @@ import Firebase
 
 class HomeViewController: UIViewController {
     
+    @IBAction func menuTappedButton(_ sender: Any) {
+        
+    }
+    
     
     private let cellId = "cellId"
     private let cellId02 = "cellId02"
@@ -47,7 +51,6 @@ class HomeViewController: UIViewController {
         
         setUpHomeTableView()
         setUpNotification()
-        
         
     }
     
@@ -114,47 +117,17 @@ class HomeViewController: UIViewController {
         //ナビゲーションバーの設定
         navigationController?.navigationBar.barTintColor = .rgb(red: 39, green: 49, blue: 69)
         let logoutBarButton = UIBarButtonItem(title: "ログアウト", style: .plain, target: self, action: #selector(tappedLoginButton))
-        navigationItem.leftBarButtonItem = logoutBarButton
-        navigationItem.leftBarButtonItem?.tintColor = .white
-
-    
-        let MorningButton = UIBarButtonItem(title: "起きた", style: .plain, target: self, action: #selector(tappedMorningButton))
-        navigationItem.rightBarButtonItem = MorningButton
+        navigationItem.rightBarButtonItem = logoutBarButton
         navigationItem.rightBarButtonItem?.tintColor = .white
         
+//        let menuBarBUtton = UIBarButtonItem(image: , style: , target: <#T##Any?#>, action: <#T##Selector?#>)
+
         //カスタムセルの登録
         HomeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
         HomeTableView.register(UINib(nibName: "MorningTableViewCell", bundle: nil), forCellReuseIdentifier: cellId02)
         
     }
     
-    @objc func tappedMorningButton() {
-        
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        let userRef = Firestore.firestore().collection("users").document(uid)
-        userRef.getDocument { (document, err) in
-            if let err = err {
-                print(err)
-                return
-            }
-            guard let dic = document?.data() else { return }
-            guard let username = dic["username"] else { return }
-            
-            let chatroomRef = Firestore.firestore().collection(Const.ChatRooms).document()
-            
-            let chatroomDic = [
-                "name": username,
-                "text": "",
-                "stamp": true,
-                "date": Timestamp(),
-                "uid": uid,
-            ] as [String : Any]
-            chatroomRef.setData(chatroomDic)
-            print("tappedMorningButtonの情報が保存されました")
-        }
-        self.HomeTableView.reloadData()
-        
-    }
     
     @objc private func tappedLoginButton() {
         do {
@@ -170,10 +143,7 @@ class HomeViewController: UIViewController {
         
     }
     
-    @objc private func tappedMenuButton() {
-        
-    }
-    
+   
     @objc func keyboardWillShow(notification: NSNotification) {
         //keyboardの高さを取得
         guard let userInfo = notification.userInfo else { return }
@@ -260,8 +230,6 @@ extension HomeViewController: ChatInputAccessoryDelegate {
     }
 }
 
-
-
 //テーブルビューのデリゲートメソッド
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
@@ -280,13 +248,14 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             cell.transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: 0)
 
             cell.setUserData(chat[indexPath.row])
-        let chatData = chat[indexPath.row]
-
+        
         let cell02 = HomeTableView.dequeueReusableCell(withIdentifier: cellId02, for: indexPath) as! MorningTableViewCell
             //セルを逆さまにしている
             cell02.transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: 0)
             cell02.setUserData(chat[indexPath.row])
         
+        
+        let chatData = chat[indexPath.row]
 
             switch chatData.stamp {
             case true:

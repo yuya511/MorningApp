@@ -15,6 +15,7 @@ class ChatInputAccessory: UIView {
     
     @IBOutlet weak var sendButton: UIButton!
     @IBOutlet weak var chatTextView: UITextView!
+    
     @IBAction func tappedSendButton(_ sender: Any) {
         guard let text = chatTextView.text else { return }
         delegate?.tappedSendButton(text: text)
