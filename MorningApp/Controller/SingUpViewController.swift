@@ -82,14 +82,28 @@ class SingUpViewController: UIViewController {
                 print("認証情報の保存に失敗しました。\(err)")
             }
             
-            print(" DEBUG_PRINT: 認証情報の保存に成功しました。")
-            
             guard let uid = res?.user.uid else { return }
             guard let username = self.usernameTextFiled.text else { return }
+            
+            let user = Auth.auth().currentUser
+            if let user = user {
+                let changRequest = user.createProfileChangeRequest()
+                changRequest.displayName = username
+                changRequest.commitChanges { error in
+                    if let error = error {
+                        print("DEBUG_PRINT* \(error)")
+                    }
+                }
+            }
+            
+            print(" DEBUG_PRINT: 認証情報の保存に成功しました。")
+            
+            
             let docData = [
                 "email": email,
                 "username": username,
-                "createdAt": Timestamp()
+                "createdAt": Timestamp(),
+                "uid": uid
             ] as [String : Any]
             //uidをドキュメントに指定
             Firestore.firestore().collection("users").document(uid).setData(docData) {

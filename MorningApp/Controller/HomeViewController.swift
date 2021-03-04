@@ -10,18 +10,11 @@ import Firebase
 
 class HomeViewController: UIViewController {
     
-    @IBAction func menuTappedButton(_ sender: Any) {
-        
-    }
-    
-    
     private let cellId = "cellId"
     private let cellId02 = "cellId02"
     
-    
     private var users = [User]()
-    private var chat: [Chatroom] = []
-    private var stamps: Bool?
+    private var chat = [Chatroom]()
     
     //監視するやつ
     private var listener: ListenerRegistration?
@@ -58,9 +51,10 @@ class HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         print("DEBUG_PRINT: viewWillAppear")
-        
+                
         if Auth.auth().currentUser != nil {
             let chatroomsRef = Firestore.firestore().collection(Const.ChatRooms).order(by: "date", descending: true)
+            
             listener = chatroomsRef.addSnapshotListener() { ( querysnapshot, err) in
                 if let err = err {
                     print("DEBUG_PRINT: snapshotの取得に失敗しました。\(err)")
@@ -68,8 +62,6 @@ class HomeViewController: UIViewController {
                 }
                 self.chat = querysnapshot!.documents.map { document in
                     let chatData = Chatroom(document: document)
-                    self.stamps = chatData.stamp
-                    print("DEBUG_PRINT: \(self.stamps!)")
                     return chatData
                 }
                 
@@ -77,8 +69,6 @@ class HomeViewController: UIViewController {
             }
         }
         
-        //userモデルのデータベースへの保存
-        fetchUserInfoFromFirestore()
     }
     
     
@@ -116,32 +106,13 @@ class HomeViewController: UIViewController {
         
         //ナビゲーションバーの設定
         navigationController?.navigationBar.barTintColor = .rgb(red: 39, green: 49, blue: 69)
-        let logoutBarButton = UIBarButtonItem(title: "ログアウト", style: .plain, target: self, action: #selector(tappedLoginButton))
-        navigationItem.rightBarButtonItem = logoutBarButton
-        navigationItem.rightBarButtonItem?.tintColor = .white
-        
-//        let menuBarBUtton = UIBarButtonItem(image: , style: , target: <#T##Any?#>, action: <#T##Selector?#>)
 
         //カスタムセルの登録
         HomeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
         HomeTableView.register(UINib(nibName: "MorningTableViewCell", bundle: nil), forCellReuseIdentifier: cellId02)
         
     }
-    
-    
-    @objc private func tappedLoginButton() {
-        do {
-            try Auth.auth().signOut()
-            let storyboard = UIStoryboard(name: "SingUp", bundle: nil)
-            let singupViewController = storyboard.instantiateViewController(withIdentifier: "SingUpViewController")
-            let nav = UINavigationController(rootViewController: singupViewController)
-            nav.modalPresentationStyle = .fullScreen
-            self.present(nav, animated: true, completion: nil)
-        } catch {
-            print("ログアウトに失敗しました。\(error)")
-        }
-        
-    }
+
     
    
     @objc func keyboardWillShow(notification: NSNotification) {
@@ -168,24 +139,6 @@ class HomeViewController: UIViewController {
     }
     
     
-    private func fetchUserInfoFromFirestore() {
-        //userモデルのデータベースへの保存
-        Firestore.firestore().collection("users").getDocuments { (snapshots, err) in
-            if let err = err {
-                print("DEBUG_PRINT:userの情報の取得に失敗しました。\(err)")
-                return
-            }
-            
-            snapshots?.documents.forEach({ (snapshot) in
-                let dic = snapshot.data()
-                let user = User.init(dic: dic)
-                
-                self.users.append(user)
-            })
-        }
-    }
-    
-    
     override var inputAccessoryView: UIView? {
         get {
             return chatInputAccessoryView
@@ -206,14 +159,8 @@ extension HomeViewController: ChatInputAccessoryDelegate {
         chatInputAccessoryView.removeText()
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        let userRef = Firestore.firestore().collection("users").document(uid)
-        userRef.getDocument { (document, err) in
-            if let err = err {
-                print(err)
-                return
-            }
-            guard let dic = document?.data() else { return }
-            guard let username = dic["username"] else { return }
+        
+            guard let username = Auth.auth().currentUser?.displayName else { return }
             
             let chatroomRef = Firestore.firestore().collection(Const.ChatRooms).document()
             
@@ -226,7 +173,6 @@ extension HomeViewController: ChatInputAccessoryDelegate {
             ] as [String : Any]
             chatroomRef.setData(chatroomDic)
             print("chatroomの情報が保存されました")
-        }
     }
 }
 
@@ -242,6 +188,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         return chat.count
     }
     
+    //セルが生成される瞬間に呼ばれる
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = HomeTableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! HomeTableViewCell
             //セルを逆さまにしている

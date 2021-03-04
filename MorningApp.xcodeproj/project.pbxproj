@@ -21,6 +21,10 @@
 		865491D525E75E9A006C8354 /* MorningTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 865491D325E75E9A006C8354 /* MorningTableViewCell.xib */; };
 		86DEF43D25ECADEC0051DB7A /* ContainerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DEF43C25ECADEC0051DB7A /* ContainerController.swift */; };
 		86DEF49E25ED2C770051DB7A /* menuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DEF49D25ED2C770051DB7A /* menuViewController.swift */; };
+		86DEF4A825EE3AA20051DB7A /* menuMemberTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DEF4A625EE3AA20051DB7A /* menuMemberTableViewCell.swift */; };
+		86DEF4A925EE3AA30051DB7A /* menuMemberTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 86DEF4A725EE3AA20051DB7A /* menuMemberTableViewCell.xib */; };
+		86DEF4C125EF82200051DB7A /* RecordViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DEF4C025EF82200051DB7A /* RecordViewController.swift */; };
+		86DEF4C425EF82670051DB7A /* Record.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86DEF4C325EF82670051DB7A /* Record.storyboard */; };
 		86F924D325DF6CC800A91DEB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F924D225DF6CC800A91DEB /* AppDelegate.swift */; };
 		86F924D525DF6CC800A91DEB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F924D425DF6CC800A91DEB /* SceneDelegate.swift */; };
 		86F924D725DF6CC800A91DEB /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86F924D625DF6CC800A91DEB /* HomeViewController.swift */; };
@@ -49,6 +53,10 @@
 		865491D325E75E9A006C8354 /* MorningTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MorningTableViewCell.xib; sourceTree = "<group>"; };
 		86DEF43C25ECADEC0051DB7A /* ContainerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerController.swift; sourceTree = "<group>"; };
 		86DEF49D25ED2C770051DB7A /* menuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = menuViewController.swift; sourceTree = "<group>"; };
+		86DEF4A625EE3AA20051DB7A /* menuMemberTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = menuMemberTableViewCell.swift; sourceTree = "<group>"; };
+		86DEF4A725EE3AA20051DB7A /* menuMemberTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = menuMemberTableViewCell.xib; sourceTree = "<group>"; };
+		86DEF4C025EF82200051DB7A /* RecordViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordViewController.swift; sourceTree = "<group>"; };
+		86DEF4C325EF82670051DB7A /* Record.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Record.storyboard; sourceTree = "<group>"; };
 		86F924CF25DF6CC800A91DEB /* MorningApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MorningApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		86F924D225DF6CC800A91DEB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		86F924D425DF6CC800A91DEB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -99,6 +107,7 @@
 				86F9250225DF82BA00A91DEB /* HomeTableViewCell.xib */,
 				8654906525E0D697006C8354 /* ChatInputAccessoryView.xib */,
 				865491D325E75E9A006C8354 /* MorningTableViewCell.xib */,
+				86DEF4A725EE3AA20051DB7A /* menuMemberTableViewCell.xib */,
 			);
 			path = Xibs;
 			sourceTree = "<group>";
@@ -106,9 +115,11 @@
 		8654906325E0D5EF006C8354 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				86DEF4A625EE3AA20051DB7A /* menuMemberTableViewCell.swift */,
 				865491D225E75E9A006C8354 /* MorningTableViewCell.swift */,
 				86F9250525DF845D00A91DEB /* HomeTableViewCell.swift */,
 				8654906825E0D84D006C8354 /* ChatInputAccessory.swift */,
+				86DEF43C25ECADEC0051DB7A /* ContainerController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -153,8 +164,8 @@
 			isa = PBXGroup;
 			children = (
 				865490D525E36F20006C8354 /* Model */,
-				8654906225E0D5BC006C8354 /* Xibs */,
 				86F924FF25DF7C3D00A91DEB /* Storyboard */,
+				8654906225E0D5BC006C8354 /* Xibs */,
 				86F924FE25DF7C0A00A91DEB /* Controller */,
 				8654906325E0D5EF006C8354 /* Views */,
 				8654906425E0D60D006C8354 /* Extention */,
@@ -172,9 +183,9 @@
 			isa = PBXGroup;
 			children = (
 				86F924D625DF6CC800A91DEB /* HomeViewController.swift */,
+				86DEF4C025EF82200051DB7A /* RecordViewController.swift */,
 				865490D225E2360F006C8354 /* SingUpViewController.swift */,
 				8654916325E5FCF6006C8354 /* LoginViewController.swift */,
-				86DEF43C25ECADEC0051DB7A /* ContainerController.swift */,
 				86DEF49D25ED2C770051DB7A /* menuViewController.swift */,
 			);
 			path = Controller;
@@ -186,6 +197,7 @@
 				86F924F025DF755D00A91DEB /* Home.storyboard */,
 				865490CF25E23298006C8354 /* SingUp.storyboard */,
 				8654916025E5FB21006C8354 /* Login.storyboard */,
+				86DEF4C325EF82670051DB7A /* Record.storyboard */,
 			);
 			path = Storyboard;
 			sourceTree = "<group>";
@@ -249,6 +261,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86DEF4A925EE3AA30051DB7A /* menuMemberTableViewCell.xib in Resources */,
 				86F924F125DF755D00A91DEB /* Home.storyboard in Resources */,
 				86F924DF25DF6CC900A91DEB /* LaunchScreen.storyboard in Resources */,
 				86F9250325DF82BA00A91DEB /* HomeTableViewCell.xib in Resources */,
@@ -258,6 +271,7 @@
 				8654906D25E22B6D006C8354 /* GoogleService-Info.plist in Resources */,
 				8654906625E0D697006C8354 /* ChatInputAccessoryView.xib in Resources */,
 				8654916125E5FB21006C8354 /* Login.storyboard in Resources */,
+				86DEF4C425EF82670051DB7A /* Record.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -311,7 +325,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				865491D425E75E9A006C8354 /* MorningTableViewCell.swift in Sources */,
+				86DEF4A825EE3AA20051DB7A /* menuMemberTableViewCell.swift in Sources */,
 				8654916425E5FCF6006C8354 /* LoginViewController.swift in Sources */,
+				86DEF4C125EF82200051DB7A /* RecordViewController.swift in Sources */,
 				86F9250B25DF8A4400A91DEB /* UIColer-Extention.swift in Sources */,
 				86F924D725DF6CC800A91DEB /* HomeViewController.swift in Sources */,
 				865490D325E2360F006C8354 /* SingUpViewController.swift in Sources */,

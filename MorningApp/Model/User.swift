@@ -10,14 +10,24 @@ import Firebase
 
 class User {
     
-    let email: String
-    let username: String
-    let createdAt: Timestamp
+    let uid: String
     
-    init(dic: [String: Any]) {
-        self.email = dic["email"] as? String ?? ""
-        self.username = dic["username"] as? String ?? ""
-        self.createdAt = dic["createdAt"] as? Timestamp ?? Timestamp()
+    let email: String?
+    let username: String?
+    let createdAt: Data?
+    
+    
+    init(document: QueryDocumentSnapshot) {
+        
+        self.uid = document.documentID
+        
+        let userDic = document.data()
+        
+        self.email = userDic["email"] as? String ?? ""
+        self.username = userDic["username"] as? String ?? ""
+        let timestamp = userDic["createdAt"] as? Timestamp
+        self.createdAt = timestamp?.dateValue() as? Data
+        
         
     }
     
