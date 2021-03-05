@@ -18,11 +18,26 @@ class RecordViewController: UIViewController {
     @IBOutlet weak var successLabel: UILabel!
     @IBOutlet weak var mistakeLabel: UILabel!
     
+    var successCount = Double()
     
+    var didCount = Double()
+    
+    var parsent: Double {
+        get {
+            return successCount / didCount * 100
+        }
+    }
+    
+    var miss: Int {
+        get {
+            return Int(didCount) - Int(successCount)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        print("parent",parsent)
         setNav()
        
     }
@@ -43,9 +58,8 @@ class RecordViewController: UIViewController {
 //        let num = numFloor.description
 //        percentLabel.text = "\(num) %"
         
-        percentLabel.text = "\(3.0 / 2.0 * 100)"
-        
-        
+        print("successCount",successCount)
+                
         pieChartView.noDataText = "まだデータがありません"
         
         pieChartView.highlightPerTapEnabled = false //データをタップできるかどうか
@@ -113,7 +127,9 @@ class RecordViewController: UIViewController {
                 //経過日数を取得
                 guard let elapsedDays = Calendar.current.dateComponents([.day], from: createdAtDate, to: nowTime).day else { return }
                 let didcount = elapsedDays
-               
+                
+                self.didCount = Double(didcount)
+                
                 self.didLabel.text = "\(didcount) 日"
                 
 //                let dateFormatter = DateFormatter()
@@ -133,7 +149,11 @@ class RecordViewController: UIViewController {
                 guard let snaps = snaps else {return}
                 
                 let successcount = snaps.documents.count
+                self.successCount = Double(successcount)
                 self.successLabel.text = "\(successcount) 日"
+                
+                self.percentLabel.text = "\(String(self.parsent))%"
+                self.mistakeLabel.text = "\(String(self.miss)) 日"
             }
         }
     }
