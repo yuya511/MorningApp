@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="o4J-6h-SbQ">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="17701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="LGA-xI-zpj">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
@@ -8,7 +8,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--Record-->
+        <!--Record View Controller-->
         <scene sceneID="tt3-BX-nzO">
             <objects>
                 <viewController storyboardIdentifier="Record" useStoryboardIdentifierAsRestorationIdentifier="YES" id="o4J-6h-SbQ" customClass="RecordViewController" customModule="MorningApp" customModuleProvider="target" sceneMemberID="viewController">
@@ -16,29 +16,152 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="記録" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="OYR-nx-WDw">
-                                <rect key="frame" x="172" y="392" width="35" height="21"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8A1-Ps-gAp" customClass="PieChartView" customModule="Charts">
+                                <rect key="frame" x="32" y="138" width="350" height="350"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="90％" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="F8c-uu-K4J">
+                                        <rect key="frame" x="150" y="163.5" width="50" height="23"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" relation="greaterThanOrEqual" constant="50" id="gTK-Ya-83D"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="F8c-uu-K4J" firstAttribute="centerY" secondItem="8A1-Ps-gAp" secondAttribute="centerY" id="08e-wj-mbv"/>
+                                    <constraint firstAttribute="width" secondItem="8A1-Ps-gAp" secondAttribute="height" multiplier="1:1" id="CyZ-Qp-e0H"/>
+                                    <constraint firstAttribute="width" constant="350" id="LOy-Bm-FB5"/>
+                                    <constraint firstItem="F8c-uu-K4J" firstAttribute="centerX" secondItem="8A1-Ps-gAp" secondAttribute="centerX" id="t5K-ML-Ic4"/>
+                                </constraints>
+                            </view>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="hc3-mi-cnB">
+                                <rect key="frame" x="25" y="488" width="364" height="100"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="xPS-vv-N8N">
+                                        <rect key="frame" x="0.0" y="0.0" width="179.5" height="100"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="OFe-Pj-dJk">
+                                                <rect key="frame" x="0.0" y="0.0" width="179.5" height="50"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="経過日数：" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="soo-ft-liE">
+                                                        <rect key="frame" x="0.0" y="0.0" width="90" height="50"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                        <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="31日" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bNz-O5-vbd">
+                                                        <rect key="frame" x="90" y="0.0" width="89.5" height="50"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                                                        <color key="textColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                            </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="aYu-hP-Iew">
+                                                <rect key="frame" x="0.0" y="50" width="179.5" height="50"/>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="mpK-1x-dZL">
+                                        <rect key="frame" x="184.5" y="0.0" width="179.5" height="100"/>
+                                        <subviews>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="hfK-es-EbW">
+                                                <rect key="frame" x="0.0" y="0.0" width="179.5" height="50"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="成功日数..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="SXE-h9-4Pq">
+                                                        <rect key="frame" x="0.0" y="0.0" width="90" height="50"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                        <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="29日" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V3V-cM-75I">
+                                                        <rect key="frame" x="90" y="0.0" width="89.5" height="50"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                                                        <color key="textColor" systemColor="linkColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                            </stackView>
+                                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="KoR-1d-vgY">
+                                                <rect key="frame" x="0.0" y="50" width="179.5" height="50"/>
+                                                <subviews>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="失敗日数..." textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4tY-s8-Pay">
+                                                        <rect key="frame" x="0.0" y="0.0" width="90" height="50"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="12"/>
+                                                        <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="２日" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7qJ-kM-czd">
+                                                        <rect key="frame" x="90" y="0.0" width="89.5" height="50"/>
+                                                        <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                                                        <color key="textColor" systemColor="systemRedColor"/>
+                                                        <nil key="highlightedColor"/>
+                                                    </label>
+                                                </subviews>
+                                            </stackView>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="100" id="Nld-qN-WEN"/>
+                                </constraints>
+                            </stackView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="fp2-Ie-BTb"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" red="0.94117647058823528" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="fp2-Ie-BTb" firstAttribute="trailing" secondItem="hc3-mi-cnB" secondAttribute="trailing" constant="25" id="HRA-j9-8lk"/>
+                            <constraint firstItem="hc3-mi-cnB" firstAttribute="leading" secondItem="fp2-Ie-BTb" secondAttribute="leading" constant="25" id="Hyw-7l-T10"/>
+                            <constraint firstItem="hc3-mi-cnB" firstAttribute="top" secondItem="8A1-Ps-gAp" secondAttribute="bottom" id="PUS-tf-DJn"/>
+                            <constraint firstItem="hc3-mi-cnB" firstAttribute="centerX" secondItem="Jxl-0o-icX" secondAttribute="centerX" id="V0S-xE-qNW"/>
+                            <constraint firstItem="8A1-Ps-gAp" firstAttribute="centerX" secondItem="Jxl-0o-icX" secondAttribute="centerX" id="hKg-lq-DUg"/>
+                            <constraint firstItem="8A1-Ps-gAp" firstAttribute="top" secondItem="fp2-Ie-BTb" secondAttribute="top" constant="50" id="pKz-gL-UcR"/>
+                        </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Record" image="note.text" catalog="system" id="ial-Pw-qDV"/>
+                    <navigationItem key="navigationItem" id="dgj-Sa-1jQ"/>
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
+                    <connections>
+                        <outlet property="didLabel" destination="bNz-O5-vbd" id="NVs-Q9-JlR"/>
+                        <outlet property="mistakeLabel" destination="7qJ-kM-czd" id="8g5-fG-kau"/>
+                        <outlet property="percentLabel" destination="F8c-uu-K4J" id="a0C-p6-lYb"/>
+                        <outlet property="pieChartView" destination="8A1-Ps-gAp" id="4UX-5O-EPL"/>
+                        <outlet property="successLabel" destination="V3V-cM-75I" id="Kv1-Do-HKH"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="YbH-dn-CXQ" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="122" y="100"/>
+            <point key="canvasLocation" x="1031.8840579710145" y="99.776785714285708"/>
+        </scene>
+        <!--Record-->
+        <scene sceneID="FO7-tL-M9h">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="LGA-xI-zpj" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Record" image="note.text" catalog="system" id="ial-Pw-qDV"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="ftC-D0-hi8">
+                        <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="o4J-6h-SbQ" kind="relationship" relationship="rootViewController" id="bRn-y2-phP"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pLx-2Q-dTD" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="121.73913043478262" y="99.776785714285708"/>
         </scene>
     </scenes>
     <resources>
         <image name="note.text" catalog="system" width="128" height="106"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        <systemColor name="linkColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemRedColor">
+            <color red="1" green="0.23137254901960785" blue="0.18823529411764706" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

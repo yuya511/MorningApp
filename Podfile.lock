@@ -218,6 +218,9 @@ PODS:
   - BoringSSL-GRPC/Implementation (0.0.7):
     - BoringSSL-GRPC/Interface (= 0.0.7)
   - BoringSSL-GRPC/Interface (0.0.7)
+  - Charts (3.6.0):
+    - Charts/Core (= 3.6.0)
+  - Charts/Core (3.6.0)
   - Firebase (7.5.0):
     - Firebase/Core (= 7.5.0)
   - Firebase/Analytics (7.5.0):
@@ -254,7 +257,7 @@ PODS:
     - FirebaseCoreDiagnostics (~> 7.4)
     - GoogleUtilities/Environment (~> 7.0)
     - GoogleUtilities/Logger (~> 7.0)
-  - FirebaseCoreDiagnostics (7.6.0):
+  - FirebaseCoreDiagnostics (7.7.0):
     - GoogleDataTransport (~> 8.0)
     - GoogleUtilities/Environment (~> 7.0)
     - GoogleUtilities/Logger (~> 7.0)
@@ -271,7 +274,7 @@ PODS:
     - "gRPC-C++ (~> 1.28.0)"
     - leveldb-library (~> 1.22)
     - nanopb (~> 2.30907.0)
-  - FirebaseInstallations (7.6.0):
+  - FirebaseInstallations (7.7.0):
     - FirebaseCore (~> 7.0)
     - GoogleUtilities/Environment (~> 7.0)
     - GoogleUtilities/UserDefaults (~> 7.0)
@@ -347,6 +350,7 @@ PODS:
   - SVProgressHUD (2.2.5)
 
 DEPENDENCIES:
+  - Charts (~> 3.6)
   - Firebase (= 7.5.0)
   - Firebase/Analytics
   - Firebase/Auth
@@ -359,6 +363,7 @@ SPEC REPOS:
   trunk:
     - abseil
     - BoringSSL-GRPC
+    - Charts
     - Firebase
     - FirebaseAnalytics
     - FirebaseAuth
@@ -383,13 +388,14 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   abseil: 6c8eb7892aefa08d929b39f9bb108e5367e3228f
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
+  Charts: b1e3a1f5a1c9ba5394438ca3b91bd8c9076310af
   Firebase: fd5e4d2b756292c6e7ee6faac1eb320225d6e97e
   FirebaseAnalytics: 00b7f74571d346ee1ffb9bf0a2e6f2ffff222bcc
   FirebaseAuth: 13585612f93d671962682007ea8ded1d60ef0762
   FirebaseCore: 06a2b68af8901f2244eb989419eb89edc3789b4d
-  FirebaseCoreDiagnostics: ee1184d51da3293335b83355aad20f537acc24cf
+  FirebaseCoreDiagnostics: 179bf3831213451c8addd036aca7fcf5492ec154
   FirebaseFirestore: 9a4c23e979412a8557992f4515314b38fc0c888b
-  FirebaseInstallations: 6e4e77396559bc2ae0504823837ed737b1c7e47f
+  FirebaseInstallations: 42c86e7b02ff75b7f27f85833bf5dcb5f38a9774
   FirebaseStorage: 9cbdff7bdcdc8289c8efc20945fc91c1066d0b43
   FirebaseUI: 59db3d833773f985550897d54ceb811ba37fb9a5
   GoogleAppMeasurement: 65a1071e5f52f63ab03d0a4d814a54fd762d885a
@@ -404,6 +410,6 @@ SPEC CHECKSUMS:
   SDWebImage: c666b97e1fa9c64b4909816a903322018f0a9c84
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
 
-PODFILE CHECKSUM: f3f1f8de3a14af880e218d4a55283b13751369c4
+PODFILE CHECKSUM: 2642d45e92b24946beeafb9abff6d2befb654d5a
 
 COCOAPODS: 1.10.1

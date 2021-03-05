@@ -88,7 +88,7 @@ class HomeViewController: UIViewController {
         //HomeTableViewの設定
         HomeTableView.delegate = self
         HomeTableView.dataSource = self
-        HomeTableView.backgroundColor = .rgb(red: 215, green: 215, blue: 230)
+        HomeTableView.backgroundColor = .rgb(red: 240, green: 255, blue: 255)
         HomeTableView.contentInset = .init(top: 60, left: 0, bottom: 0, right: 0)
         HomeTableView.scrollIndicatorInsets = .init(top: 60, left: 0, bottom: 0, right: 0)
         //下に表示されるように逆さまにしている。
@@ -105,7 +105,15 @@ class HomeViewController: UIViewController {
         }
         
         //ナビゲーションバーの設定
-        navigationController?.navigationBar.barTintColor = .rgb(red: 39, green: 49, blue: 69)
+        navigationController?.navigationBar.barTintColor = .rgb(red: 65, green: 105, blue: 255)
+        //.rgb(red: 39, green: 49, blue: 69)
+        self.navigationItem.title = "チャット"
+        
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            // 文字の色
+            .foregroundColor: UIColor.white
+        ]
+
 
         //カスタムセルの登録
         HomeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
