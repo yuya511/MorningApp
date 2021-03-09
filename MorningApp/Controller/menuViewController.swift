@@ -66,14 +66,14 @@ class menuViewController: UIViewController {
         self.menuView.layer.position.x = -self.menuView.frame.width
         // 表示時のアニメーションを作成する
         UIView.animate(
-            withDuration: 0.5,
+            withDuration: 0.25,
             delay: 0,
             options: .curveEaseOut,
             animations: {
                 self.menuView.layer.position.x = menuPos.x
-        },
+            },
             completion: { bool in
-        })
+            })
         fetchUserInfoFromFirestore()
     }
     
@@ -109,7 +109,6 @@ class menuViewController: UIViewController {
             }
             
         
-        
             //ログインしているユーザーの画像と名前を表示する
             guard let uid = Auth.auth().currentUser?.uid else {return}
             
@@ -143,11 +142,11 @@ class menuViewController: UIViewController {
                     options: .curveEaseIn,
                     animations: {
                         self.menuView.layer.position.x = -self.menuView.frame.width
-                },
+                    },
                     completion: { bool in
                         self.dismiss(animated: true, completion: nil)
-                }
-            )}
+                    }
+                )}
         }
     }
 }

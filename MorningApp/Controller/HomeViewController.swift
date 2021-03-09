@@ -13,11 +13,19 @@ class HomeViewController: UIViewController {
     private let cellId = "cellId"
     private let cellId02 = "cellId02"
     
+    var firestTime: String?
+    var endTime: String?
+    
+    var firest:Bool?
+    
     private var users = [User]()
     private var chat = [Chatroom]()
     
     //監視するやつ
     private var listener: ListenerRegistration?
+    
+    
+    @IBOutlet weak var moriningView: UIView!
     
     
     private let chatInputAccessoryHeight: CGFloat = 100
@@ -45,13 +53,13 @@ class HomeViewController: UIViewController {
         setUpHomeTableView()
         setUpNotification()
         
+      
     }
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        print("DEBUG_PRINT: viewWillAppear")
-                
+        
         if Auth.auth().currentUser != nil {
             let chatroomsRef = Firestore.firestore().collection(Const.ChatRooms).order(by: "date", descending: true)
             
@@ -68,7 +76,6 @@ class HomeViewController: UIViewController {
                 self.HomeTableView.reloadData()
             }
         }
-        
     }
     
     
@@ -104,21 +111,74 @@ class HomeViewController: UIViewController {
             self.present(nav, animated: true, completion: nil)
         }
         
+        
         //ナビゲーションバーの設定
         navigationController?.navigationBar.barTintColor = .rgb(red: 65, green: 105, blue: 255)
         //.rgb(red: 39, green: 49, blue: 69)
         self.navigationItem.title = "チャット"
+        
+        let myRightItem = UIBarButtonItem(title: "編集", style: .plain, target: self, action: #selector(settingButton))
+        self.navigationItem.rightBarButtonItem = myRightItem
+        self.navigationItem.rightBarButtonItem?.tintColor = .white
         
         self.navigationController?.navigationBar.titleTextAttributes = [
             // 文字の色
             .foregroundColor: UIColor.white
         ]
 
-
         //カスタムセルの登録
         HomeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
         HomeTableView.register(UINib(nibName: "MorningTableViewCell", bundle: nil), forCellReuseIdentifier: cellId02)
+       
+        timeCheck()
+    }
+    
+    @objc func settingButton() {
+        print("rightButton")
+        let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
+        let morningSettingViewController = storyboar.instantiateViewController(identifier: "MorningSettingViewController") as! MorningSettingViewController
+//        morningSettingViewController.modalPresentationStyle = .fullScreen
+        present(morningSettingViewController, animated: true, completion: nil)
+    }
+    
+    
+    func timeCheck() {
+        let dateFormatter = DateFormatter()
+        // フォーマット設定
+        dateFormatter.dateFormat = "HH:mm"
+
+        // ロケール設定（端末の暦設定に引きづられないようにする）
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+
+        // タイムゾーン設定（端末設定によらず、どこの地域の時間帯なのかを指定する）
+        dateFormatter.timeZone = TimeZone(identifier: "Asia/Tokyo")
+        // 変換
+        let date = dateFormatter.string(from: Date())
         
+
+        let timeStart = firestTime ?? ""
+        print("timeStart",timeStart)
+        let timeEnd = endTime ?? ""
+        print("endTime",timeEnd)
+        
+        UserDefaults.standard.set(timeStart, forKey: "START_TIME")
+        UserDefaults.standard.set(endTime, forKey: "END_TIME")
+        
+        let u = UserDefaults.standard.string(forKey: "START_TIME")
+        print("uです",u ?? "")
+        
+        if firest ?? true {
+            if timeStart <= date && date <= timeEnd {
+                print("DEBUG_PRINT** 範囲内です")
+                let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
+                let morningChuckViewController = storyboar.instantiateViewController(identifier:"MorningChuckViewController") as! MorningChuckViewController
+                
+                morningChuckViewController.modalPresentationStyle = .fullScreen
+                self.present(morningChuckViewController, animated: true, completion: nil)
+            } else {
+                print("DEBUG_PRINT** 範囲外です")
+            }
+        }
     }
 
     
@@ -212,14 +272,14 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         
         let chatData = chat[indexPath.row]
 
-            switch chatData.stamp {
+        switch chatData.stamp {
             case true:
                 return cell02
             case false:
                 return cell
             default:
                 return cell
-            }
+        }
         
     }
 

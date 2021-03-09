@@ -19,9 +19,7 @@ class RecordViewController: UIViewController {
     @IBOutlet weak var mistakeLabel: UILabel!
     
     var successCount = Double()
-    
     var didCount = Double()
-    
     var parsent: Double {
         get {
             return successCount / didCount * 100
@@ -34,10 +32,10 @@ class RecordViewController: UIViewController {
         }
     }
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print("parent",parsent)
         setNav()
        
     }
@@ -45,56 +43,11 @@ class RecordViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         
         setFirebase()
-        setChart()
+        
     }
     
+  
     
-    func setChart() {
-        
-        
-//        let parsent:Double =  succesCount ?? 0.0 / didcount! * 100
-//        let numFloor = floor(parsent)
-//        print("parsent\(parsent)")
-//        let num = numFloor.description
-//        percentLabel.text = "\(num) %"
-        
-        print("successCount",successCount)
-                
-        pieChartView.noDataText = "まだデータがありません"
-        
-        pieChartView.highlightPerTapEnabled = false //データをタップできるかどうか
-        pieChartView.chartDescription?.enabled = false  // グラフの説明を非表示
-        pieChartView.drawEntryLabelsEnabled = false  // グラフ上のデータラベルを非表示
-        pieChartView.legend.enabled = false  // グラフの注釈を非表示
-        
-        
-        // グラフに表示するデータのタイトルと値
-        let dataEntries = [
-            PieChartDataEntry(value: 3, label: ""),
-            PieChartDataEntry(value: -1, label: "")
-        ]
-        
-        //データをセットする
-        let dataSet = PieChartDataSet(entries: dataEntries, label: "")
-        //データの数字を消す
-        dataSet.drawValuesEnabled = false
-        
-        
-        // グラフの色
-        let colors = [UIColor(named: "GoodColor"), UIColor(named: "NoColor")]
-        dataSet.colors = colors as! [NSUIColor]
-        
-        //viewにデータを入れる
-        self.pieChartView.data = PieChartData(dataSet: dataSet)
-        
-        pieChartView.backgroundColor = .rgb(red: 240, green: 255, blue: 255)
-        
-        //アニメーションをつける
-        pieChartView.animate(xAxisDuration: 1.5, yAxisDuration: 1.5)
-        
-        
-        view.addSubview(self.pieChartView)
-    }
     
     
     func setNav() {
@@ -129,32 +82,74 @@ class RecordViewController: UIViewController {
                 let didcount = elapsedDays
                 
                 self.didCount = Double(didcount)
-                
+                //経過日数のデータ
                 self.didLabel.text = "\(didcount) 日"
                 
-//                let dateFormatter = DateFormatter()
-//                dateFormatter.dateFormat = DateFormatter.dateFormat(fromTemplate: "yMMMdHms", options: 0, locale: Locale(identifier: "ja_JP"))
-//                print("DEBUG_PRINT*+* \(dateFormatter.string(from: date))")
-//                print("DEBUG_PRINT*** \(dateFormatter.string(from: dt))")
-            }
-            
-            
-            let chatRef = Firestore.firestore().collection(Const.ChatRooms)
-            let query = chatRef.whereField("uid", isEqualTo: uid).whereField("stamp", isEqualTo: true)
-            query.getDocuments { (snaps, err) in
-                if let err = err {
-                    print(err)
-                    return
+                let chatRef = Firestore.firestore().collection(Const.ChatRooms)
+                let query = chatRef.whereField("uid", isEqualTo: uid).whereField("stamp", isEqualTo: true)
+                query.getDocuments { (snaps, err) in
+                    if let err = err {
+                        print(err)
+                        return
+                    }
+                    guard let snaps = snaps else {return}
+                    
+                    let successcount = snaps.documents.count
+                    self.successCount = Double(successcount)
+                    
+                    //成功日数のデータ
+                    self.successLabel.text = "\(successcount) 日"
+                    //グラフの中心のデータ
+                    self.percentLabel.text = "\(String(self.parsent))%"
+                    //失敗日数のデータ
+                    self.mistakeLabel.text = "\(String(self.miss)) 日"
+                    print("didCount",self.didCount)
+                    print("miss",self.miss)
+                    
+                    self.setChart()
                 }
-                guard let snaps = snaps else {return}
-                
-                let successcount = snaps.documents.count
-                self.successCount = Double(successcount)
-                self.successLabel.text = "\(successcount) 日"
-                
-                self.percentLabel.text = "\(String(self.parsent))%"
-                self.mistakeLabel.text = "\(String(self.miss)) 日"
             }
         }
     }
+    
+    func setChart() {
+        
+        print("successCount",successCount)
+                
+        pieChartView.noDataText = "まだデータがありません"
+        pieChartView.highlightPerTapEnabled = false //データをタップできるかどうか
+        pieChartView.chartDescription?.enabled = false  // グラフの説明を非表示
+        pieChartView.drawEntryLabelsEnabled = false  // グラフ上のデータラベルを非表示
+        pieChartView.legend.enabled = false  // グラフの注釈を非表示
+        
+        
+        // グラフに表示するデータのタイトルと値
+        let dataEntries = [
+            PieChartDataEntry(value: successCount, label: ""),
+            PieChartDataEntry(value: Double(miss), label: "")
+        ]
+        
+        
+        //データをセットする
+        let dataSet = PieChartDataSet(entries: dataEntries, label: "")
+        //データの数字を消す
+        dataSet.drawValuesEnabled = false
+        
+        
+        // グラフの色
+        let colors = [UIColor(named: "GoodColor"), UIColor(named: "NoColor")]
+        dataSet.colors = colors as! [NSUIColor]
+        
+        //viewにデータを入れる
+        self.pieChartView.data = PieChartData(dataSet: dataSet)
+        
+        pieChartView.backgroundColor = .rgb(red: 240, green: 255, blue: 255)
+        
+        //アニメーションをつける
+        pieChartView.animate(xAxisDuration: 1.5, yAxisDuration: 1.5)
+        
+        
+        view.addSubview(self.pieChartView)
+    }
+    
 }

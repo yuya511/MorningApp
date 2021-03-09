@@ -20,13 +20,6 @@
                                 <rect key="frame" x="0.0" y="88" width="414" height="725"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </tableView>
-                            <containerView opaque="NO" contentMode="scaleToFill" id="sp4-Yr-Ain">
-                                <rect key="frame" x="242" y="88" width="172" height="193"/>
-                                <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
-                                <connections>
-                                    <segue destination="WK7-5F-EDT" kind="embed" id="fEc-fO-zQy"/>
-                                </connections>
-                            </containerView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="IYl-95-UZp"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -163,46 +156,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="h6D-55-VYY" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2876.811594202899" y="-1.3392857142857142"/>
-        </scene>
-        <!--Container Controller-->
-        <scene sceneID="X8A-9j-yMG">
-            <objects>
-                <viewController storyboardIdentifier="ContainerController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="WK7-5F-EDT" customClass="ContainerController" customModule="MorningApp" customModuleProvider="target" sceneMemberID="viewController">
-                    <view key="view" contentMode="scaleToFill" id="v0h-HJ-21l">
-                        <rect key="frame" x="0.0" y="0.0" width="172" height="193"/>
-                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JV5-Tc-cKF">
-                                <rect key="frame" x="56" y="54" width="100" height="100"/>
-                                <color key="backgroundColor" red="0.21960783" green="0.61577682244848486" blue="0.65537804631486296" alpha="0.69700502152080346" colorSpace="custom" customColorSpace="displayP3"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="JV5-Tc-cKF" secondAttribute="height" multiplier="1:1" id="Ua4-Ax-5Yu"/>
-                                    <constraint firstAttribute="width" constant="100" id="nRm-iS-czf"/>
-                                </constraints>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="18"/>
-                                <state key="normal" title="起きた！">
-                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                </state>
-                                <connections>
-                                    <action selector="MorningButton:" destination="WK7-5F-EDT" eventType="touchUpInside" id="Lrt-MX-aH1"/>
-                                </connections>
-                            </button>
-                        </subviews>
-                        <viewLayoutGuide key="safeArea" id="0EJ-T4-bzI"/>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstAttribute="trailingMargin" secondItem="JV5-Tc-cKF" secondAttribute="trailing" id="GUC-vL-F17"/>
-                            <constraint firstItem="JV5-Tc-cKF" firstAttribute="top" secondItem="v0h-HJ-21l" secondAttribute="topMargin" constant="10" id="cRl-ZD-Bvg"/>
-                        </constraints>
-                    </view>
-                    <connections>
-                        <outlet property="editButton" destination="JV5-Tc-cKF" id="sr1-ne-sCa"/>
-                    </connections>
-                </viewController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="jCd-zF-mzl" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="1732" y="458"/>
+            <point key="canvasLocation" x="2919" y="171"/>
         </scene>
         <!--Record-->
         <scene sceneID="7Yq-VW-ved">
@@ -212,7 +166,7 @@
                 </viewControllerPlaceholder>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="7r6-Ll-mes" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2522" y="-478"/>
+            <point key="canvasLocation" x="2573" y="-252"/>
         </scene>
         <!--Tab Bar Controller-->
         <scene sceneID="s1E-qc-Bd5">
@@ -220,6 +174,7 @@
                 <tabBarController automaticallyAdjustsScrollViewInsets="NO" id="ubD-Dc-ZkJ" sceneMemberID="viewController">
                     <toolbarItems/>
                     <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="R5j-pX-pOc">
+                        <rect key="frame" x="0.0" y="0.0" width="1000" height="1000"/>
                         <autoresizingMask key="autoresizingMask"/>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     </tabBar>
@@ -230,7 +185,7 @@
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="CFB-Xp-8pt" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1966.6666666666667" y="-1.3392857142857142"/>
+            <point key="canvasLocation" x="1996" y="171"/>
         </scene>
     </scenes>
     <resources>
