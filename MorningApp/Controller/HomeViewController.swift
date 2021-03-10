@@ -13,8 +13,17 @@ class HomeViewController: UIViewController {
     private let cellId = "cellId"
     private let cellId02 = "cellId02"
     
-    var firestTime: String?
-    var endTime: String?
+    var targetTime:Date? {
+        //ストアドプロパティを監視する。変更されたら呼ばれる
+        didSet {
+            timeMonitor()
+            //比較のためにdate型の状態で保存している
+            UserDefaults.standard.set(targetTime, forKey: "SETDATE")
+            //datePickerの時間の値をStringに変換して、UserDefaultsに保存している
+            let japanTime:String = formatChang(date: targetTime ?? Date())
+            UserDefaults.standard.set(japanTime, forKey: "SETTIME")
+        }
+    }
     
     var firest:Bool?
     
@@ -24,10 +33,7 @@ class HomeViewController: UIViewController {
     //監視するやつ
     private var listener: ListenerRegistration?
     
-    
-    @IBOutlet weak var moriningView: UIView!
-    
-    
+        
     private let chatInputAccessoryHeight: CGFloat = 100
     private let tableViewContentInset: UIEdgeInsets = .init(top: 60, left: 0, bottom: 0, right: 0)
     private let tableViewIndicateorInset: UIEdgeInsets = .init(top: 60, left: 0, bottom: 0, right: 0)
@@ -35,8 +41,9 @@ class HomeViewController: UIViewController {
         self.view.safeAreaInsets.bottom
     }
     
-    @IBOutlet weak var HomeTableView: UITableView!
+  
     
+    @IBOutlet weak var HomeTableView: UITableView!
     
     //インプットアクセサリービューの設置
     private lazy var chatInputAccessoryView: ChatInputAccessory = {
@@ -52,30 +59,14 @@ class HomeViewController: UIViewController {
         
         setUpHomeTableView()
         setUpNotification()
-        
       
     }
     
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        if Auth.auth().currentUser != nil {
-            let chatroomsRef = Firestore.firestore().collection(Const.ChatRooms).order(by: "date", descending: true)
-            
-            listener = chatroomsRef.addSnapshotListener() { ( querysnapshot, err) in
-                if let err = err {
-                    print("DEBUG_PRINT: snapshotの取得に失敗しました。\(err)")
-                    return
-                }
-                self.chat = querysnapshot!.documents.map { document in
-                    let chatData = Chatroom(document: document)
-                    return chatData
-                }
-                
-                self.HomeTableView.reloadData()
-            }
-        }
+        setChatrooms()
+        timeMonitor()
     }
     
     
@@ -111,11 +102,9 @@ class HomeViewController: UIViewController {
             self.present(nav, animated: true, completion: nil)
         }
         
-        
         //ナビゲーションバーの設定
         navigationController?.navigationBar.barTintColor = .rgb(red: 65, green: 105, blue: 255)
-        //.rgb(red: 39, green: 49, blue: 69)
-        self.navigationItem.title = "チャット"
+        self.navigationItem.title = "\(UserDefaults.standard.string(forKey: "SETTIME") ?? "")に起きます！"
         
         let myRightItem = UIBarButtonItem(title: "編集", style: .plain, target: self, action: #selector(settingButton))
         self.navigationItem.rightBarButtonItem = myRightItem
@@ -130,57 +119,94 @@ class HomeViewController: UIViewController {
         HomeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
         HomeTableView.register(UINib(nibName: "MorningTableViewCell", bundle: nil), forCellReuseIdentifier: cellId02)
        
-        timeCheck()
     }
     
+    //編集ボタン
     @objc func settingButton() {
         print("rightButton")
         let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
         let morningSettingViewController = storyboar.instantiateViewController(identifier: "MorningSettingViewController") as! MorningSettingViewController
-//        morningSettingViewController.modalPresentationStyle = .fullScreen
-        present(morningSettingViewController, animated: true, completion: nil)
+        let nav = UINavigationController(rootViewController: morningSettingViewController)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true, completion: nil)
     }
     
-    
-    func timeCheck() {
-        let dateFormatter = DateFormatter()
-        // フォーマット設定
-        dateFormatter.dateFormat = "HH:mm"
-
-        // ロケール設定（端末の暦設定に引きづられないようにする）
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
-
-        // タイムゾーン設定（端末設定によらず、どこの地域の時間帯なのかを指定する）
-        dateFormatter.timeZone = TimeZone(identifier: "Asia/Tokyo")
-        // 変換
-        let date = dateFormatter.string(from: Date())
+    //chatroomの監視
+    func setChatrooms() {
         
-
-        let timeStart = firestTime ?? ""
-        print("timeStart",timeStart)
-        let timeEnd = endTime ?? ""
-        print("endTime",timeEnd)
-        
-        UserDefaults.standard.set(timeStart, forKey: "START_TIME")
-        UserDefaults.standard.set(endTime, forKey: "END_TIME")
-        
-        let u = UserDefaults.standard.string(forKey: "START_TIME")
-        print("uです",u ?? "")
-        
-        if firest ?? true {
-            if timeStart <= date && date <= timeEnd {
-                print("DEBUG_PRINT** 範囲内です")
-                let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
-                let morningChuckViewController = storyboar.instantiateViewController(identifier:"MorningChuckViewController") as! MorningChuckViewController
+        if Auth.auth().currentUser != nil {
+            let chatroomsRef = Firestore.firestore().collection(Const.ChatRooms).order(by: "date", descending: true)
+            
+            listener = chatroomsRef.addSnapshotListener() { ( querysnapshot, err) in
+                if let err = err {
+                    print("DEBUG_PRINT: snapshotの取得に失敗しました。\(err)")
+                    return
+                }
+                self.chat = querysnapshot!.documents.map { document in
+                    let chatData = Chatroom(document: document)
+                    return chatData
+                }
                 
-                morningChuckViewController.modalPresentationStyle = .fullScreen
-                self.present(morningChuckViewController, animated: true, completion: nil)
-            } else {
-                print("DEBUG_PRINT** 範囲外です")
+                self.HomeTableView.reloadData()
             }
         }
     }
-
+    
+    
+    private func timeMonitor() {
+        let now = Date()
+        print("***now",now)
+        
+        guard let setTimeDate = load(key: "SETDATE") else { return }
+        print("***setTimeDate",setTimeDate)
+            
+        let pullModifiedDate = Calendar.current.date(byAdding: .minute, value: -15, to: setTimeDate)!
+        let addModifiedDate = Calendar.current.date(byAdding: .minute, value: 15, to: setTimeDate)!
+        
+        
+        print("***addModifiedDate,pullModifiedDate",addModifiedDate,pullModifiedDate)
+        
+        if pullModifiedDate <= now && now <= addModifiedDate {
+            
+            print("範囲内です")
+            if firest ?? true {
+                let storybar = UIStoryboard(name: "MorningChuck", bundle: nil)
+                let morningChuckViewController = storybar.instantiateViewController(identifier: "MorningChuckViewController") as! MorningChuckViewController
+                morningChuckViewController.modalPresentationStyle = .fullScreen
+                present(morningChuckViewController, animated: true, completion: nil)
+            } else {
+                print("***二回目です")
+            }
+            
+        } else {
+            print("範囲外です")
+        }
+    }
+    
+    //userdafaultsでdate型を取り出すために型をキャストするためのメソッド
+    private func load(key: String) -> Date? {
+        let value = UserDefaults.standard.object(forKey: key)
+        guard let date = value as? Date else {
+            return nil
+        }
+        return date
+    }
+    
+    
+    //日本時間の”○時○分”に変えるメソッド
+    func formatChang(date:Date) -> String {
+        let dateFormatter = DateFormatter()
+        // フォーマット設定
+        dateFormatter.dateFormat = "HH:mm"
+        // ロケール設定（端末の暦設定に引きづられないようにする）
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        // タイムゾーン設定（端末設定によらず、どこの地域の時間帯なのかを指定する）
+        dateFormatter.timeZone = TimeZone(identifier: "Asia/Tokyo")
+        // 変換
+        let date = dateFormatter.string(from: date)
+        return date
+    }
+    
     
    
     @objc func keyboardWillShow(notification: NSNotification) {
