@@ -14,20 +14,35 @@ class MorningTableViewCell: UITableViewCell {
     
     @IBOutlet weak var morningImageView: UIImageView!
     @IBOutlet weak var morningNameLabel: UILabel!
-    @IBOutlet weak var stampImageView: UIImageView!
     @IBOutlet weak var morningDateLabel: UILabel!
     
-    @IBOutlet weak var myMorningImageView: UIImageView!
-    @IBOutlet weak var myMoriningDateLabel: UILabel!
+    @IBOutlet weak var mokuLabel: UILabel!
+    @IBOutlet weak var targetTextView: UITextView!
     
-
+    @IBOutlet weak var fireButton: UIButton!
+    @IBOutlet weak var fireCountLabel: UILabel!
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-        backgroundColor = .clear
+        backgroundColor = .rgb(red: 152, green: 187, blue: 219)
+        layer.borderColor = UIColor.rgb(red: 240, green: 255, blue: 255).cgColor
+        layer.borderWidth = 2.0
+        layer.cornerRadius = 10
+        
+        mokuLabel.layer.cornerRadius = 7.5
+        mokuLabel.clipsToBounds = true
+        targetTextView.layer.cornerRadius = 5
+        targetTextView.backgroundColor = .rgb(red: 240, green: 240, blue: 240)
+        targetTextView.layer.borderColor = UIColor.orange.cgColor
+        targetTextView.layer.borderWidth = 1.5
+        self.targetTextView.text = ""
+        self.fireCountLabel.text = "0"
+        
         morningImageView.layer.cornerRadius = 17.5
-
     }
     
+  
     func setUserData(_ chatrooms: Chatroom) {
         //画像の表示
         if let uid = chatrooms.uid {
@@ -42,44 +57,23 @@ class MorningTableViewCell: UITableViewCell {
         self.morningDateLabel.text = ""
         if let date = chatrooms.date {
             let formatter = DateFormatter()
-            formatter.dateStyle = .none
+            formatter.dateStyle = .full
             formatter.timeStyle = .short
             formatter.locale = Locale(identifier: "ja_JP")
             let dateString = formatter.string(from: date)
             self.morningDateLabel.text = dateString
         }
-
-     
-        //メッセージの切り分け
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        if uid == chatrooms.uid {
-            morningImageView.isHidden = true
-            morningNameLabel.isHidden = true
-            morningDateLabel.isHidden = true
-            stampImageView.isHidden = true
-            
-            myMorningImageView.isHidden = false
-            myMoriningDateLabel.isHidden = false
-            
-           
-            self.myMoriningDateLabel.text = ""
-            if let date = chatrooms.date {
-                let formatter = DateFormatter()
-                formatter.dateStyle = .none
-                formatter.timeStyle = .short
-                formatter.locale = Locale(identifier: "ja_JP")
-                let dateString = formatter.string(from: date)
-                self.myMoriningDateLabel.text = dateString
-            }
-            
+        
+        //目標の部分のデータ
+        self.targetTextView.text = chatrooms.text
+        
+        self.fireCountLabel.text = String(chatrooms.supports.count)
+        
+        if chatrooms.isSupport {
+            fireButton.setImage(UIImage(named: "火"), for: .normal)
         } else {
-            stampImageView.isHidden = false
-            morningDateLabel.isHidden = false
-            morningNameLabel.isHidden = false
-            morningImageView.isHidden = false
-            
-            myMoriningDateLabel.isHidden = true
-            myMorningImageView.isHidden = true
+            fireButton.setImage(UIImage(named: "影火"), for: .normal)
         }
+     
     }
 }

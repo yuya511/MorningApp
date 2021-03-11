@@ -48,25 +48,33 @@ extension MorningChuckViewController: UIGestureRecognizerDelegate {
 //朝の目標設定画面
 class MorningRecrdViewController: UIViewController {
     
+    @IBOutlet weak var targetSettingTextView: UITextView!
+    @IBOutlet weak var decisionButtonOutlet: UIButton!
     //決定ボタン
     @IBAction func decisionButton(_ sender: Any) {
         
         morningFirebase()
-        
-        let storyboar = UIStoryboard(name: "Home", bundle: nil)
-        let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
-        
-        homeViewController.firest = false
-        
-        let nav = UINavigationController(rootViewController: homeViewController)
-        nav.modalPresentationStyle = .fullScreen
-        
-        self.present(nav, animated: true, completion: nil)
+        setMorningRecrdViewController()
+      
     }
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        targetSettingTextView.layer.cornerRadius = 10
+        decisionButtonOutlet.layer.cornerRadius = 5
+    }
+    
+    private func setMorningRecrdViewController() {
+        
+        UserDefaults.standard.set(Date(), forKey: "NOWDATE")
+        
+        let storyboar = UIStoryboard(name: "Home", bundle: nil)
+        let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+        let nav = UINavigationController(rootViewController: homeViewController)
+        nav.modalPresentationStyle = .fullScreen
+        self.present(nav, animated: true, completion: nil)
         
     }
     
@@ -80,15 +88,17 @@ class MorningRecrdViewController: UIViewController {
             }
             guard let dic = document?.data() else { return }
             guard let username = dic["username"] else { return }
+            guard let text = self.targetSettingTextView.text else { return }
             
             let chatroomRef = Firestore.firestore().collection(Const.ChatRooms).document()
             
             let chatroomDic = [
                 "name": username,
-                "text": "",
+                "text": text,
                 "stamp": true,
                 "date": Timestamp(),
                 "uid": uid,
+                "chatId": chatroomRef.documentID
             ] as [String : Any]
             chatroomRef.setData(chatroomDic)
             print("tappedMorningButtonの情報が保存されました")
@@ -126,7 +136,6 @@ class MorningSettingViewController: UIViewController {
         //ナビゲーションバーの設定
         navigationController?.navigationBar.barTintColor = .white
 
-        
         let myLefthtItem = UIBarButtonItem(title: "キャンセル", style: .plain, target: self, action: #selector(backButton))
         self.navigationItem.leftBarButtonItem = myLefthtItem
         self.navigationItem.leftBarButtonItem?.tintColor = .rgb(red: 65, green: 105, blue: 255)
@@ -154,8 +163,6 @@ class MorningSettingViewController: UIViewController {
         
         present(nav, animated: true, completion: nil)
     }
-    
-    
    
 }
 

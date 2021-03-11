@@ -21,6 +21,8 @@
 		865491D525E75E9A006C8354 /* MorningTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 865491D325E75E9A006C8354 /* MorningTableViewCell.xib */; };
 		86A2AA6125F5E64300646C80 /* MorningChuckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A2AA6025F5E64300646C80 /* MorningChuckViewController.swift */; };
 		86A2AA6425F5E69800646C80 /* MorningChuck.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86A2AA6325F5E69800646C80 /* MorningChuck.storyboard */; };
+		86C9DF1425F9141B00E58895 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C9DF1325F9141B00E58895 /* SettingViewController.swift */; };
+		86C9DF1725F9144800E58895 /* Setting.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86C9DF1625F9144800E58895 /* Setting.storyboard */; };
 		86DEF49E25ED2C770051DB7A /* menuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DEF49D25ED2C770051DB7A /* menuViewController.swift */; };
 		86DEF4A825EE3AA20051DB7A /* menuMemberTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DEF4A625EE3AA20051DB7A /* menuMemberTableViewCell.swift */; };
 		86DEF4A925EE3AA30051DB7A /* menuMemberTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 86DEF4A725EE3AA20051DB7A /* menuMemberTableViewCell.xib */; };
@@ -54,6 +56,8 @@
 		865491D325E75E9A006C8354 /* MorningTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MorningTableViewCell.xib; sourceTree = "<group>"; };
 		86A2AA6025F5E64300646C80 /* MorningChuckViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningChuckViewController.swift; sourceTree = "<group>"; };
 		86A2AA6325F5E69800646C80 /* MorningChuck.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MorningChuck.storyboard; sourceTree = "<group>"; };
+		86C9DF1325F9141B00E58895 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
+		86C9DF1625F9144800E58895 /* Setting.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Setting.storyboard; sourceTree = "<group>"; };
 		86DEF49D25ED2C770051DB7A /* menuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = menuViewController.swift; sourceTree = "<group>"; };
 		86DEF4A625EE3AA20051DB7A /* menuMemberTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = menuMemberTableViewCell.swift; sourceTree = "<group>"; };
 		86DEF4A725EE3AA20051DB7A /* menuMemberTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = menuMemberTableViewCell.xib; sourceTree = "<group>"; };
@@ -187,6 +191,7 @@
 				86A2AA6025F5E64300646C80 /* MorningChuckViewController.swift */,
 				86DEF49D25ED2C770051DB7A /* menuViewController.swift */,
 				86DEF4C025EF82200051DB7A /* RecordViewController.swift */,
+				86C9DF1325F9141B00E58895 /* SettingViewController.swift */,
 				865490D225E2360F006C8354 /* SingUpViewController.swift */,
 				8654916325E5FCF6006C8354 /* LoginViewController.swift */,
 			);
@@ -201,6 +206,7 @@
 				8654916025E5FB21006C8354 /* Login.storyboard */,
 				86DEF4C325EF82670051DB7A /* Record.storyboard */,
 				86A2AA6325F5E69800646C80 /* MorningChuck.storyboard */,
+				86C9DF1625F9144800E58895 /* Setting.storyboard */,
 			);
 			path = Storyboard;
 			sourceTree = "<group>";
@@ -276,6 +282,7 @@
 				8654916125E5FB21006C8354 /* Login.storyboard in Resources */,
 				86A2AA6425F5E69800646C80 /* MorningChuck.storyboard in Resources */,
 				86DEF4C425EF82670051DB7A /* Record.storyboard in Resources */,
+				86C9DF1725F9144800E58895 /* Setting.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -333,6 +340,7 @@
 				8654916425E5FCF6006C8354 /* LoginViewController.swift in Sources */,
 				86DEF4C125EF82200051DB7A /* RecordViewController.swift in Sources */,
 				86F9250B25DF8A4400A91DEB /* UIColer-Extention.swift in Sources */,
+				86C9DF1425F9141B00E58895 /* SettingViewController.swift in Sources */,
 				86F924D725DF6CC800A91DEB /* HomeViewController.swift in Sources */,
 				865490D325E2360F006C8354 /* SingUpViewController.swift in Sources */,
 				86DEF49E25ED2C770051DB7A /* menuViewController.swift in Sources */,

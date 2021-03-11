@@ -3,7 +3,9 @@
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -62,10 +64,10 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="50" translatesAutoresizingMaskIntoConstraints="NO" id="Vf1-1i-51F">
-                                <rect key="frame" x="37.666666666666657" y="316.33333333333331" width="300" height="199.99999999999994"/>
+                                <rect key="frame" x="37.666666666666657" y="316.33333333333331" width="300" height="150"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="AXQ-Be-Ah6">
-                                        <rect key="frame" x="0.0" y="0.0" width="300" height="75"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="300" height="150"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="今日の朝モク" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="w9G-8B-Qqx">
                                                 <rect key="frame" x="0.0" y="0.0" width="300" height="20.333333333333332"/>
@@ -73,41 +75,32 @@
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="目標を決めよう" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="4IP-ov-rvF">
-                                                <rect key="frame" x="0.0" y="20.333333333333368" width="300" height="54.666666666666657"/>
-                                                <color key="backgroundColor" red="0.84313725490000002" green="0.84313725490000002" blue="0.90196078430000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="HTw-w6-SFa">
+                                                <rect key="frame" x="0.0" y="20.333333333333371" width="300" height="129.66666666666666"/>
+                                                <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                                <color key="textColor" systemColor="labelColor"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
-                                        </subviews>
-                                    </stackView>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="uz8-rJ-XcM">
-                                        <rect key="frame" x="0.0" y="125" width="300" height="75"/>
-                                        <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="時間を設定" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="4PS-5i-fv8">
-                                                <rect key="frame" x="0.0" y="0.0" width="300" height="20.333333333333332"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="時間を設定" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ezT-4s-V5f">
-                                                <rect key="frame" x="0.0" y="20.333333333333368" width="300" height="54.666666666666657"/>
-                                                <color key="backgroundColor" red="0.84313725490000002" green="0.84313725490000002" blue="0.90196078430000004" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                                <textInputTraits key="textInputTraits"/>
-                                            </textField>
+                                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                            </textView>
                                         </subviews>
                                     </stackView>
                                 </subviews>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="200" id="mo5-Hg-8vi"/>
+                                    <constraint firstAttribute="height" constant="150" id="mo5-Hg-8vi"/>
                                     <constraint firstAttribute="width" constant="300" id="vq7-Jc-puG"/>
                                 </constraints>
                             </stackView>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zP0-e8-Zse">
-                                <rect key="frame" x="164" y="576" width="31" height="30"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <state key="normal" title="決定"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zP0-e8-Zse">
+                                <rect key="frame" x="112.66666666666669" y="536.33333333333337" width="150" height="50"/>
+                                <color key="backgroundColor" name="AccentColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="f7Z-17-aox"/>
+                                    <constraint firstAttribute="width" constant="150" id="js9-Vi-wMP"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <state key="normal" title="決定">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                </state>
                                 <connections>
                                     <action selector="decisionButton:" destination="gHg-RF-Dtn" eventType="touchUpInside" id="K8l-49-Dnk"/>
                                 </connections>
@@ -117,11 +110,17 @@
                         <color key="backgroundColor" red="0.60392156860000001" green="0.87843137250000003" blue="0.3803921569" alpha="0.8980392157" colorSpace="calibratedRGB"/>
                         <constraints>
                             <constraint firstItem="cCE-Oa-gp8" firstAttribute="top" secondItem="bs6-Lc-1ek" secondAttribute="top" constant="200" id="H2F-3M-yc5"/>
+                            <constraint firstItem="zP0-e8-Zse" firstAttribute="top" secondItem="Vf1-1i-51F" secondAttribute="bottom" constant="70" id="ITx-3r-n2d"/>
                             <constraint firstItem="Vf1-1i-51F" firstAttribute="centerX" secondItem="tpm-sG-hVF" secondAttribute="centerX" id="IcC-I6-G8y"/>
                             <constraint firstItem="cCE-Oa-gp8" firstAttribute="centerX" secondItem="tpm-sG-hVF" secondAttribute="centerX" id="KBh-Kc-M7e"/>
+                            <constraint firstItem="zP0-e8-Zse" firstAttribute="centerX" secondItem="tpm-sG-hVF" secondAttribute="centerX" id="Lc6-Sp-xvu"/>
                             <constraint firstItem="Vf1-1i-51F" firstAttribute="top" secondItem="cCE-Oa-gp8" secondAttribute="bottom" constant="40" id="jsm-qm-85Y"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="decisionButtonOutlet" destination="zP0-e8-Zse" id="wEy-vr-vYb"/>
+                        <outlet property="targetSettingTextView" destination="HTw-w6-SFa" id="GfU-lI-HAs"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Zop-k2-k4d" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
@@ -152,13 +151,17 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kEl-OG-hTD">
-                                <rect key="frame" x="137.66666666666666" y="612.66666666666663" width="100" height="34"/>
+                                <rect key="frame" x="112.66666666666669" y="662.66666666666663" width="150" height="50"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="100" id="qPc-ad-UMb"/>
+                                    <constraint firstAttribute="height" constant="50" id="kVO-QX-H0Y"/>
+                                    <constraint firstAttribute="width" constant="150" id="qPc-ad-UMb"/>
                                 </constraints>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                <state key="normal" title="保存する"/>
+                                <state key="normal" title="保存する">
+                                    <color key="titleColor" name="AccentColor"/>
+                                    <color key="titleShadowColor" systemColor="labelColor"/>
+                                </state>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="15分前後に起きます" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ljn-Dn-Pym">
                                 <rect key="frame" x="109" y="541.66666666666663" width="157" height="21"/>
@@ -174,7 +177,7 @@
                             <constraint firstItem="ott-Zc-Gu8" firstAttribute="top" secondItem="Pvo-tJ-VwM" secondAttribute="bottom" constant="50" id="Bdx-QZ-VPK"/>
                             <constraint firstItem="ott-Zc-Gu8" firstAttribute="centerX" secondItem="3F1-rD-bOK" secondAttribute="centerX" id="BhN-TD-0IN"/>
                             <constraint firstItem="kEl-OG-hTD" firstAttribute="centerX" secondItem="3F1-rD-bOK" secondAttribute="centerX" id="GAB-nf-wCh"/>
-                            <constraint firstItem="kEl-OG-hTD" firstAttribute="top" secondItem="Ljn-Dn-Pym" secondAttribute="bottom" constant="50" id="IWs-tv-7MY"/>
+                            <constraint firstItem="kEl-OG-hTD" firstAttribute="top" secondItem="Ljn-Dn-Pym" secondAttribute="bottom" constant="100" id="IWs-tv-7MY"/>
                             <constraint firstItem="Pvo-tJ-VwM" firstAttribute="centerX" secondItem="3F1-rD-bOK" secondAttribute="centerX" id="hUh-B3-iDJ"/>
                             <constraint firstItem="Ljn-Dn-Pym" firstAttribute="top" secondItem="ott-Zc-Gu8" secondAttribute="bottom" constant="30" id="wIV-6s-N8V"/>
                             <constraint firstItem="Pvo-tJ-VwM" firstAttribute="top" secondItem="j96-9W-zEj" secondAttribute="top" constant="70" id="xoh-ES-kgK"/>
@@ -187,7 +190,18 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mLA-9y-VuS" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1741.5999999999999" y="63.546798029556655"/>
+            <point key="canvasLocation" x="1630" y="64"/>
         </scene>
     </scenes>
+    <resources>
+        <namedColor name="AccentColor">
+            <color red="0.0" green="0.46000000000000002" blue="0.89000000000000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>

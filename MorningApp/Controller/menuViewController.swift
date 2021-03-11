@@ -47,12 +47,12 @@ class menuViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        menuView.backgroundColor = .rgb(red: 152, green: 187, blue: 219)
+        
         menuImageView.layer.cornerRadius = 25
         menuTabelView.separatorStyle = .none
-        
         menuTabelView.delegate = self
         menuTabelView.dataSource = self
-        
         menuTabelView.register(UINib(nibName: "menuMemberTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
         
     }
@@ -165,7 +165,6 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
    
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return users.count
     }

@@ -42,12 +42,9 @@ class RecordViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         
-        setFirebase()
+        setChartData()
         
     }
-    
-  
-    
     
     
     func setNav() {
@@ -62,7 +59,7 @@ class RecordViewController: UIViewController {
 
     }
     
-    func setFirebase() {
+    func setChartData() {
         if Auth.auth().currentUser !=  nil {
             //userを作ったときの時間を取得
             guard let uid = Auth.auth().currentUser?.uid else { return  }

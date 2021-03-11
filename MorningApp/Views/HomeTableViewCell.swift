@@ -34,11 +34,7 @@ class HomeTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
     }
-    
-    private func checkWhichUserMessage() {
-       
-        
-    }
+ 
     
     func setUserData(_ chatrooms: Chatroom) {
         //画像の表示

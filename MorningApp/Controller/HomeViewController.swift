@@ -155,21 +155,21 @@ class HomeViewController: UIViewController {
     
     private func timeMonitor() {
         let now = Date()
-        print("***now",now)
         
         guard let setTimeDate = load(key: "SETDATE") else { return }
-        print("***setTimeDate",setTimeDate)
             
         let pullModifiedDate = Calendar.current.date(byAdding: .minute, value: -15, to: setTimeDate)!
         let addModifiedDate = Calendar.current.date(byAdding: .minute, value: 15, to: setTimeDate)!
         
-        
-        print("***addModifiedDate,pullModifiedDate",addModifiedDate,pullModifiedDate)
-        
         if pullModifiedDate <= now && now <= addModifiedDate {
             
-            print("範囲内です")
-            if firest ?? true {
+            print("***範囲内です")
+            
+            let dt2 = now.addingTimeInterval(-60 * 60 * 24)
+
+            let todayMark:Bool = Calendar.current.isDateInToday(load(key: "NOWDATE") ?? dt2)
+            
+            if !todayMark {
                 let storybar = UIStoryboard(name: "MorningChuck", bundle: nil)
                 let morningChuckViewController = storybar.instantiateViewController(identifier: "MorningChuckViewController") as! MorningChuckViewController
                 morningChuckViewController.modalPresentationStyle = .fullScreen
@@ -179,7 +179,7 @@ class HomeViewController: UIViewController {
             }
             
         } else {
-            print("範囲外です")
+            print("***範囲外です")
         }
     }
     
@@ -264,6 +264,7 @@ extension HomeViewController: ChatInputAccessoryDelegate {
                 "stamp": false,
                 "date": Timestamp(),
                 "uid": uid,
+                "chatId": chatroomRef.documentID
             ] as [String : Any]
             chatroomRef.setData(chatroomDic)
             print("chatroomの情報が保存されました")
@@ -287,13 +288,13 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = HomeTableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! HomeTableViewCell
             //セルを逆さまにしている
             cell.transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: 0)
-
             cell.setUserData(chat[indexPath.row])
         
         let cell02 = HomeTableView.dequeueReusableCell(withIdentifier: cellId02, for: indexPath) as! MorningTableViewCell
             //セルを逆さまにしている
             cell02.transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: 0)
             cell02.setUserData(chat[indexPath.row])
+        cell02.fireButton.addTarget(self, action: #selector(tappedfireButton), for: .touchUpInside)
         
         
         let chatData = chat[indexPath.row]
@@ -306,7 +307,27 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             default:
                 return cell
         }
-        
     }
-
+    
+    @objc func tappedfireButton(_ sender: UIButton, forEvent event: UIEvent) {
+        print("***タップされた")
+        // タップされたセルのインデックスを求める
+        let touch = event.allTouches?.first
+        let point = touch!.location(in: self.HomeTableView)
+        let indexPath = HomeTableView.indexPathForRow(at: point)
+        // 配列からタップされたインデックスのデータを取り出す
+        let chatData = chat[indexPath!.row]
+       
+        if let myUid = Auth.auth().currentUser?.uid {
+            var updateValue: FieldValue
+            // 更新データを作成する
+            if chatData.isSupport {
+                updateValue = FieldValue.arrayRemove([myUid])
+            } else {
+                updateValue = FieldValue.arrayUnion([myUid])
+            }
+            let chatRoomRef = Firestore.firestore().collection(Const.ChatRooms).document(chatData.chatId ?? myUid)
+            chatRoomRef.updateData(["supports": updateValue])
+        }
+    }
 }
