@@ -26,14 +26,14 @@ class MorningTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         backgroundColor = .rgb(red: 152, green: 187, blue: 219)
-        layer.borderColor = UIColor.rgb(red: 240, green: 255, blue: 255).cgColor
+        layer.borderColor = UIColor.rgb(red: 220, green: 230, blue: 245).cgColor
         layer.borderWidth = 2.0
         layer.cornerRadius = 10
         
         mokuLabel.layer.cornerRadius = 7.5
         mokuLabel.clipsToBounds = true
         targetTextView.layer.cornerRadius = 5
-        targetTextView.backgroundColor = .rgb(red: 240, green: 240, blue: 240)
+        targetTextView.backgroundColor = .rgb(red: 250, green: 250, blue: 250)
         targetTextView.layer.borderColor = UIColor.orange.cgColor
         targetTextView.layer.borderWidth = 1.5
         self.targetTextView.text = ""

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		864738EC25FBA50C00D7CDC6 /* chatroomSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864738EB25FBA50C00D7CDC6 /* chatroomSettingViewController.swift */; };
 		8654906625E0D697006C8354 /* ChatInputAccessoryView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 8654906525E0D697006C8354 /* ChatInputAccessoryView.xib */; };
 		8654906925E0D84D006C8354 /* ChatInputAccessory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8654906825E0D84D006C8354 /* ChatInputAccessory.swift */; };
 		8654906D25E22B6D006C8354 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8654906C25E22B6D006C8354 /* GoogleService-Info.plist */; };
@@ -42,6 +43,7 @@
 
 /* Begin PBXFileReference section */
 		724C37C5510A6D0309D6546F /* Pods_MorningApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MorningApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		864738EB25FBA50C00D7CDC6 /* chatroomSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = chatroomSettingViewController.swift; sourceTree = "<group>"; };
 		8654906525E0D697006C8354 /* ChatInputAccessoryView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ChatInputAccessoryView.xib; sourceTree = "<group>"; };
 		8654906825E0D84D006C8354 /* ChatInputAccessory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatInputAccessory.swift; sourceTree = "<group>"; };
 		8654906C25E22B6D006C8354 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				86C9DF1325F9141B00E58895 /* SettingViewController.swift */,
 				865490D225E2360F006C8354 /* SingUpViewController.swift */,
 				8654916325E5FCF6006C8354 /* LoginViewController.swift */,
+				864738EB25FBA50C00D7CDC6 /* chatroomSettingViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -345,6 +348,7 @@
 				865490D325E2360F006C8354 /* SingUpViewController.swift in Sources */,
 				86DEF49E25ED2C770051DB7A /* menuViewController.swift in Sources */,
 				86F9250625DF845D00A91DEB /* HomeTableViewCell.swift in Sources */,
+				864738EC25FBA50C00D7CDC6 /* chatroomSettingViewController.swift in Sources */,
 				8654906925E0D84D006C8354 /* ChatInputAccessory.swift in Sources */,
 				8654915E25E4138C006C8354 /* Chatroom.swift in Sources */,
 				86F924D325DF6CC800A91DEB /* AppDelegate.swift in Sources */,

@@ -15,6 +15,16 @@
                     <view key="view" contentMode="scaleToFill" id="qkZ-8k-9wH">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="AHw-lX-bfs">
+                                <rect key="frame" x="141" y="336" width="77" height="30"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="ログアウト"/>
+                                <connections>
+                                    <action selector="logOutButton:" destination="9ct-7Q-fMt" eventType="touchUpInside" id="Ih7-0l-7zY"/>
+                                </connections>
+                            </button>
+                        </subviews>
                         <viewLayoutGuide key="safeArea" id="ADE-tB-CJE"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     </view>
@@ -25,6 +35,102 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="p0m-0u-w27" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1430.4347826086957" y="695.75892857142856"/>
+        </scene>
+        <!--Chatroom Setting View Controller-->
+        <scene sceneID="OUw-17-Gud">
+            <objects>
+                <viewController storyboardIdentifier="chatroomSettingViewController" useStoryboardIdentifierAsRestorationIdentifier="YES" id="g9d-IT-Cyh" customClass="chatroomSettingViewController" customModule="MorningApp" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="CWK-DA-bt3">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" spacing="25" translatesAutoresizingMaskIntoConstraints="NO" id="Hdd-je-T2c">
+                                <rect key="frame" x="57" y="220" width="300" height="160"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="MHy-0T-FC3">
+                                        <rect key="frame" x="0.0" y="0.0" width="300" height="67.5"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="グールプ名を登録" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RY2-dY-G37">
+                                                <rect key="frame" x="0.0" y="0.0" width="300" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="グループ名" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ToU-LJ-xJW">
+                                                <rect key="frame" x="0.0" y="20.5" width="300" height="47"/>
+                                                <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
+                                        </subviews>
+                                    </stackView>
+                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="cHR-gI-gKx">
+                                        <rect key="frame" x="0.0" y="92.5" width="300" height="67.5"/>
+                                        <subviews>
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="グループのパスワードを登録" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RDC-Jo-kc7">
+                                                <rect key="frame" x="0.0" y="0.0" width="300" height="20.5"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                <nil key="textColor"/>
+                                                <nil key="highlightedColor"/>
+                                            </label>
+                                            <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="パスワード" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="J7a-Y1-jhm">
+                                                <rect key="frame" x="0.0" y="20.5" width="300" height="47"/>
+                                                <color key="backgroundColor" red="0.93333333330000001" green="0.93333333330000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits"/>
+                                            </textField>
+                                        </subviews>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="160" id="c6q-IB-xG3"/>
+                                    <constraint firstAttribute="width" constant="300" id="j3c-hh-fD3"/>
+                                </constraints>
+                            </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="vKu-PU-HKP">
+                                <rect key="frame" x="117" y="410" width="180" height="40"/>
+                                <color key="backgroundColor" red="0.0004058441558" green="0.50874255950000002" blue="1" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="180" id="dI5-h0-jRH"/>
+                                    <constraint firstAttribute="height" constant="40" id="mHu-jT-2yl"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
+                                <state key="normal" title="登録">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                </state>
+                                <connections>
+                                    <action selector="groupRegisterButton:" destination="g9d-IT-Cyh" eventType="touchUpInside" id="nUf-6o-9rn"/>
+                                </connections>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="グループを作成" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fWz-w7-UeV">
+                                <rect key="frame" x="101" y="124" width="212.5" height="36"/>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="30"/>
+                                <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="4Ir-l8-MI4"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstItem="vKu-PU-HKP" firstAttribute="centerX" secondItem="CWK-DA-bt3" secondAttribute="centerX" id="148-dX-Qxg"/>
+                            <constraint firstItem="vKu-PU-HKP" firstAttribute="top" secondItem="Hdd-je-T2c" secondAttribute="bottom" constant="30" id="3B2-wx-kU8"/>
+                            <constraint firstItem="Hdd-je-T2c" firstAttribute="centerX" secondItem="CWK-DA-bt3" secondAttribute="centerX" id="3M3-pw-IqJ"/>
+                            <constraint firstItem="fWz-w7-UeV" firstAttribute="centerX" secondItem="CWK-DA-bt3" secondAttribute="centerX" id="8uL-E5-b4V"/>
+                            <constraint firstItem="Hdd-je-T2c" firstAttribute="top" secondItem="fWz-w7-UeV" secondAttribute="bottom" constant="60" id="CB6-Ci-rDh"/>
+                            <constraint firstItem="fWz-w7-UeV" firstAttribute="top" secondItem="4Ir-l8-MI4" secondAttribute="top" constant="80" id="gtF-oE-h8i"/>
+                        </constraints>
+                    </view>
+                    <connections>
+                        <outlet property="emailTextField" destination="ToU-LJ-xJW" id="O80-cO-MdS"/>
+                        <outlet property="groupNameTextFeld" destination="ToU-LJ-xJW" id="nbS-PX-Dci"/>
+                        <outlet property="groupPasswordTextField" destination="J7a-Y1-jhm" id="lvh-zl-9ld"/>
+                        <outlet property="loginButton" destination="vKu-PU-HKP" id="iAo-tR-vod"/>
+                        <outlet property="passwordTextFiled" destination="J7a-Y1-jhm" id="AmK-bv-Xbp"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="n6U-NB-8uk" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="2352" y="696"/>
         </scene>
     </scenes>
     <resources>

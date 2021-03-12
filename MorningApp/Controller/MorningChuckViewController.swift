@@ -68,6 +68,7 @@ class MorningRecrdViewController: UIViewController {
     
     private func setMorningRecrdViewController() {
         
+        //今日かどうかを判定するために、保存
         UserDefaults.standard.set(Date(), forKey: "NOWDATE")
         
         let storyboar = UIStoryboard(name: "Home", bundle: nil)
@@ -107,9 +108,10 @@ class MorningRecrdViewController: UIViewController {
 }
 
 
-
+//目標時間の設定画面
 class MorningSettingViewController: UIViewController {
     
+    var settingTime:Date?
    
     @IBOutlet weak var settingButton: UIButton!
     @IBOutlet weak var datePicker: UIDatePicker!
@@ -117,13 +119,10 @@ class MorningSettingViewController: UIViewController {
     @IBAction func changedPicker(_ sender: Any) {
         
         settingTime = datePicker.date
-        
         settingButton.backgroundColor = .white
         settingButton.isEnabled = true
         
     }
-    
-    var settingTime:Date?
     
     override func viewDidLoad() {
         super.viewDidLoad()

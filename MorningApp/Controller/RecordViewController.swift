@@ -17,12 +17,13 @@ class RecordViewController: UIViewController {
     @IBOutlet weak var didLabel: UILabel!
     @IBOutlet weak var successLabel: UILabel!
     @IBOutlet weak var mistakeLabel: UILabel!
+    @IBOutlet weak var targetTimeLabel: UILabel!
     
     var successCount = Double()
     var didCount = Double()
     var parsent: Double {
         get {
-            return successCount / didCount * 100
+            return round(successCount / didCount * 100)
         }
     }
     
@@ -32,30 +33,27 @@ class RecordViewController: UIViewController {
         }
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         setNav()
-       
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        
         setChartData()
-        
     }
     
     
     func setNav() {
+        view.backgroundColor = .rgb(red: 220, green: 230, blue: 245)
         //ナビゲーションバーの設定
-        navigationController?.navigationBar.barTintColor = .rgb(red: 65, green: 105, blue: 255)
+        navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
         self.navigationItem.title = "記 録"
         
         self.navigationController?.navigationBar.titleTextAttributes = [
             // 文字の色
-            .foregroundColor: UIColor.white
+            .foregroundColor: UIColor.rgb(red: 100, green: 150, blue: 255)
         ]
+        self.targetTimeLabel.text = UserDefaults.standard.string(forKey: "SETTIME") ?? "設定する"
 
     }
     
@@ -96,12 +94,12 @@ class RecordViewController: UIViewController {
                     
                     //成功日数のデータ
                     self.successLabel.text = "\(successcount) 日"
-                    //グラフの中心のデータ
-                    self.percentLabel.text = "\(String(self.parsent))%"
                     //失敗日数のデータ
                     self.mistakeLabel.text = "\(String(self.miss)) 日"
                     print("didCount",self.didCount)
                     print("miss",self.miss)
+                    //グラフの中心のデータ
+                    self.percentLabel.text = "\(String(self.parsent))%"
                     
                     self.setChart()
                 }
@@ -140,7 +138,7 @@ class RecordViewController: UIViewController {
         //viewにデータを入れる
         self.pieChartView.data = PieChartData(dataSet: dataSet)
         
-        pieChartView.backgroundColor = .rgb(red: 240, green: 255, blue: 255)
+        pieChartView.backgroundColor = .rgb(red: 220, green: 230, blue: 245)
         
         //アニメーションをつける
         pieChartView.animate(xAxisDuration: 1.5, yAxisDuration: 1.5)

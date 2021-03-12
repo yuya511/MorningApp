@@ -113,7 +113,7 @@
     <resources>
         <image name="影火" width="1134.5" height="1375"/>
         <namedColor name="NoColor">
-            <color red="0.90196078431372551" green="0.90196078431372551" blue="0.90196078431372551" alpha="0.80000001192092896" colorSpace="custom" customColorSpace="sRGB"/>
+            <color red="0.78431372549019607" green="0.78431372549019607" blue="0.78431372549019607" alpha="0.89999997615814209" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
         <systemColor name="labelColor">
             <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>

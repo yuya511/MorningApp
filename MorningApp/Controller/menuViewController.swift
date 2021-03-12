@@ -18,7 +18,15 @@ class menuViewController: UIViewController {
     @IBOutlet weak var menuNameLabel: UILabel!
     @IBOutlet weak var menuEmailLabel: UILabel!
     @IBOutlet weak var menuTabelView: UITableView!
+    @IBOutlet weak var menuTargetLabel: UILabel!
     
+    @IBAction func menuEditButton(_ sender: Any) {
+        let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
+        let morningSettingViewController = storyboar.instantiateViewController(identifier: "MorningSettingViewController") as! MorningSettingViewController
+        let nav = UINavigationController(rootViewController: morningSettingViewController)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true, completion: nil)
+    }
     
     private let cellId = "cellId"
     
@@ -27,35 +35,52 @@ class menuViewController: UIViewController {
     var listener: ListenerRegistration?
 
     
-    @IBAction func LogOutButton(_ sender: Any) {
-        
-        do {
-            try Auth.auth().signOut()
-            let storyboard = UIStoryboard(name: "SingUp", bundle: nil)
-            let singupViewController = storyboard.instantiateViewController(withIdentifier: "SingUpViewController")
-           
-            let nav = UINavigationController(rootViewController: singupViewController)
-            nav.modalPresentationStyle = .fullScreen
-            self.present(nav, animated: true, completion: nil)
-        } catch {
-            print("ログアウトに失敗しました。\(error)")
-        }
-        
-    }
-    
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        menuView.backgroundColor = .rgb(red: 152, green: 187, blue: 219)
-        
+        menuView.backgroundColor = .rgb(red: 240, green: 240, blue: 255)
+        menuView.layer.cornerRadius = 10
         menuImageView.layer.cornerRadius = 25
         menuTabelView.separatorStyle = .none
+        menuTabelView.backgroundColor = .rgb(red: 245, green: 245, blue: 245)
         menuTabelView.delegate = self
         menuTabelView.dataSource = self
         menuTabelView.register(UINib(nibName: "menuMemberTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
+        menuTargetLabel.text = UserDefaults.standard.string(forKey: "SETTIME") ?? "設定する"
+        //右へ
+        let rightSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
+        rightSwipeGesture.direction = .right
+        
+        //左へ
+        let leftSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
+        leftSwipeGesture.direction = .left
+        
+        view.addGestureRecognizer(rightSwipeGesture)
+        view.addGestureRecognizer(leftSwipeGesture)
         
     }
+    
+    @objc func swiped(_ sender: UISwipeGestureRecognizer) {
+        
+        switch sender.direction {
+        case .left:
+            let storyboar = UIStoryboard(name: "Home", bundle: nil)
+            let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+            let nav = UINavigationController(rootViewController: homeViewController)
+            nav.modalPresentationStyle = .overFullScreen
+            nav.modalTransitionStyle = .crossDissolve
+
+            present(nav, animated: true, completion: nil)
+            
+        case .right:
+            
+           print("right Swipe")
+            
+        default:
+            break
+        }
+    }
+    
     
     
     override func viewWillAppear(_ animated: Bool) {
@@ -161,7 +186,17 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
     }
     //セクションの名前
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "member"
+        return "メンバー"
+    }
+    
+    // セクションの背景とテキストの色を変更する
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        // 背景色を変更する
+        view.tintColor = .rgb(red: 245, green: 245, blue: 245)
+
+        let header = view as! UITableViewHeaderFooterView
+        // テキスト色を変更する
+        header.textLabel?.textColor = .darkGray
     }
     
    

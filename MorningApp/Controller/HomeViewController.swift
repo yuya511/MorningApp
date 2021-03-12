@@ -19,7 +19,7 @@ class HomeViewController: UIViewController {
             timeMonitor()
             //比較のためにdate型の状態で保存している
             UserDefaults.standard.set(targetTime, forKey: "SETDATE")
-            //datePickerの時間の値をStringに変換して、UserDefaultsに保存している
+            //datePickerの時間の値をStringに変換して、UserDefaultsに保存している->表示用
             let japanTime:String = formatChang(date: targetTime ?? Date())
             UserDefaults.standard.set(japanTime, forKey: "SETTIME")
         }
@@ -40,9 +40,7 @@ class HomeViewController: UIViewController {
     private var safeAreaBottom: CGFloat {
         self.view.safeAreaInsets.bottom
     }
-    
-  
-    
+   
     @IBOutlet weak var HomeTableView: UITableView!
     
     //インプットアクセサリービューの設置
@@ -59,8 +57,41 @@ class HomeViewController: UIViewController {
         
         setUpHomeTableView()
         setUpNotification()
-      
+     
+        //右へ
+        let rightSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
+        rightSwipeGesture.direction = .right
+        
+        //左へ
+        let leftSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
+        leftSwipeGesture.direction = .left
+        
+        view.addGestureRecognizer(rightSwipeGesture)
+        view.addGestureRecognizer(leftSwipeGesture)
+        
     }
+    
+    @objc func swiped(_ sender: UISwipeGestureRecognizer) {
+
+        switch sender.direction {
+        case .left:
+            print("***swiped left menuViewController")
+            
+        case .right:
+          
+            let tabbarController = self.storyboard?.instantiateViewController(withIdentifier: "TabBarControllerID")  as! UITabBarController
+            tabbarController.selectedIndex = 0
+            tabbarController.modalPresentationStyle = .overFullScreen
+            tabbarController.modalTransitionStyle = .crossDissolve
+            
+            present(tabbarController, animated: true, completion: nil)
+            
+        default:
+            break
+        }
+
+    }
+  
     
     
     override func viewWillAppear(_ animated: Bool) {
@@ -72,7 +103,6 @@ class HomeViewController: UIViewController {
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        print("DEBUG_PRINT: viewWillDisappear")
         listener?.remove()
     }
     
@@ -86,13 +116,13 @@ class HomeViewController: UIViewController {
         //HomeTableViewの設定
         HomeTableView.delegate = self
         HomeTableView.dataSource = self
-        HomeTableView.backgroundColor = .rgb(red: 240, green: 255, blue: 255)
+        HomeTableView.backgroundColor = .rgb(red: 220, green: 230, blue: 245)
         HomeTableView.contentInset = .init(top: 60, left: 0, bottom: 0, right: 0)
         HomeTableView.scrollIndicatorInsets = .init(top: 60, left: 0, bottom: 0, right: 0)
         //下に表示されるように逆さまにしている。
         HomeTableView.transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: 0)
         HomeTableView.keyboardDismissMode = .interactive
-        
+
         //ログインの確認
         if Auth.auth().currentUser?.uid == nil {
             let storyboar = UIStoryboard(name: "SingUp",bundle: nil)
@@ -103,16 +133,15 @@ class HomeViewController: UIViewController {
         }
         
         //ナビゲーションバーの設定
-        navigationController?.navigationBar.barTintColor = .rgb(red: 65, green: 105, blue: 255)
-        self.navigationItem.title = "\(UserDefaults.standard.string(forKey: "SETTIME") ?? "")に起きます！"
+        navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
         
         let myRightItem = UIBarButtonItem(title: "編集", style: .plain, target: self, action: #selector(settingButton))
         self.navigationItem.rightBarButtonItem = myRightItem
-        self.navigationItem.rightBarButtonItem?.tintColor = .white
+        self.navigationItem.rightBarButtonItem?.tintColor = .rgb(red: 100, green: 150, blue: 255)
         
         self.navigationController?.navigationBar.titleTextAttributes = [
             // 文字の色
-            .foregroundColor: UIColor.white
+            .foregroundColor: UIColor.rgb(red: 150, green: 150, blue: 255)
         ]
 
         //カスタムセルの登録
@@ -156,17 +185,23 @@ class HomeViewController: UIViewController {
     private func timeMonitor() {
         let now = Date()
         
+        let nowString = formatChang(date: now)
+        
         guard let setTimeDate = load(key: "SETDATE") else { return }
             
         let pullModifiedDate = Calendar.current.date(byAdding: .minute, value: -15, to: setTimeDate)!
-        let addModifiedDate = Calendar.current.date(byAdding: .minute, value: 15, to: setTimeDate)!
+        let pullModifiedString = formatChang(date: pullModifiedDate)
         
-        if pullModifiedDate <= now && now <= addModifiedDate {
+        let addModifiedDate = Calendar.current.date(byAdding: .minute, value: 15, to: setTimeDate)!
+        let addModifiedString = formatChang(date: addModifiedDate)
+        
+        if pullModifiedString <= nowString && nowString <= addModifiedString {
             
             print("***範囲内です")
             
             let dt2 = now.addingTimeInterval(-60 * 60 * 24)
 
+            //今日かどうかを判定->trueなら今日
             let todayMark:Bool = Calendar.current.isDateInToday(load(key: "NOWDATE") ?? dt2)
             
             if !todayMark {
@@ -177,7 +212,6 @@ class HomeViewController: UIViewController {
             } else {
                 print("***二回目です")
             }
-            
         } else {
             print("***範囲外です")
         }
@@ -310,7 +344,6 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     @objc func tappedfireButton(_ sender: UIButton, forEvent event: UIEvent) {
-        print("***タップされた")
         // タップされたセルのインデックスを求める
         let touch = event.allTouches?.first
         let point = touch!.location(in: self.HomeTableView)
