@@ -57,7 +57,7 @@ class HomeViewController: UIViewController {
         
         setUpHomeTableView()
         setUpNotification()
-     
+        
         //右へ
         let rightSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
         rightSwipeGesture.direction = .right
@@ -96,6 +96,7 @@ class HomeViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        checkLogin()
         setChatrooms()
         timeMonitor()
     }
@@ -123,14 +124,7 @@ class HomeViewController: UIViewController {
         HomeTableView.transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: 0)
         HomeTableView.keyboardDismissMode = .interactive
 
-        //ログインの確認
-        if Auth.auth().currentUser?.uid == nil {
-            let storyboar = UIStoryboard(name: "SingUp",bundle: nil)
-            let singUpViewController = storyboar.instantiateViewController(identifier: "SingUpViewController") as! SingUpViewController
-            let nav = UINavigationController(rootViewController: singUpViewController)
-            nav.modalPresentationStyle = .fullScreen
-            self.present(nav, animated: true, completion: nil)
-        }
+       
         
         //ナビゲーションバーの設定
         navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
@@ -150,33 +144,62 @@ class HomeViewController: UIViewController {
        
     }
     
+    func checkLogin() {
+        //ログインの確認
+        if Auth.auth().currentUser?.uid == nil {
+            let storyboar = UIStoryboard(name: "SingUp",bundle: nil)
+            let singUpViewController = storyboar.instantiateViewController(identifier: "SingUpViewController") as! SingUpViewController
+            let nav = UINavigationController(rootViewController: singUpViewController)
+            nav.modalPresentationStyle = .fullScreen
+            self.present(nav, animated: true, completion: nil)
+        }
+    }
+    
     //編集ボタン
     @objc func settingButton() {
         print("rightButton")
-        let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
-        let morningSettingViewController = storyboar.instantiateViewController(identifier: "MorningSettingViewController") as! MorningSettingViewController
-        let nav = UINavigationController(rootViewController: morningSettingViewController)
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: true, completion: nil)
+//        let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
+//        let morningSettingViewController = storyboar.instantiateViewController(identifier: "MorningSettingViewController") as! MorningSettingViewController
+//        let nav = UINavigationController(rootViewController: morningSettingViewController)
+//        nav.modalPresentationStyle = .fullScreen
+//        present(nav, animated: true, completion: nil)
+        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
+        let chatroomSettingViewController = storyboar.instantiateViewController(identifier: "chatroomSettingViewController") as! chatroomSettingViewController
+//        let nav = UINavigationController(rootViewController: morningSettingViewController)
+        chatroomSettingViewController.modalPresentationStyle = .fullScreen
+        present(chatroomSettingViewController, animated: true, completion: nil)
     }
     
     //chatroomの監視
     func setChatrooms() {
         
         if Auth.auth().currentUser != nil {
-            let chatroomsRef = Firestore.firestore().collection(Const.ChatRooms).order(by: "date", descending: true)
-            
-            listener = chatroomsRef.addSnapshotListener() { ( querysnapshot, err) in
+            let db = Firestore.firestore()
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            let userRef = db.collection(Const.User).document(uid)
+            userRef.getDocument { (documents, err) in
                 if let err = err {
-                    print("DEBUG_PRINT: snapshotの取得に失敗しました。\(err)")
-                    return
+                    print("err",err)
                 }
-                self.chat = querysnapshot!.documents.map { document in
-                    let chatData = Chatroom(document: document)
-                    return chatData
-                }
+                guard let document = documents?.data() else { return }
+                let groupName = document["groupName"] ?? "まだグループに参加していません"
+                print("groupname",groupName)
                 
-                self.HomeTableView.reloadData()
+                let chatroomsRef = db.collection(Const.ChatRooms).document(groupName as! String).collection(Const.Chat).order(by: "date", descending: true)
+                
+                //チャットの内容を監視
+                self.listener = chatroomsRef.addSnapshotListener() { ( querysnapshot, err) in
+                    if let err = err {
+                        print("DEBUG_PRINT: snapshotの取得に失敗しました。\(err)")
+                        return
+                    }
+                    self.chat = querysnapshot!.documents.map { document in
+                        let chatData = Chatroom(document: document)
+                        return chatData
+                    }
+                    
+                    self.HomeTableView.reloadData()
+                }
             }
         }
     }
@@ -288,9 +311,20 @@ extension HomeViewController: ChatInputAccessoryDelegate {
         
         guard let uid = Auth.auth().currentUser?.uid else { return }
         
-            guard let username = Auth.auth().currentUser?.displayName else { return }
+        guard let username = Auth.auth().currentUser?.displayName else { return }
+        
+        
+        let userRef = Firestore.firestore().collection(Const.User).document(uid)
+        userRef.getDocument { (documents, err) in
+            if let err = err {
+                print("err",err)
+            }
+            guard let document = documents?.data() else { return }
+            let groupName = document["groupName"] ?? "まだグループに参加していません"
+            print("groupname",groupName)
             
-            let chatroomRef = Firestore.firestore().collection(Const.ChatRooms).document()
+            
+            let chatroomRef = Firestore.firestore().collection(Const.ChatRooms).document(groupName as! String).collection(Const.Chat).document()
             
             let chatroomDic = [
                 "name": username,
@@ -302,6 +336,7 @@ extension HomeViewController: ChatInputAccessoryDelegate {
             ] as [String : Any]
             chatroomRef.setData(chatroomDic)
             print("chatroomの情報が保存されました")
+    }
     }
 }
 

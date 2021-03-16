@@ -14,18 +14,22 @@ class User {
     
     let email: String?
     let username: String?
+    let groupname: String?
     let createdAt: Data?
     
     
-    init(document: QueryDocumentSnapshot) {
+//    init(document: QueryDocumentSnapshot) {
         
+    init(document: DocumentSnapshot) {
+
         self.uid = document.documentID
         
         let userDic = document.data()
         
-        self.email = userDic["email"] as? String ?? ""
-        self.username = userDic["username"] as? String ?? ""
-        let timestamp = userDic["createdAt"] as? Timestamp
+        self.email = userDic?["email"] as? String ?? ""
+        self.username = userDic?["username"] as? String ?? ""
+        self.groupname = userDic?["groupName"] as? String ?? ""
+        let timestamp = userDic?["createdAt"] as? Timestamp
         self.createdAt = timestamp?.dateValue() as? Data
         
         

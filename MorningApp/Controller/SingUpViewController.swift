@@ -97,15 +97,16 @@ class SingUpViewController: UIViewController {
             
             print(" DEBUG_PRINT: 認証情報の保存に成功しました。")
             
-            
             let docData = [
                 "email": email,
                 "username": username,
                 "createdAt": Timestamp(),
-                "uid": uid
+                "uid": uid,
+                "groupName": ""
             ] as [String : Any]
+            
             //uidをドキュメントに指定
-            Firestore.firestore().collection("users").document(uid).setData(docData) {
+            Firestore.firestore().collection(Const.User).document(uid).setData(docData) {
                 (err) in
                 if let err = err {
                     SVProgressHUD.dismiss()
@@ -134,10 +135,12 @@ class SingUpViewController: UIViewController {
                 print("DEBUG_PRINT: 画像の保存に成功しました。")
             }
             SVProgressHUD.dismiss()
-            self.dismiss(animated: true, completion: nil)
+//            self.dismiss(animated: true, completion: nil)
+            let storyboar = UIStoryboard(name: "Setting", bundle: nil)
+            let chatroomSettingViewController = storyboar.instantiateViewController(identifier: "chatroomSettingViewController") as! chatroomSettingViewController
+            chatroomSettingViewController.modalPresentationStyle = .fullScreen
+            self.present(chatroomSettingViewController, animated: true, completion: nil)
         }
-        
-        
     }
     
     

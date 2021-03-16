@@ -21,6 +21,9 @@ class menuMemberTableViewCell: UITableViewCell {
         self.memberLabel.text = "\(userData.username ?? "")"
     }
 
+    func setGroupData(_ groupData: User) {
+        self.memberLabel.text = "\(groupData.groupname ?? "")"
+    }
     
     
     override func awakeFromNib() {

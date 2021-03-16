@@ -10,5 +10,6 @@ import Foundation
 struct Const {
     static let ImagePath = "images"
     static let ChatRooms = "chatrooms"
+    static let Chat = "chat"
     static let User = "users"
 }

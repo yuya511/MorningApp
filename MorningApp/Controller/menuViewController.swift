@@ -31,9 +31,13 @@ class menuViewController: UIViewController {
     private let cellId = "cellId"
     
     private var users = [User]()
+    private var groups = [Group]()
     
     var listener: ListenerRegistration?
+    
+    var sectionArry = ["グループ","メンバー"]
 
+    var groupName:String?
     
     
     override func viewDidLoad() {
@@ -110,37 +114,56 @@ class menuViewController: UIViewController {
     
     private func fetchUserInfoFromFirestore() {
         
+        //ユーザのメンバーの監視
         if Auth.auth().currentUser != nil{
             
-            let usersRef = Firestore.firestore().collection(Const.User).order(by: "createdAt", descending: true)
+            guard let uid = Auth.auth().currentUser?.uid else { return }
             
-            listener = usersRef.addSnapshotListener() { (querySnapshot, error) in
-                if let error = error {
-                    print("DEBUG_PRINT* \(error)")
-                    return
+            let userRef = Firestore.firestore().collection(Const.User).document(uid)
+            userRef.getDocument { (documents, err) in
+                if let err = err {
+                    print("err",err)
                 }
+                guard let document = documents?.data() else { return }
+                let groupName = document["groupName"] ?? "まだグループに参加していません"
+                print("***groupname",groupName)
                 
+                let chatroomMembarRef = Firestore.firestore().collection(Const.ChatRooms).document(groupName as! String)
                 
-                querySnapshot?.documents.forEach({ ( document ) in
-                    let user = User(document: document)
-                    
-                    if Auth.auth().currentUser?.uid == document.documentID {
+                self.listener = chatroomMembarRef.addSnapshotListener() { (querySnapshot, error) in
+                    if let error = error {
+                        print("DEBUG_PRINT \(error)")
                         return
                     }
                     
-                    self.users.append(user)
-                    self.menuTabelView.reloadData()
-                })
+                    guard let chatroomData = querySnapshot?.data() else { return }
+                    guard let chatroomMembar:[String] = chatroomData["membar"] as? [String] else { return }
+                    
+                    for membar in chatroomMembar {
+                        let membarRef = Firestore.firestore().collection(Const.User).document(membar)
+                        membarRef.addSnapshotListener() { (document,err) in
+                            if let err = err {
+                                print(err)
+                            }
+                            guard let document = document else { return }
+                            let user = User(document: document)
+                            
+                            self.users.append(user)
+                            
+                            self.groupName = user.groupname
+                            
+                            self.menuTabelView.reloadData()
+                        }
+                    }
+                }
             }
             
         
             //ログインしているユーザーの画像と名前を表示する
-            guard let uid = Auth.auth().currentUser?.uid else {return}
             
             let imageRef = Storage.storage().reference().child(Const.ImagePath).child(uid + ".jpg")
             menuImageView.sd_setImage(with: imageRef)
             
-            let userRef = Firestore.firestore().collection("users").document(uid)
             userRef.getDocument { (document, err) in
                 if let err = err {
                     print(err)
@@ -182,11 +205,11 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
    
     //セクションの数
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return sectionArry.count
     }
     //セクションの名前
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "メンバー"
+        return sectionArry[section]
     }
     
     // セクションの背景とテキストの色を変更する
@@ -201,16 +224,26 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
     
    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return users.count
+        if section == 0 {
+            return 1
+        } else if section == 1 {
+            return users.count
+        } else {
+            return 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = menuTabelView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! menuMemberTableViewCell
-        cell.setUserData(users[indexPath.row])
+        
+        if indexPath.section == 0 {
+            cell.memberLabel.text = groupName
+        } else if indexPath.section == 1 {
+            cell.setUserData(users[indexPath.row])
+        }
         return cell
     }
-    
-    
-    
+   
 }
+
 
