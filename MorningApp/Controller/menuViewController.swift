@@ -29,6 +29,7 @@ class menuViewController: UIViewController {
     }
     
     private let cellId = "cellId"
+    private let cellId02 = "cellId02"
     
     private var users = [User]()
     private var groups = [Group]()
@@ -50,6 +51,7 @@ class menuViewController: UIViewController {
         menuTabelView.delegate = self
         menuTabelView.dataSource = self
         menuTabelView.register(UINib(nibName: "menuMemberTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
+        menuTabelView.register(UINib(nibName: "GroupCell", bundle: nil), forCellReuseIdentifier: cellId02)
         menuTargetLabel.text = UserDefaults.standard.string(forKey: "SETTIME") ?? "設定する"
         //右へ
         let rightSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
@@ -125,17 +127,14 @@ class menuViewController: UIViewController {
                     print("err",err)
                 }
                 guard let document = documents?.data() else { return }
-                let groupName = document["groupName"] ?? "まだグループに参加していません"
-                print("***groupname",groupName)
-                
-                let chatroomMembarRef = Firestore.firestore().collection(Const.ChatRooms).document(groupName as! String)
+                let groupId = document["groupName"] ?? "まだグループに参加していません"
+                let chatroomMembarRef = Firestore.firestore().collection(Const.ChatRooms).document(groupId as! String)
                 
                 self.listener = chatroomMembarRef.addSnapshotListener() { (querySnapshot, error) in
                     if let error = error {
                         print("DEBUG_PRINT \(error)")
                         return
                     }
-                    
                     guard let chatroomData = querySnapshot?.data() else { return }
                     guard let chatroomMembar:[String] = chatroomData["membar"] as? [String] else { return }
                     
@@ -158,9 +157,20 @@ class menuViewController: UIViewController {
                 }
             }
             
-        
+            let groupRef = Firestore.firestore().collection(Const.ChatRooms)
+            listener = groupRef.addSnapshotListener() {(querySnapshot,err) in
+                if let err = err {
+                    print("err",err)
+                    return
+                }
+                self.groups = querySnapshot!.documents.map { document in
+                    let groupdata = Group(document: document)
+                    return groupdata
+                }
+
+                
+            }
             //ログインしているユーザーの画像と名前を表示する
-            
             let imageRef = Storage.storage().reference().child(Const.ImagePath).child(uid + ".jpg")
             menuImageView.sd_setImage(with: imageRef)
             
@@ -222,10 +232,16 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
         header.textLabel?.textColor = .darkGray
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        //セルの選択を解除
+        tableView.deselectRow(at: indexPath, animated: true)
+        
+    }
+
    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
-            return 1
+            return groups.count
         } else if section == 1 {
             return users.count
         } else {
@@ -235,13 +251,16 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = menuTabelView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! menuMemberTableViewCell
-        
+        let cell02 = menuTabelView.dequeueReusableCell(withIdentifier: cellId02, for: indexPath) as! GroupCell
         if indexPath.section == 0 {
-            cell.memberLabel.text = groupName
+            cell02.setGroupData(groups[indexPath.row])
+            return cell02
         } else if indexPath.section == 1 {
             cell.setUserData(users[indexPath.row])
+            return cell
+        } else {
+            return cell
         }
-        return cell
     }
    
 }

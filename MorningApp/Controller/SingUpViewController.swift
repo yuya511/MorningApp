@@ -102,7 +102,8 @@ class SingUpViewController: UIViewController {
                 "username": username,
                 "createdAt": Timestamp(),
                 "uid": uid,
-                "groupName": ""
+                "groupName": "",
+                "profileText": ""
             ] as [String : Any]
             
             //uidをドキュメントに指定
@@ -135,7 +136,6 @@ class SingUpViewController: UIViewController {
                 print("DEBUG_PRINT: 画像の保存に成功しました。")
             }
             SVProgressHUD.dismiss()
-//            self.dismiss(animated: true, completion: nil)
             let storyboar = UIStoryboard(name: "Setting", bundle: nil)
             let chatroomSettingViewController = storyboar.instantiateViewController(identifier: "chatroomSettingViewController") as! chatroomSettingViewController
             chatroomSettingViewController.modalPresentationStyle = .fullScreen
@@ -168,7 +168,7 @@ extension SingUpViewController:UITextFieldDelegate {
   
 }
 
-extension SingUpViewController:UIImagePickerControllerDelegate,UINavigationControllerDelegate {
+extension SingUpViewController: UIImagePickerControllerDelegate,UINavigationControllerDelegate {
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let editImage = info[.editedImage] as? UIImage {

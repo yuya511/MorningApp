@@ -8,6 +8,7 @@
 import Foundation
 
 struct Const {
+    static let GroupImage = "GroupImage"
     static let ImagePath = "images"
     static let ChatRooms = "chatrooms"
     static let Chat = "chat"

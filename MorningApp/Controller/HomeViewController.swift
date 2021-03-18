@@ -76,23 +76,16 @@ class HomeViewController: UIViewController {
         switch sender.direction {
         case .left:
             print("***swiped left menuViewController")
-            
         case .right:
-          
             let tabbarController = self.storyboard?.instantiateViewController(withIdentifier: "TabBarControllerID")  as! UITabBarController
             tabbarController.selectedIndex = 0
             tabbarController.modalPresentationStyle = .overFullScreen
             tabbarController.modalTransitionStyle = .crossDissolve
-            
             present(tabbarController, animated: true, completion: nil)
-            
         default:
             break
         }
-
     }
-  
-    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -123,16 +116,12 @@ class HomeViewController: UIViewController {
         //下に表示されるように逆さまにしている。
         HomeTableView.transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: 0)
         HomeTableView.keyboardDismissMode = .interactive
-
-       
-        
-        //ナビゲーションバーの設定
+       //ナビゲーションバーの設定
         navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
         
         let myRightItem = UIBarButtonItem(title: "編集", style: .plain, target: self, action: #selector(settingButton))
         self.navigationItem.rightBarButtonItem = myRightItem
         self.navigationItem.rightBarButtonItem?.tintColor = .rgb(red: 100, green: 150, blue: 255)
-        
         self.navigationController?.navigationBar.titleTextAttributes = [
             // 文字の色
             .foregroundColor: UIColor.rgb(red: 150, green: 150, blue: 255)
@@ -141,7 +130,6 @@ class HomeViewController: UIViewController {
         //カスタムセルの登録
         HomeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
         HomeTableView.register(UINib(nibName: "MorningTableViewCell", bundle: nil), forCellReuseIdentifier: cellId02)
-       
     }
     
     func checkLogin() {
@@ -188,7 +176,7 @@ class HomeViewController: UIViewController {
                 let chatroomsRef = db.collection(Const.ChatRooms).document(groupName as! String).collection(Const.Chat).order(by: "date", descending: true)
                 
                 //チャットの内容を監視
-                self.listener = chatroomsRef.addSnapshotListener() { ( querysnapshot, err) in
+                self.listener = chatroomsRef.addSnapshotListener() {(querysnapshot, err) in
                     if let err = err {
                         print("DEBUG_PRINT: snapshotの取得に失敗しました。\(err)")
                         return

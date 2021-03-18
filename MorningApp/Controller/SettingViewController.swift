@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import FirebaseUI
 
 class SettingViewController: UIViewController {
 
@@ -24,12 +25,29 @@ class SettingViewController: UIViewController {
         }
     }
     
+    @IBAction func pofileChangeButton(_ sender: Any) {
+        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
+        let profileSettingViewController = storyboar.instantiateViewController(identifier: "ProfileSettingViewController") as! ProfileSettingViewController
+        let nav = UINavigationController(rootViewController: profileSettingViewController)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true, completion: nil)
+    }
+    
+    @IBAction func groupChangeButton(_ sender: Any) {
+        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
+        let groupProfileSettingViewController = storyboar.instantiateViewController(identifier: "groupProfileSettingViewController") as! groupProfileSettingViewController
+        let nav = UINavigationController(rootViewController: groupProfileSettingViewController)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true, completion: nil)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
     }
-    
-   
-   
-
 }
+
+
+
+
+
