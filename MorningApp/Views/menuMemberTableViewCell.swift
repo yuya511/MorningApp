@@ -21,8 +21,8 @@ class menuMemberTableViewCell: UITableViewCell {
         self.memberLabel.text = "\(userData.username ?? "")"
     }
 
-    func setGroupData(_ groupData: User) {
-        self.memberLabel.text = "\(groupData.groupname ?? "")"
+    func setGroupData(_ groupData: Group) {
+        self.memberLabel.text = "\(groupData.groupName ?? "")"
     }
     
     
@@ -30,7 +30,7 @@ class menuMemberTableViewCell: UITableViewCell {
         super.awakeFromNib()
         
         backgroundColor = .clear
-        memberImageView.layer.cornerRadius = 15
+        memberImageView.layer.cornerRadius = 22.5
 
         
     }

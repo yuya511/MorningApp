@@ -30,6 +30,10 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate & UI
         setFirebase()
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
     private func setLayout() {
         groupImageButton.layer.cornerRadius = 80
         groupImageButton.layer.borderColor = UIColor.rgb(red: 200, green: 200, blue: 200).cgColor
@@ -199,6 +203,9 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
         setFirebase()
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
     
     private func setLayout() {
         groupImageButton.layer.cornerRadius = 80
@@ -244,7 +251,7 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
             }
             guard let document = doucuments else { return }
             let userData = User(document: document)
-            guard let groupName = userData.groupname else { return }
+            guard let groupName = userData.groupId else { return }
             self.groupName = groupName
 
             let groupRef = db.collection(Const.ChatRooms).document(groupName)

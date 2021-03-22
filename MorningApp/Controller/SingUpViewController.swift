@@ -18,8 +18,6 @@ class SingUpViewController: UIViewController {
     @IBOutlet weak var RegisterButton: UIButton!
     @IBOutlet weak var alreadyHaveAccountButton: UIButton!
     
-   
-    
     override func viewDidLoad() {
         super.viewDidLoad()
        setUpViews()
@@ -80,7 +78,6 @@ class SingUpViewController: UIViewController {
                 SVProgressHUD.dismiss()
                 print("認証情報の保存に失敗しました。\(err)")
             }
-            
             guard let uid = res?.user.uid else { return }
             guard let username = self.usernameTextFiled.text else { return }
             
@@ -102,7 +99,7 @@ class SingUpViewController: UIViewController {
                 "username": username,
                 "createdAt": Timestamp(),
                 "uid": uid,
-                "groupName": "",
+                "groupId": "",
                 "profileText": ""
             ] as [String : Any]
             
@@ -115,9 +112,7 @@ class SingUpViewController: UIViewController {
                     return
                 }
             }
-            
             print("DEBUG_PRINT: Firestoreへの情報の保存に成功しました。")
-            
             let image = self.profileImageButton.imageView?.image ?? UIImage(named: "男シルエットイラスト")
             //画像をjpgに変更
             guard let uploadImage = image?.jpegData(compressionQuality: 0.3) else { return }
@@ -132,7 +127,6 @@ class SingUpViewController: UIViewController {
                     print("画像のアップロードに失敗しました。\(err)")
                     return
                 }
-                
                 print("DEBUG_PRINT: 画像の保存に成功しました。")
             }
             SVProgressHUD.dismiss()
@@ -142,7 +136,6 @@ class SingUpViewController: UIViewController {
             self.present(chatroomSettingViewController, animated: true, completion: nil)
         }
     }
-    
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)

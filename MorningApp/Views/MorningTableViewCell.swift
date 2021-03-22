@@ -63,12 +63,9 @@ class MorningTableViewCell: UITableViewCell {
             let dateString = formatter.string(from: date)
             self.morningDateLabel.text = dateString
         }
-        
         //目標の部分のデータ
         self.targetTextView.text = chatrooms.text
-        
         self.fireCountLabel.text = String(chatrooms.supports.count)
-        
         if chatrooms.isSupport {
             fireButton.setImage(UIImage(named: "火"), for: .normal)
         } else {

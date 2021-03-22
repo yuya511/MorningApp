@@ -19,8 +19,11 @@ class GroupCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
-        groupImageView.layer.cornerRadius = 15
+        groupImageView.layer.cornerRadius = 10
+        layer.borderColor = UIColor.rgb(red: 245, green: 245, blue: 245).cgColor
+        layer.borderWidth = 3.0
+        layer.cornerRadius = 10
+        descriptionLabel.isHidden = true
     }
     
     
@@ -31,7 +34,13 @@ class GroupCell: UITableViewCell {
         
         groupNameLabel.text = groupData.groupName
         membarCountLabel.text = "(\(groupData.membar.count))"
-        descriptionLabel.text = groupData.groupProfileText
+        if groupData.groupProfileText != "" {
+            descriptionLabel.isHidden = false
+            descriptionLabel.text = groupData.groupProfileText
+        }
+        if groupData.password == "" {
+            LockButton.isHidden = true
+        }
     }
 
    

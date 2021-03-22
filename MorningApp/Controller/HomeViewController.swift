@@ -33,7 +33,6 @@ class HomeViewController: UIViewController {
     //監視するやつ
     private var listener: ListenerRegistration?
     
-        
     private let chatInputAccessoryHeight: CGFloat = 100
     private let tableViewContentInset: UIEdgeInsets = .init(top: 60, left: 0, bottom: 0, right: 0)
     private let tableViewIndicateorInset: UIEdgeInsets = .init(top: 60, left: 0, bottom: 0, right: 0)
@@ -118,7 +117,6 @@ class HomeViewController: UIViewController {
         HomeTableView.keyboardDismissMode = .interactive
        //ナビゲーションバーの設定
         navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
-        
         let myRightItem = UIBarButtonItem(title: "編集", style: .plain, target: self, action: #selector(settingButton))
         self.navigationItem.rightBarButtonItem = myRightItem
         self.navigationItem.rightBarButtonItem?.tintColor = .rgb(red: 100, green: 150, blue: 255)
@@ -170,10 +168,10 @@ class HomeViewController: UIViewController {
                     print("err",err)
                 }
                 guard let document = documents?.data() else { return }
-                let groupName = document["groupName"] ?? "まだグループに参加していません"
-                print("groupname",groupName)
+                let groupId = document["groupId"] ?? "まだグループに参加していません"
+                print("groupId",groupId)
                 
-                let chatroomsRef = db.collection(Const.ChatRooms).document(groupName as! String).collection(Const.Chat).order(by: "date", descending: true)
+                let chatroomsRef = db.collection(Const.ChatRooms).document(groupId as! String).collection(Const.Chat).order(by: "date", descending: true)
                 
                 //チャットの内容を監視
                 self.listener = chatroomsRef.addSnapshotListener() {(querysnapshot, err) in
@@ -308,11 +306,10 @@ extension HomeViewController: ChatInputAccessoryDelegate {
                 print("err",err)
             }
             guard let document = documents?.data() else { return }
-            let groupName = document["groupName"] ?? "まだグループに参加していません"
-            print("groupname",groupName)
+            let groupId = document["groupId"] ?? "まだグループに参加していません"
+            print("groupname",groupId)
             
-            
-            let chatroomRef = Firestore.firestore().collection(Const.ChatRooms).document(groupName as! String).collection(Const.Chat).document()
+            let chatroomRef = Firestore.firestore().collection(Const.ChatRooms).document(groupId as! String).collection(Const.Chat).document()
             
             let chatroomDic = [
                 "name": username,
@@ -351,7 +348,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             //セルを逆さまにしている
             cell02.transform = CGAffineTransform(a: 1, b: 0, c: 0, d: -1, tx: 0, ty: 0)
             cell02.setUserData(chat[indexPath.row])
-        cell02.fireButton.addTarget(self, action: #selector(tappedfireButton), for: .touchUpInside)
+            cell02.fireButton.addTarget(self, action: #selector(tappedfireButton), for: .touchUpInside)
         
         
         let chatData = chat[indexPath.row]

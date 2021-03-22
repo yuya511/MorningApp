@@ -33,12 +33,11 @@ class menuViewController: UIViewController {
     
     private var users = [User]()
     private var groups = [Group]()
+    private var membarUidList = [String]()
+    private var groupIdList = [String]()
     
     var listener: ListenerRegistration?
-    
     var sectionArry = ["グループ","メンバー"]
-
-    var groupName:String?
     
     
     override func viewDidLoad() {
@@ -56,7 +55,6 @@ class menuViewController: UIViewController {
         //右へ
         let rightSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
         rightSwipeGesture.direction = .right
-        
         //左へ
         let leftSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
         leftSwipeGesture.direction = .left
@@ -67,7 +65,6 @@ class menuViewController: UIViewController {
     }
     
     @objc func swiped(_ sender: UISwipeGestureRecognizer) {
-        
         switch sender.direction {
         case .left:
             let storyboar = UIStoryboard(name: "Home", bundle: nil)
@@ -75,20 +72,14 @@ class menuViewController: UIViewController {
             let nav = UINavigationController(rootViewController: homeViewController)
             nav.modalPresentationStyle = .overFullScreen
             nav.modalTransitionStyle = .crossDissolve
-
             present(nav, animated: true, completion: nil)
-            
         case .right:
-            
            print("right Swipe")
-            
         default:
             break
         }
     }
-    
-    
-    
+   
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // メニューの位置を取得する
@@ -113,21 +104,18 @@ class menuViewController: UIViewController {
         listener?.remove()
     }
     
-    
     private func fetchUserInfoFromFirestore() {
         
         //ユーザのメンバーの監視
         if Auth.auth().currentUser != nil{
-            
             guard let uid = Auth.auth().currentUser?.uid else { return }
-            
             let userRef = Firestore.firestore().collection(Const.User).document(uid)
             userRef.getDocument { (documents, err) in
                 if let err = err {
                     print("err",err)
                 }
                 guard let document = documents?.data() else { return }
-                let groupId = document["groupName"] ?? "まだグループに参加していません"
+                let groupId = document["groupId"] ?? "err"
                 let chatroomMembarRef = Firestore.firestore().collection(Const.ChatRooms).document(groupId as! String)
                 
                 self.listener = chatroomMembarRef.addSnapshotListener() { (querySnapshot, error) in
@@ -136,39 +124,34 @@ class menuViewController: UIViewController {
                         return
                     }
                     guard let chatroomData = querySnapshot?.data() else { return }
+                    self.membarUidList = chatroomData["membar"] as? [String] ?? ["err"]
                     guard let chatroomMembar:[String] = chatroomData["membar"] as? [String] else { return }
-                    
                     for membar in chatroomMembar {
                         let membarRef = Firestore.firestore().collection(Const.User).document(membar)
-                        membarRef.addSnapshotListener() { (document,err) in
+                        membarRef.addSnapshotListener() {(document,err) in
                             if let err = err {
                                 print(err)
                             }
                             guard let document = document else { return }
                             let user = User(document: document)
-                            
                             self.users.append(user)
-                            
-                            self.groupName = user.groupname
-                            
                             self.menuTabelView.reloadData()
                         }
                     }
                 }
             }
-            
             let groupRef = Firestore.firestore().collection(Const.ChatRooms)
             listener = groupRef.addSnapshotListener() {(querySnapshot,err) in
                 if let err = err {
                     print("err",err)
                     return
                 }
+                
                 self.groups = querySnapshot!.documents.map { document in
                     let groupdata = Group(document: document)
+                    self.groupIdList.append(groupdata.groupId ?? "err")
                     return groupdata
                 }
-
-                
             }
             //ログインしているユーザーの画像と名前を表示する
             let imageRef = Storage.storage().reference().child(Const.ImagePath).child(uid + ".jpg")
@@ -210,9 +193,7 @@ class menuViewController: UIViewController {
 }
 
 
-
 extension menuViewController: UITableViewDelegate, UITableViewDataSource {
-   
     //セクションの数
     func numberOfSections(in tableView: UITableView) -> Int {
         return sectionArry.count
@@ -226,16 +207,35 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         // 背景色を変更する
         view.tintColor = .rgb(red: 245, green: 245, blue: 245)
-
         let header = view as! UITableViewHeaderFooterView
         // テキスト色を変更する
         header.textLabel?.textColor = .darkGray
     }
     
+    
+    //選択したセルが呼ばれる
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         //セルの選択を解除
         tableView.deselectRow(at: indexPath, animated: true)
-        
+        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
+        if indexPath.section == 0 {
+            let groupProfileSettingViewController = storyboar.instantiateViewController(identifier: "groupProfileSettingViewController") as! groupProfileSettingViewController
+            groupProfileSettingViewController.id = groupIdList[indexPath.row]
+            let nav = UINavigationController(rootViewController: groupProfileSettingViewController)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: true, completion: nil)
+        } else if indexPath.section == 1 {
+            let profileSettingViewController = storyboar.instantiateViewController(identifier: "ProfileSettingViewController") as! ProfileSettingViewController
+            profileSettingViewController.id = membarUidList[indexPath.row]
+            let nav = UINavigationController(rootViewController: profileSettingViewController)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: true, completion: nil)
+        } else {
+            let profileSettingViewController = storyboar.instantiateViewController(identifier: "ProfileSettingViewController") as! ProfileSettingViewController
+            let nav = UINavigationController(rootViewController: profileSettingViewController)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: true, completion: nil)
+        }
     }
 
    
@@ -250,19 +250,18 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = menuTabelView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! menuMemberTableViewCell
-        let cell02 = menuTabelView.dequeueReusableCell(withIdentifier: cellId02, for: indexPath) as! GroupCell
+        let cellGroup = menuTabelView.dequeueReusableCell(withIdentifier: cellId02, for: indexPath) as! GroupCell
+        let cellMembar = menuTabelView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! menuMemberTableViewCell
         if indexPath.section == 0 {
-            cell02.setGroupData(groups[indexPath.row])
-            return cell02
+            cellGroup.setGroupData(groups[indexPath.row])
+            return cellGroup
         } else if indexPath.section == 1 {
-            cell.setUserData(users[indexPath.row])
-            return cell
+            cellMembar.setUserData(users[indexPath.row])
+            return cellMembar
         } else {
-            return cell
+            return cellMembar
         }
     }
-   
 }
 
 

@@ -14,7 +14,7 @@ class User {
     
     let email: String?
     let username: String?
-    let groupname: String?
+    let groupId: String?
     let profileText: String?
     let createdAt: Data?
     
@@ -29,7 +29,7 @@ class User {
         
         self.email = userDic?["email"] as? String ?? ""
         self.username = userDic?["username"] as? String ?? ""
-        self.groupname = userDic?["groupName"] as? String ?? ""
+        self.groupId = userDic?["groupId"] as? String ?? ""
         self.profileText = userDic?["profileText"] as? String ?? ""
         let timestamp = userDic?["createdAt"] as? Timestamp
         self.createdAt = timestamp?.dateValue() as? Data

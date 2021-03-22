@@ -10,12 +10,14 @@ import Firebase
 
 class ProfileSettingViewController: UIViewController {
     
+    @IBOutlet weak var editButton: UIBarButtonItem!
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var profileTextView: UITextView!
     @IBOutlet weak var saveButton: UIBarButtonItem!
     
     var listener: ListenerRegistration?
+    var id:String?
     
     @IBAction func hiddenButton(_ sender: Any) {
         let storyboar = UIStoryboard(name: "Home", bundle: nil)
@@ -37,9 +39,9 @@ class ProfileSettingViewController: UIViewController {
         view.backgroundColor = .rgb(red: 245, green: 245, blue: 245)
         navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
         profileTextView.isEditable = false
+        editButton.accessibilityElementsHidden = true
+        editButton.isEnabled = false
         
-        
-//        setUserfirebase()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -54,9 +56,12 @@ class ProfileSettingViewController: UIViewController {
     
     private func setUserfirebase() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
+        if id == uid {
+            editButton.accessibilityElementsHidden = false
+            editButton.isEnabled = true
+        }
         let db = Firestore.firestore()
-        let userRef = db.collection(Const.User).document(uid)
-
+        let userRef = db.collection(Const.User).document(self.id ?? uid)
         listener = userRef.addSnapshotListener() { (doucuments,err) in
             if let err = err {
                 print(err)
@@ -65,17 +70,20 @@ class ProfileSettingViewController: UIViewController {
             guard let document = doucuments else { return }
             let userData = User(document: document)
             
-            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(uid + ".jpg")
-            self.profileImageView.sd_setImage(with: imageRef)
-            
+            if let id = self.id {
+                let imageRef = Storage.storage().reference().child(Const.ImagePath).child(id + ".jpg")
+                self.profileImageView.sd_setImage(with: imageRef)
+            } else {
+                let imageRef = Storage.storage().reference().child(Const.ImagePath).child(uid + ".jpg")
+                self.profileImageView.sd_setImage(with: imageRef)
+            }
             self.userNameLabel.text = userData.username
-            
             if userData.profileText != "" {
                 self.profileTextView.text = userData.profileText
             }
+            
         }
     }
-    
 }
 
 
@@ -83,6 +91,7 @@ class ProfileSettingViewController: UIViewController {
 
 class groupProfileSettingViewController: UIViewController {
     
+    @IBOutlet weak var editButton: UIBarButtonItem!
     @IBOutlet weak var groupImageView: UIImageView!
     @IBOutlet weak var groupNameLabel: UILabel!
     @IBOutlet weak var groupTextView: UITextView!
@@ -96,6 +105,7 @@ class groupProfileSettingViewController: UIViewController {
         present(tabbarController, animated: true, completion: nil)
     }
     
+    var id:String?
     var groupNameData = [String]()
     
     override func viewDidLoad() {
@@ -109,6 +119,8 @@ class groupProfileSettingViewController: UIViewController {
         view.backgroundColor = .rgb(red: 245, green: 245, blue: 245)
         navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
         groupTextView.isEditable = false
+        editButton.isEnabled = false
+        editButton.accessibilityElementsHidden = true
         
         setGroupfirebase()
     }
@@ -118,30 +130,18 @@ class groupProfileSettingViewController: UIViewController {
         if Auth.auth().currentUser != nil {
             guard let uid = Auth.auth().currentUser?.uid else { return }
             let db = Firestore.firestore()
-            
-            let userRef = db.collection(Const.User).document(uid)
-            userRef.getDocument { (doucuments,err) in
-                if let err = err {
-                    print(err)
-                    return
-                }
-                guard let document = doucuments else { return }
-                let userData = User(document: document)
-                guard let groupName = userData.groupname else { return }
-                let imageRef = Storage.storage().reference().child(Const.GroupImage).child(groupName + ".jpg")
-                self.groupImageView.sd_setImage(with: imageRef)
-                
-                let groupRef = db.collection(Const.ChatRooms).document(groupName)
-                groupRef.getDocument { (documents, err) in
-                    guard let document = documents else { return }
-                    guard let groupName = document["groupName"] else { return }
-                    self.groupNameLabel.text = groupName as? String
-                    let membarCount:[String] = document["membar"] as! [String]
-                    self.membarCountLabel.text = String(membarCount.count)
-                    let groupProfileText:String = document["groupProfileText"] as! String
-                    if groupProfileText != "" {
-                        self.groupTextView.text = groupProfileText
-                    }
+            let imageRef = Storage.storage().reference().child(Const.GroupImage).child(id! + ".jpg")
+            self.groupImageView.sd_setImage(with: imageRef)
+            let groupRef = db.collection(Const.ChatRooms).document(id ?? "err")
+            groupRef.getDocument { (documents, err) in
+                guard let groupData = documents else { return }
+                guard let groupName = groupData["groupName"] else { return }
+                self.groupNameLabel.text = groupName as? String
+                let membarCount:[String] = groupData["membar"] as! [String]
+                self.membarCountLabel.text = String(membarCount.count)
+                let groupProfileText:String = groupData["groupProfileText"] as! String
+                if groupProfileText != "" {
+                    self.groupTextView.text = groupProfileText
                 }
             }
         }

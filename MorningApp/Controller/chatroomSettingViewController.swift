@@ -75,7 +75,7 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
             //ユーザーの情報にグループの名前が入る
             let userRef = Firestore.firestore().collection(Const.User).document(uid)
             userRef.updateData([
-                "groupName": chatroomRef.documentID
+                "groupId": chatroomRef.documentID
             ])
         
         let image = self.groupImageButton.imageView?.image ?? UIImage(named: "男シルエットイラスト")
@@ -153,9 +153,9 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
         //ユーザーの情報にグループの名前が入る
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let db = Firestore.firestore()
-        guard let didLabel = didSelectRowLabel.text else { return }
+        guard pickGroupId != nil else { return }
         let userRef = db.collection(Const.User).document(uid)
-        let groupRef = db.collection(Const.ChatRooms).document(didLabel)
+        let groupRef = db.collection(Const.ChatRooms).document(pickGroupId ?? "")
         
         groupRef.getDocument() {(document,err) in
             if let err = err {
@@ -167,7 +167,7 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
             
             if password as? String == self.groupPasswordTextField.text {
                 userRef.updateData([
-                    "groupName": didLabel
+                    "groupId": self.pickGroupId!
                 ])
                 groupRef.updateData([
                     "membar": FieldValue.arrayUnion([uid])
@@ -182,19 +182,14 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
                 print("*** passwordが違う")
             }
         }
-    
     }
     
     var Chatgroup = [Group]()
     var listener:ListenerRegistration?
-    //検索結果配列
-    var groupNameList = [String]() {
-        didSet {
-            searchResultList = groupNameList
-        }
-    }
+    var groupNameList = [String]()
     var searchResultList = [String]()
-    var groupId = [String]()
+    var groupIdList = [String]()
+    var pickGroupId:String?
 
     
     override func viewDidLoad() {
@@ -239,12 +234,12 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
                 
                 guard let groupData = querySnapshot?.documents else { return }
                 for data in groupData {
+                    self.groupIdList.append(data.documentID)
                     let data = data.data()
-                    self.groupId.append(data["groupId"] as! String)
-                    self.groupNameList.append(data["groupName"] as! String)
+                    if let groupName:String = data["groupName"] as? String {
+                        self.groupNameList.append(groupName)
+                    }
                 }
-      
-                
                 self.groupTableView.reloadData()
                 print("***Chatgroup",self.Chatgroup)
             }
@@ -271,6 +266,7 @@ extension chatroomEnterViewController:UITableViewDelegate,UITableViewDataSource 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         didSelectRowLabel.text = groupNameList[indexPath.row]
+        pickGroupId = groupIdList[indexPath.row]
         
         groupPasswordTextField.isEnabled = true
         enterButtonOutlet.isEnabled = true

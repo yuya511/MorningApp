@@ -25,6 +25,7 @@
 		865491D525E75E9A006C8354 /* MorningTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 865491D325E75E9A006C8354 /* MorningTableViewCell.xib */; };
 		86A2AA6125F5E64300646C80 /* MorningChuckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86A2AA6025F5E64300646C80 /* MorningChuckViewController.swift */; };
 		86A2AA6425F5E69800646C80 /* MorningChuck.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86A2AA6325F5E69800646C80 /* MorningChuck.storyboard */; };
+		86C9ABB72604850500AEA48C /* おはようアラーム.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 86C9ABB62604850500AEA48C /* おはようアラーム.mp3 */; };
 		86C9DF1425F9141B00E58895 /* SettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C9DF1325F9141B00E58895 /* SettingViewController.swift */; };
 		86C9DF1725F9144800E58895 /* Setting.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 86C9DF1625F9144800E58895 /* Setting.storyboard */; };
 		86DEF49E25ED2C770051DB7A /* menuViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DEF49D25ED2C770051DB7A /* menuViewController.swift */; };
@@ -66,6 +67,7 @@
 		865491D325E75E9A006C8354 /* MorningTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MorningTableViewCell.xib; sourceTree = "<group>"; };
 		86A2AA6025F5E64300646C80 /* MorningChuckViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MorningChuckViewController.swift; sourceTree = "<group>"; };
 		86A2AA6325F5E69800646C80 /* MorningChuck.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MorningChuck.storyboard; sourceTree = "<group>"; };
+		86C9ABB62604850500AEA48C /* おはようアラーム.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "おはようアラーム.mp3"; sourceTree = "<group>"; };
 		86C9DF1325F9141B00E58895 /* SettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingViewController.swift; sourceTree = "<group>"; };
 		86C9DF1625F9144800E58895 /* Setting.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Setting.storyboard; sourceTree = "<group>"; };
 		86DEF49D25ED2C770051DB7A /* menuViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = menuViewController.swift; sourceTree = "<group>"; };
@@ -189,6 +191,7 @@
 				86F924FE25DF7C0A00A91DEB /* Controller */,
 				8654906325E0D5EF006C8354 /* Views */,
 				8654906425E0D60D006C8354 /* Extention */,
+				86C9ABB62604850500AEA48C /* おはようアラーム.mp3 */,
 				86F924D425DF6CC800A91DEB /* SceneDelegate.swift */,
 				86F924D225DF6CC800A91DEB /* AppDelegate.swift */,
 				86F924DB25DF6CC900A91DEB /* Assets.xcassets */,
@@ -300,6 +303,7 @@
 				8654906625E0D697006C8354 /* ChatInputAccessoryView.xib in Resources */,
 				8654916125E5FB21006C8354 /* Login.storyboard in Resources */,
 				86A2AA6425F5E69800646C80 /* MorningChuck.storyboard in Resources */,
+				86C9ABB72604850500AEA48C /* おはようアラーム.mp3 in Resources */,
 				86DEF4C425EF82670051DB7A /* Record.storyboard in Resources */,
 				86C9DF1725F9144800E58895 /* Setting.storyboard in Resources */,
 			);
