@@ -102,7 +102,7 @@ extension SettingViewController: UITableViewDelegate,UITableViewDataSource {
         if indexPath.section == 0 {
            userChange(id: uid)
         } else if indexPath.section == 1 {
-            
+            logOut()
         } else {
             
         }

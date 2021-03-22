@@ -128,7 +128,7 @@ class groupProfileSettingViewController: UIViewController {
     
     private func setGroupfirebase() {
         if Auth.auth().currentUser != nil {
-            guard let uid = Auth.auth().currentUser?.uid else { return }
+//            let uid = Auth.auth().currentUser?.uid
             let db = Firestore.firestore()
             let imageRef = Storage.storage().reference().child(Const.GroupImage).child(id! + ".jpg")
             self.groupImageView.sd_setImage(with: imageRef)

@@ -60,23 +60,26 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
         guard let groupPasswordText = groupPasswordTextField.text else { return }
         let chatroomRef = db.collection(Const.ChatRooms).document()
         
-            let chatroomDic = [
-                "groupId": chatroomRef.documentID,
-                "password": groupPasswordText,
-                "passwordCheck": groupPasswordIsEmpty,
-                "date": Timestamp(),
-                "membar": [uid],
-                "groupName": groupText,
-                "groupProfileText": ""
-            ] as [String : Any]
-            chatroomRef.setData(chatroomDic)
-            print("***chatroomの情報が保存されました")
-            
-            //ユーザーの情報にグループの名前が入る
-            let userRef = Firestore.firestore().collection(Const.User).document(uid)
-            userRef.updateData([
-                "groupId": chatroomRef.documentID
-            ])
+        let chatroomDic = [
+            "groupId": chatroomRef.documentID,
+            "password": groupPasswordText,
+            "passwordCheck": groupPasswordIsEmpty,
+            "date": Timestamp(),
+            "membar": [uid],
+            "groupName": groupText,
+            "groupProfileText": ""
+        ] as [String : Any]
+        chatroomRef.setData(chatroomDic)
+        print("***chatroomの情報が保存されました")
+        
+        //ユーザーの情報にグループの名前が入る
+        let userRef = Firestore.firestore().collection(Const.User).document(uid)
+        userRef.updateData([
+            "groupId": FieldValue.arrayUnion([chatroomRef.documentID])
+        ])
+        userRef.updateData([
+            "nowGroup": chatroomRef.documentID
+        ])
         
         let image = self.groupImageButton.imageView?.image ?? UIImage(named: "男シルエットイラスト")
         //画像をjpgに変更
@@ -91,15 +94,14 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
                 print("画像のアップロードに失敗しました。\(err)")
                 return
             }
-            
             print("DEBUG_PRINT: 画像の保存に成功しました。")
         }
         
-            let storyboar = UIStoryboard(name: "Home", bundle: nil)
-            let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
-            let nav = UINavigationController(rootViewController: homeViewController)
-            nav.modalPresentationStyle = .fullScreen
-            present(nav, animated: true, completion: nil)
+        let storyboar = UIStoryboard(name: "Home", bundle: nil)
+        let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+        let nav = UINavigationController(rootViewController: homeViewController)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true, completion: nil)
         
     }
     
@@ -167,7 +169,8 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
             
             if password as? String == self.groupPasswordTextField.text {
                 userRef.updateData([
-                    "groupId": self.pickGroupId!
+                    "groupId": FieldValue.arrayUnion([self.pickGroupId!]),
+                    "nowGroup": self.pickGroupId!
                 ])
                 groupRef.updateData([
                     "membar": FieldValue.arrayUnion([uid])
@@ -206,9 +209,7 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
         enterButtonOutlet.isEnabled = false
         enterButtonOutlet.layer.backgroundColor = UIColor.rgb(red: 200, green: 200, blue: 200).cgColor
         
-        
         groupTableView.register(UINib(nibName: "GroupCell", bundle: nil), forCellReuseIdentifier: "GroupCell")
-
         firebaseGroup()
     }
     

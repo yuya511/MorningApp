@@ -20,22 +20,17 @@ class GroupCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         groupImageView.layer.cornerRadius = 10
-        layer.borderColor = UIColor.rgb(red: 245, green: 245, blue: 245).cgColor
-        layer.borderWidth = 3.0
-        layer.cornerRadius = 10
-        descriptionLabel.isHidden = true
     }
     
     
     func setGroupData(_ groupData: Group) {
-        guard let groupId = groupData.groupId else { return }
+        let groupId = groupData.groupId
         let imageRef = Storage.storage().reference().child(Const.GroupImage).child(groupId + ".jpg")
         groupImageView.sd_setImage(with: imageRef)
         
         groupNameLabel.text = groupData.groupName
         membarCountLabel.text = "(\(groupData.membar.count))"
         if groupData.groupProfileText != "" {
-            descriptionLabel.isHidden = false
             descriptionLabel.text = groupData.groupProfileText
         }
         if groupData.password == "" {

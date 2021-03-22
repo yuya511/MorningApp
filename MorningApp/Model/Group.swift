@@ -10,7 +10,7 @@ import Firebase
 
 class Group: NSObject {
     
-    var groupId:String?
+    var groupId:String
     var groupName: String?
     var password: String?
     var groupProfileText: String?
@@ -30,4 +30,21 @@ class Group: NSObject {
         self.date = timestamp?.dateValue()
        
     }
+    
+    init(docu: DocumentSnapshot) {
+                
+        self.groupId = docu.documentID
+        
+        let groupDic = docu.data()
+        self.password = groupDic?["password"] as? String ?? ""
+        self.groupName = groupDic?["groupName"] as? String ?? ""
+        self.membar = groupDic?["membar"] as? [String] ?? [""]
+        self.groupProfileText = groupDic?["groupProfileText"] as? String ?? ""
+        let timestamp = groupDic?["date"] as? Timestamp
+        self.date = timestamp?.dateValue()
+       
+    }
+
+    
+    
 }

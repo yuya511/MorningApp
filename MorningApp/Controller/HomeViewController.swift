@@ -67,6 +67,7 @@ class HomeViewController: UIViewController {
         
         view.addGestureRecognizer(rightSwipeGesture)
         view.addGestureRecognizer(leftSwipeGesture)
+        checkLogin()
         
     }
     
@@ -168,10 +169,9 @@ class HomeViewController: UIViewController {
                     print("err",err)
                 }
                 guard let document = documents?.data() else { return }
-                let groupId = document["groupId"] ?? "まだグループに参加していません"
-                print("groupId",groupId)
+                let nowGroup = document["nowGroup"] ?? "まだグループに参加していません"
                 
-                let chatroomsRef = db.collection(Const.ChatRooms).document(groupId as! String).collection(Const.Chat).order(by: "date", descending: true)
+                let chatroomsRef = db.collection(Const.ChatRooms).document(nowGroup as! String).collection(Const.Chat).order(by: "date", descending: true)
                 
                 //チャットの内容を監視
                 self.listener = chatroomsRef.addSnapshotListener() {(querysnapshot, err) in
@@ -306,11 +306,8 @@ extension HomeViewController: ChatInputAccessoryDelegate {
                 print("err",err)
             }
             guard let document = documents?.data() else { return }
-            let groupId = document["groupId"] ?? "まだグループに参加していません"
-            print("groupname",groupId)
-            
-            let chatroomRef = Firestore.firestore().collection(Const.ChatRooms).document(groupId as! String).collection(Const.Chat).document()
-            
+            let nowGroup = document["nowGroup"] ?? "まだグループに参加していません"
+            let chatroomRef = Firestore.firestore().collection(Const.ChatRooms).document(nowGroup as! String).collection(Const.Chat).document()
             let chatroomDic = [
                 "name": username,
                 "text": text,
