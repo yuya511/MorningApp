@@ -72,6 +72,11 @@ extension MorningChuckViewController: UIGestureRecognizerDelegate {
     }
 }
 
+
+
+
+
+
 //朝の目標設定画面
 class MorningRecrdViewController: UIViewController {
     
@@ -84,7 +89,6 @@ class MorningRecrdViewController: UIViewController {
         setMorningRecrdViewController()
       
     }
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -137,10 +141,12 @@ class MorningRecrdViewController: UIViewController {
 }
 
 
+
+
+
 //目標時間の設定画面
 class MorningSettingViewController: UIViewController {
     
-//    let alarm = Alarm()
     var settingTime:Date?
     var time:String?
    
@@ -150,7 +156,7 @@ class MorningSettingViewController: UIViewController {
     @IBAction func changedPicker(_ sender: Any) {
         
         settingTime = datePicker.date
-        settingButton.backgroundColor = .white
+        settingButton.backgroundColor = .rgb(red: 79, green: 104, blue: 220)
         settingButton.isEnabled = true
         
     }
@@ -194,10 +200,6 @@ class MorningSettingViewController: UIViewController {
     
     
     @objc func tappedSettingButton() {
-//        //AlarmにあるselectedWakeUpTimeにユーザーの入力した日付を代入
-//        alarm.selectedWakeUpTime = sleepTimePicker.date
-//        //AlarmのrunTimerを呼ぶ
-//        alarm.runTimer()
 
         let storyboar = UIStoryboard(name: "Home", bundle: nil)
         let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
@@ -209,33 +211,4 @@ class MorningSettingViewController: UIViewController {
     }
    
 }
-
-//class CurrentTime{
-//
-//    var timer: Timer?
-//    var currentTime: String?
-//    var df = DateFormatter()
-//    weak var delegate: MorningSettingViewController?
-//
-//    init() {
-//        if timer == nil{
-//            //タイマーをセット、一秒ごとにupdateCurrentTimeを呼ぶ
-//            timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(updateCurrentTime), userInfo: nil, repeats: true)
-//        }
-//    }
-//
-//    @objc private func updateCurrentTime(){
-//        //フォーマットの指定
-//        df.dateFormat = "HH:mm"
-//        //時刻をUNIXから端末のタイムゾーンにする
-//        df.timeZone = TimeZone.current
-//        //現在の時間をフォーマットに従って文字列化を行う
-//        let timezoneDate = df.string(from: Date())
-//        currentTime = timezoneDate
-//        delegate?.updateTime(currentTime!)
-//    }
-//}
-
-
-
 

@@ -20,11 +20,12 @@ class ProfileSettingViewController: UIViewController {
     var id:String?
     
     @IBAction func hiddenButton(_ sender: Any) {
-        let storyboar = UIStoryboard(name: "Home", bundle: nil)
-        let tabbarController = storyboar.instantiateViewController(withIdentifier: "TabBarControllerID") as! UITabBarController
-        tabbarController.selectedIndex = 2
-        tabbarController.modalPresentationStyle = .fullScreen
-        present(tabbarController, animated: true, completion: nil)
+//        let storyboar = UIStoryboard(name: "Home", bundle: nil)
+//        let tabbarController = storyboar.instantiateViewController(withIdentifier: "TabBarControllerID") as! UITabBarController
+//        tabbarController.selectedIndex = 2
+//        tabbarController.modalPresentationStyle = .fullScreen
+//        present(tabbarController, animated: true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     
@@ -98,11 +99,12 @@ class groupProfileSettingViewController: UIViewController {
     @IBOutlet weak var membarCountLabel: UILabel!
     
     @IBAction func hidden(_ sender: Any) {
-        let storyboar = UIStoryboard(name: "Home", bundle: nil)
-        let tabbarController = storyboar.instantiateViewController(withIdentifier: "TabBarControllerID") as! UITabBarController
-        tabbarController.selectedIndex = 2
-        tabbarController.modalPresentationStyle = .fullScreen
-        present(tabbarController, animated: true, completion: nil)
+//        let storyboar = UIStoryboard(name: "Home", bundle: nil)
+//        let tabbarController = storyboar.instantiateViewController(withIdentifier: "TabBarControllerID") as! UITabBarController
+//        tabbarController.selectedIndex = 2
+//        tabbarController.modalPresentationStyle = .fullScreen
+//        present(tabbarController, animated: true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     var id:String?
@@ -128,7 +130,6 @@ class groupProfileSettingViewController: UIViewController {
     
     private func setGroupfirebase() {
         if Auth.auth().currentUser != nil {
-//            let uid = Auth.auth().currentUser?.uid
             let db = Firestore.firestore()
             let imageRef = Storage.storage().reference().child(Const.GroupImage).child(id! + ".jpg")
             self.groupImageView.sd_setImage(with: imageRef)

@@ -11,13 +11,10 @@ import Firebase
 class EditViewController: UIViewController, UIImagePickerControllerDelegate & UITextFieldDelegate ,UINavigationControllerDelegate, UITextViewDelegate {
 
     @IBAction func hiddenButton(_ sender: Any) {
-        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
-        let profileViewController = storyboar.instantiateViewController(identifier: "ProfileSettingViewController") as! ProfileSettingViewController
-        let nav = UINavigationController(rootViewController: profileViewController)
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
-    @IBOutlet weak var groupImageButton: UIButton!
+    
+    @IBOutlet weak var profileImageButton: UIButton!
     @IBOutlet weak var userNameTextField: UITextField!
     @IBOutlet weak var profileTextView: UITextView!
     @IBOutlet weak var saveButton: UIButton!
@@ -35,10 +32,10 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate & UI
     }
     
     private func setLayout() {
-        groupImageButton.layer.cornerRadius = 80
-        groupImageButton.layer.borderColor = UIColor.rgb(red: 200, green: 200, blue: 200).cgColor
-        groupImageButton.layer.borderWidth = 1.0
-        groupImageButton.addTarget(self, action: #selector(tappedImageButton), for: .touchUpInside)
+        profileImageButton.layer.cornerRadius = 85
+        profileImageButton.layer.borderColor = UIColor.rgb(red: 200, green: 200, blue: 200).cgColor
+        profileImageButton.layer.borderWidth = 1.0
+        profileImageButton.addTarget(self, action: #selector(tappedImageButton), for: .touchUpInside)
         userNameTextField.layer.cornerRadius = 10
         userNameTextField.layer.backgroundColor = UIColor.rgb(red: 240, green: 240, blue: 240).cgColor
         profileTextView.layer.cornerRadius = 5
@@ -113,13 +110,10 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate & UI
             }
         }
         
-        guard let image = self.groupImageButton.imageView?.image else {
-            print("画像の変更はありませんでした。")
-            let storyboar = UIStoryboard(name: "Setting", bundle: nil)
-            let profileViewController = storyboar.instantiateViewController(identifier: "ProfileSettingViewController") as! ProfileSettingViewController
-            let nav = UINavigationController(rootViewController: profileViewController)
-            nav.modalPresentationStyle = .fullScreen
-            present(nav, animated: true, completion: nil)
+        guard let image = self.profileImageButton.imageView?.image else {
+            print("***画像の変更はありませんでした。")
+           
+            self.dismiss(animated: true, completion: nil)
             return
         }
         //画像をjpgに変更
@@ -136,26 +130,21 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate & UI
             }
             print("DEBUG_PRINT: 画像の保存に成功しました。")
         }
-        
-        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
-        let profileViewController = storyboar.instantiateViewController(identifier: "ProfileSettingViewController") as! ProfileSettingViewController
-        let nav = UINavigationController(rootViewController: profileViewController)
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let editImage = info[.editedImage] as? UIImage {
-            groupImageButton.setImage(editImage.withRenderingMode(.alwaysOriginal), for: .normal)
+            profileImageButton.setImage(editImage.withRenderingMode(.alwaysOriginal), for: .normal)
         } else if let originalImage = info[.originalImage] as? UIImage {
-            groupImageButton.setImage(originalImage.withRenderingMode(.alwaysOriginal), for: .normal)
+            profileImageButton.setImage(originalImage.withRenderingMode(.alwaysOriginal), for: .normal)
         }
         
-        groupImageButton.setTitle("", for: .normal)
-        groupImageButton.imageView?.contentMode = .scaleAspectFill
-        groupImageButton.contentHorizontalAlignment = .fill
-        groupImageButton.contentVerticalAlignment = .fill
-        groupImageButton.clipsToBounds = true
+        profileImageButton.setTitle("", for: .normal)
+        profileImageButton.imageView?.contentMode = .scaleAspectFill
+        profileImageButton.contentHorizontalAlignment = .fill
+        profileImageButton.contentVerticalAlignment = .fill
+        profileImageButton.clipsToBounds = true
         dismiss(animated: true, completion: nil)
     }
     
@@ -188,11 +177,7 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
     @IBOutlet weak var saveButton: UIButton!
     
     @IBAction func hidden(_ sender: Any) {
-        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
-        let groupProfileSettingViewController = storyboar.instantiateViewController(identifier: "groupProfileSettingViewController") as! groupProfileSettingViewController
-        let nav = UINavigationController(rootViewController: groupProfileSettingViewController)
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     var groupName:String?
@@ -308,12 +293,7 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
             }
             print("DEBUG_PRINT: 画像の保存に成功しました。")
         }
-        
-        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
-        let groupProfileSettingViewController = storyboar.instantiateViewController(identifier: "groupProfileSettingViewController") as! groupProfileSettingViewController
-        let nav = UINavigationController(rootViewController: groupProfileSettingViewController)
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: true, completion: nil)
+        self.dismiss(animated: true, completion: nil)
     }
     
     
@@ -347,3 +327,7 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
         }
     }
 }
+
+
+
+

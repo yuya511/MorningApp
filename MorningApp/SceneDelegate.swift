@@ -20,8 +20,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.makeKeyAndVisible()
         
         let sotoryboard = UIStoryboard(name: "Home", bundle: nil)
-        let HomeViewContorller = sotoryboard.instantiateViewController(identifier: "Home")
-        let nav = UINavigationController(rootViewController: HomeViewContorller)
+        let homeViewContorller = sotoryboard.instantiateViewController(identifier: "Home")
+        let nav = UINavigationController(rootViewController: homeViewContorller)
         
         window.rootViewController = nav
         

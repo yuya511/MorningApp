@@ -162,11 +162,11 @@
             </objects>
             <point key="canvasLocation" x="1031.8840579710145" y="99.776785714285708"/>
         </scene>
-        <!--Record-->
+        <!--記録-->
         <scene sceneID="FO7-tL-M9h">
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="LGA-xI-zpj" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Record" image="note.text" catalog="system" id="ial-Pw-qDV"/>
+                    <tabBarItem key="tabBarItem" title="記録" image="note.text" catalog="system" id="ial-Pw-qDV"/>
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="ftC-D0-hi8">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>

@@ -66,7 +66,7 @@
             </objects>
             <point key="canvasLocation" x="346" y="171"/>
         </scene>
-        <!--chat-->
+        <!--ホーム-->
         <scene sceneID="i5D-Fm-3kg">
             <objects>
                 <viewController storyboardIdentifier="menuViewController" modalPresentationStyle="overCurrentContext" useStoryboardIdentifierAsRestorationIdentifier="YES" id="AWA-bY-Tda" customClass="menuViewController" customModule="MorningApp" customModuleProvider="target" sceneMemberID="viewController">
@@ -158,7 +158,7 @@
                             <constraint firstItem="w7p-50-9Xq" firstAttribute="leading" secondItem="CnH-9B-MXv" secondAttribute="leading" id="qd8-pq-adW"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="chat" image="paperplane.fill" catalog="system" id="Rn3-5w-k7y"/>
+                    <tabBarItem key="tabBarItem" title="ホーム" image="paperplane.fill" catalog="system" id="Rn3-5w-k7y"/>
                     <connections>
                         <outlet property="menuEmailLabel" destination="Bsk-FT-VWr" id="2oh-pD-TNP"/>
                         <outlet property="menuImageView" destination="6D1-nG-xzy" id="KZJ-E7-JLk"/>

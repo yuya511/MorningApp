@@ -29,6 +29,11 @@ class SettingViewController: UIViewController {
         navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
         settingTabelView.sectionHeaderHeight = 75
         settingTabelView.tableFooterView = UIView()
+        self.navigationItem.title = "設 定"
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            // 文字の色
+            .foregroundColor: UIColor.rgb(red: 100, green: 150, blue: 255)
+        ]
     }
     
     private func logOut() {
@@ -38,7 +43,7 @@ class SettingViewController: UIViewController {
             let singupViewController = storyboard.instantiateViewController(withIdentifier: "SingUpViewController")
            
             let nav = UINavigationController(rootViewController: singupViewController)
-            nav.modalPresentationStyle = .fullScreen
+//            nav.modalPresentationStyle = .fullScreen
             self.present(nav, animated: true, completion: nil)
         } catch {
             print("ログアウトに失敗しました。\(error)")
@@ -50,7 +55,7 @@ class SettingViewController: UIViewController {
         let profileSettingViewController = storyboar.instantiateViewController(identifier: "ProfileSettingViewController") as! ProfileSettingViewController
         profileSettingViewController.id = id
         let nav = UINavigationController(rootViewController: profileSettingViewController)
-        nav.modalPresentationStyle = .fullScreen
+//        nav.modalPresentationStyle = .fullScreen
         present(nav, animated: true, completion: nil)
     }
     
@@ -58,7 +63,7 @@ class SettingViewController: UIViewController {
         let storyboar = UIStoryboard(name: "Setting", bundle: nil)
         let groupProfileSettingViewController = storyboar.instantiateViewController(identifier: "groupProfileSettingViewController") as! groupProfileSettingViewController
         let nav = UINavigationController(rootViewController: groupProfileSettingViewController)
-        nav.modalPresentationStyle = .fullScreen
+//        nav.modalPresentationStyle = .fullScreen
         present(nav, animated: true, completion: nil)
     }
 }

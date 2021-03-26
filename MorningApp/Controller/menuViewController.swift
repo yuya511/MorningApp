@@ -24,18 +24,13 @@ class menuViewController: UIViewController {
         let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
         let morningSettingViewController = storyboar.instantiateViewController(identifier: "MorningSettingViewController") as! MorningSettingViewController
         let nav = UINavigationController(rootViewController: morningSettingViewController)
-        nav.modalPresentationStyle = .fullScreen
         present(nav, animated: true, completion: nil)
     }
     
     private let cellId = "cellId"
     
     private var users = [User]()
-    private var groups = [Group]() {
-        didSet {
-            print("***groups",groups)
-        }
-    }
+    private var groups = [Group]()
     private var membarUidList = [String]()
     private var groupIdList = [String]()
     
@@ -64,17 +59,14 @@ class menuViewController: UIViewController {
         view.addGestureRecognizer(rightSwipeGesture)
         view.addGestureRecognizer(leftSwipeGesture)
         
+        setUser()
+
     }
     
     @objc func swiped(_ sender: UISwipeGestureRecognizer) {
         switch sender.direction {
         case .left:
-            let storyboar = UIStoryboard(name: "Home", bundle: nil)
-            let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
-            let nav = UINavigationController(rootViewController: homeViewController)
-            nav.modalPresentationStyle = .overFullScreen
-            nav.modalTransitionStyle = .crossDissolve
-            present(nav, animated: true, completion: nil)
+            print("left Swipe")
         case .right:
            print("right Swipe")
         default:
@@ -88,6 +80,7 @@ class menuViewController: UIViewController {
         let menuPos = self.menuView.layer.position
         // 初期位置を画面の外側にするため、メニューの幅の分だけマイナスする
         self.menuView.layer.position.x = -self.menuView.frame.width
+        
         // 表示時のアニメーションを作成する
         UIView.animate(
             withDuration: 0.25,
@@ -99,15 +92,30 @@ class menuViewController: UIViewController {
             completion: { bool in
             })
         
-        fetchUserInfoFromFirestore()
     }
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         listener?.remove()
     }
+
+    func setUser() {
+        if Auth.auth().currentUser != nil {
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            let UserRef = Firestore.firestore().collection(Const.User).document(uid)
+            listener = UserRef.addSnapshotListener() { (querySnapshot, err) in
+                if let err = err {
+                    print("err",err)
+                    return
+                }
+                guard let UserData = querySnapshot?.data() else { return }
+                guard let nowGroup = UserData["nowGroup"] else { return }
+                self.fetchUserInfoFromFirestore(nowGroup: nowGroup as! String)
+            }
+        }
+    }
     
-    private func fetchUserInfoFromFirestore() {
+    private func fetchUserInfoFromFirestore(nowGroup:String) {
         
         //ユーザのメンバーの監視
         if Auth.auth().currentUser != nil{
@@ -121,9 +129,8 @@ class menuViewController: UIViewController {
                 guard let groupId:[String] = document["groupId"] as? [String] else { return }
                 for id in groupId {
                     self.groupIdList.append(id)
-                    print("***self.groupIdList",self.groupIdList)
                     let groupRef = Firestore.firestore().collection(Const.ChatRooms).document(id)
-                    self.listener = groupRef.addSnapshotListener() {(querySnapshot,err) in
+                    groupRef.addSnapshotListener() {(querySnapshot,err) in
                         if let err = err {
                             print("err",err)
                             return
@@ -132,10 +139,8 @@ class menuViewController: UIViewController {
                         self.groups.append(Group(docu: querySnapshot))
                     }
                 }
-                let nowGroup = document["nowGroup"] ?? "err"
-                let chatroomMembarRef = Firestore.firestore().collection(Const.ChatRooms).document(nowGroup as! String)
-                
-                self.listener = chatroomMembarRef.addSnapshotListener() { (querySnapshot, error) in
+                let chatroomMembarRef = Firestore.firestore().collection(Const.ChatRooms).document(nowGroup)
+                chatroomMembarRef.addSnapshotListener() { (querySnapshot, error) in
                     if let error = error {
                         print("DEBUG_PRINT \(error)")
                         return
@@ -159,7 +164,7 @@ class menuViewController: UIViewController {
             }
             for groupId in groupIdList {
                 let groupRef = Firestore.firestore().collection(Const.ChatRooms).document(groupId)
-                listener = groupRef.addSnapshotListener() {(querySnapshot,err) in
+                groupRef.addSnapshotListener() {(querySnapshot,err) in
                     if let err = err {
                         print("err",err)
                         return
@@ -243,7 +248,13 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
             userRef.updateData([
                 "nowGroup": groupIdList[indexPath.row]
             ])
-            
+            let storyboar = UIStoryboard(name: "Home", bundle: nil)
+            let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+            let nav = UINavigationController(rootViewController: homeViewController)
+            nav.modalPresentationStyle = .overFullScreen
+            nav.modalTransitionStyle = .coverVertical
+            present(nav, animated: true, completion: nil)
+
         } else if indexPath.section == 1 {
             let profileSettingViewController = storyboar.instantiateViewController(identifier: "ProfileSettingViewController") as! ProfileSettingViewController
             profileSettingViewController.id = membarUidList[indexPath.row]

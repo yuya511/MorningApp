@@ -50,6 +50,11 @@ class HomeViewController: UIViewController {
         return view
     }()
 
+   
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        menuReload()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -68,7 +73,6 @@ class HomeViewController: UIViewController {
         view.addGestureRecognizer(rightSwipeGesture)
         view.addGestureRecognizer(leftSwipeGesture)
         checkLogin()
-        
     }
     
     @objc func swiped(_ sender: UISwipeGestureRecognizer) {
@@ -90,10 +94,17 @@ class HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         checkLogin()
-        setChatrooms()
+        setUser()
         timeMonitor()
     }
     
+    func menuReload() {
+        let tabbarController = self.storyboard?.instantiateViewController(withIdentifier: "TabBarControllerID") as! UITabBarController
+        tabbarController.selectedIndex = 0
+        tabbarController.modalPresentationStyle = .overFullScreen
+        tabbarController.modalTransitionStyle = .crossDissolve
+        present(tabbarController, animated: true, completion: nil)
+    }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -118,7 +129,7 @@ class HomeViewController: UIViewController {
         HomeTableView.keyboardDismissMode = .interactive
        //ナビゲーションバーの設定
         navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
-        let myRightItem = UIBarButtonItem(title: "編集", style: .plain, target: self, action: #selector(settingButton))
+        let myRightItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(settingButton))
         self.navigationItem.rightBarButtonItem = myRightItem
         self.navigationItem.rightBarButtonItem?.tintColor = .rgb(red: 100, green: 150, blue: 255)
         self.navigationController?.navigationBar.titleTextAttributes = [
@@ -144,21 +155,33 @@ class HomeViewController: UIViewController {
     
     //編集ボタン
     @objc func settingButton() {
-        print("rightButton")
-//        let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
-//        let morningSettingViewController = storyboar.instantiateViewController(identifier: "MorningSettingViewController") as! MorningSettingViewController
-//        let nav = UINavigationController(rootViewController: morningSettingViewController)
-//        nav.modalPresentationStyle = .fullScreen
-//        present(nav, animated: true, completion: nil)
         let storyboar = UIStoryboard(name: "Setting", bundle: nil)
         let chatroomSettingViewController = storyboar.instantiateViewController(identifier: "chatroomSettingViewController") as! chatroomSettingViewController
-//        let nav = UINavigationController(rootViewController: morningSettingViewController)
+        let nav = UINavigationController(rootViewController: chatroomSettingViewController)
         chatroomSettingViewController.modalPresentationStyle = .fullScreen
-        present(chatroomSettingViewController, animated: true, completion: nil)
+        present(nav, animated: true, completion: nil)
+    }
+    
+    func setUser() {
+        if Auth.auth().currentUser != nil {
+            guard let uid = Auth.auth().currentUser?.uid else { return }
+            let UserRef = Firestore.firestore().collection(Const.User).document(uid)
+            listener = UserRef.addSnapshotListener() { (querySnapshot, err) in
+                if let err = err {
+                    print("err",err)
+                    return
+                }
+                guard let UserData = querySnapshot?.data() else { return }
+                guard let nowGroup = UserData["nowGroup"] else { return }
+                self.setChatrooms(nowGroup: nowGroup as! String)
+               
+            }
+            
+        }
     }
     
     //chatroomの監視
-    func setChatrooms() {
+    func setChatrooms(nowGroup:String) {
         
         if Auth.auth().currentUser != nil {
             let db = Firestore.firestore()
@@ -168,10 +191,8 @@ class HomeViewController: UIViewController {
                 if let err = err {
                     print("err",err)
                 }
-                guard let document = documents?.data() else { return }
-                let nowGroup = document["nowGroup"] ?? "まだグループに参加していません"
                 
-                let chatroomsRef = db.collection(Const.ChatRooms).document(nowGroup as! String).collection(Const.Chat).order(by: "date", descending: true)
+                let chatroomsRef = db.collection(Const.ChatRooms).document(nowGroup).collection(Const.Chat).order(by: "date", descending: true)
                 
                 //チャットの内容を監視
                 self.listener = chatroomsRef.addSnapshotListener() {(querysnapshot, err) in
