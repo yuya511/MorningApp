@@ -34,7 +34,6 @@ class menuViewController: UIViewController {
     private var membarUidList = [String]()
     private var groupIdList = [String]()
     
-    var listener: ListenerRegistration?
     var sectionArry = ["グループ","メンバー"]
     
     
@@ -91,26 +90,40 @@ class menuViewController: UIViewController {
             },
             completion: { bool in
             })
-        
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        listener?.remove()
-    }
-
+   
     func setUser() {
         if Auth.auth().currentUser != nil {
+           
             guard let uid = Auth.auth().currentUser?.uid else { return }
             let UserRef = Firestore.firestore().collection(Const.User).document(uid)
-            listener = UserRef.addSnapshotListener() { (querySnapshot, err) in
+            UserRef.addSnapshotListener() { (querySnapshot, err) in
                 if let err = err {
                     print("err",err)
                     return
                 }
                 guard let UserData = querySnapshot?.data() else { return }
                 guard let nowGroup = UserData["nowGroup"] else { return }
-                self.fetchUserInfoFromFirestore(nowGroup: nowGroup as! String)
+                self.fetchUserInfoFromFirestore(nowGroup: nowGroup as? String ?? "")
+            }
+            
+            //ログインしているユーザーの画像と名前を表示する
+            
+            
+            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(uid + ".jpg")
+            menuImageView.sd_setImage(with: imageRef)
+            
+            UserRef.addSnapshotListener() { (document, err) in
+                if let err = err {
+                    print(err)
+                    return
+                }
+                guard let dic = document?.data() else { return }
+                guard let username = Auth.auth().currentUser?.displayName else { return }
+                guard let email = dic["email"] else { return }
+                
+                self.menuNameLabel.text = username
+                self.menuEmailLabel.text = email as? String
             }
         }
     }
@@ -172,23 +185,6 @@ class menuViewController: UIViewController {
                     guard let querySnapshot = querySnapshot else {return}
                     self.groups.append(Group(docu: querySnapshot))
                 }
-            }
-            
-            //ログインしているユーザーの画像と名前を表示する
-            let imageRef = Storage.storage().reference().child(Const.ImagePath).child(uid + ".jpg")
-            menuImageView.sd_setImage(with: imageRef)
-            
-            userRef.getDocument { (document, err) in
-                if let err = err {
-                    print(err)
-                    return
-                }
-                guard let dic = document?.data() else { return }
-                guard let username = Auth.auth().currentUser?.displayName else { return }
-                guard let email = dic["email"] else { return }
-                
-                self.menuNameLabel.text = username
-                self.menuEmailLabel.text = email as? String
             }
         }
     }
@@ -269,7 +265,6 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
         }
     }
 
-   
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
             return groups.count

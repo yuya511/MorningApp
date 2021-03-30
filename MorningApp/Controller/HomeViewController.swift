@@ -173,8 +173,7 @@ class HomeViewController: UIViewController {
                 }
                 guard let UserData = querySnapshot?.data() else { return }
                 guard let nowGroup = UserData["nowGroup"] else { return }
-                self.setChatrooms(nowGroup: nowGroup as! String)
-               
+                self.setChatrooms(nowGroup: nowGroup as? String ?? "")
             }
             
         }
@@ -191,9 +190,7 @@ class HomeViewController: UIViewController {
                 if let err = err {
                     print("err",err)
                 }
-                
                 let chatroomsRef = db.collection(Const.ChatRooms).document(nowGroup).collection(Const.Chat).order(by: "date", descending: true)
-                
                 //チャットの内容を監視
                 self.listener = chatroomsRef.addSnapshotListener() {(querysnapshot, err) in
                     if let err = err {

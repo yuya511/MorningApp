@@ -43,7 +43,7 @@ class SettingViewController: UIViewController {
             let singupViewController = storyboard.instantiateViewController(withIdentifier: "SingUpViewController")
            
             let nav = UINavigationController(rootViewController: singupViewController)
-//            nav.modalPresentationStyle = .fullScreen
+            nav.modalPresentationStyle = .fullScreen
             self.present(nav, animated: true, completion: nil)
         } catch {
             print("ログアウトに失敗しました。\(error)")
@@ -55,7 +55,6 @@ class SettingViewController: UIViewController {
         let profileSettingViewController = storyboar.instantiateViewController(identifier: "ProfileSettingViewController") as! ProfileSettingViewController
         profileSettingViewController.id = id
         let nav = UINavigationController(rootViewController: profileSettingViewController)
-//        nav.modalPresentationStyle = .fullScreen
         present(nav, animated: true, completion: nil)
     }
     
@@ -63,7 +62,13 @@ class SettingViewController: UIViewController {
         let storyboar = UIStoryboard(name: "Setting", bundle: nil)
         let groupProfileSettingViewController = storyboar.instantiateViewController(identifier: "groupProfileSettingViewController") as! groupProfileSettingViewController
         let nav = UINavigationController(rootViewController: groupProfileSettingViewController)
-//        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true, completion: nil)
+    }
+    
+    private func groupSelect() {
+        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
+        let groupSelectViewController = storyboar.instantiateViewController(identifier: "groupSelectViewController") as! groupSelectViewController
+        let nav = UINavigationController(rootViewController: groupSelectViewController)
         present(nav, animated: true, completion: nil)
     }
 }
@@ -96,7 +101,6 @@ extension SettingViewController: UITableViewDelegate,UITableViewDataSource {
         default:
             settingCell.settingLabel.text = userSettingList[indexPath.row]
         }
-        
         return settingCell
     }
     
@@ -105,11 +109,14 @@ extension SettingViewController: UITableViewDelegate,UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: true)
         guard let uid = Auth.auth().currentUser?.uid else { return }
         if indexPath.section == 0 {
-           userChange(id: uid)
+            if indexPath.row == 0 {
+                userChange(id: uid)
+            } else {
+                groupSelect()
+            }
         } else if indexPath.section == 1 {
             logOut()
         } else {
-            
         }
     }
     //セクションの数

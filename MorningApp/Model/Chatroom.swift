@@ -23,11 +23,8 @@ class Chatroom: NSObject {
     init(document: QueryDocumentSnapshot) {
         
         self.chatId = document.documentID
-        
         let chatDic = document.data()
-        
         self.uid = chatDic["uid"] as? String ?? ""
-        
         self.name = chatDic["name"] as? String ?? ""
         self.text = chatDic["text"] as? String  ?? ""
         let timestamp = chatDic["date"] as? Timestamp

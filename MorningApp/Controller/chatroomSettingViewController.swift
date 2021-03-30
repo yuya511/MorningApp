@@ -31,7 +31,7 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
         groupRegisterButtonOutlet.layer.cornerRadius = 10
         groupRegisterButtonOutlet.isEnabled = false
         groupRegisterButtonOutlet.layer.backgroundColor = UIColor.rgb(red: 200, green: 200, blue: 200).cgColor
-        groupImageButton.layer.cornerRadius = 85
+        groupImageButton.layer.cornerRadius = 25
         groupImageButton.layer.borderWidth = 1
         groupImageButton.layer.borderColor = UIColor.rgb(red: 240, green: 240, blue: 240).cgColor
         
@@ -46,7 +46,30 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
             // 文字の色
             .foregroundColor: UIColor.rgb(red: 79, green: 109, blue: 220)
         ]
-        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc func keyboardWillShow(notification: NSNotification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            if self.view.frame.origin.y == 0 {
+                self.view.frame.origin.y -= keyboardSize.height - 170
+            } else {
+                let suggestionHeight = self.view.frame.origin.y + keyboardSize.height
+                self.view.frame.origin.y -= suggestionHeight
+            }
+        }
+    }
+    
+    @objc func keyboardWillHide() {
+        if self.view.frame.origin.y != 0 {
+            self.view.frame.origin.y = 0
+        }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
     }
     
     @objc func tappedImageButton() {

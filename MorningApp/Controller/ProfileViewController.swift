@@ -20,11 +20,6 @@ class ProfileSettingViewController: UIViewController {
     var id:String?
     
     @IBAction func hiddenButton(_ sender: Any) {
-//        let storyboar = UIStoryboard(name: "Home", bundle: nil)
-//        let tabbarController = storyboar.instantiateViewController(withIdentifier: "TabBarControllerID") as! UITabBarController
-//        tabbarController.selectedIndex = 2
-//        tabbarController.modalPresentationStyle = .fullScreen
-//        present(tabbarController, animated: true, completion: nil)
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -97,23 +92,64 @@ class groupProfileSettingViewController: UIViewController {
     @IBOutlet weak var groupNameLabel: UILabel!
     @IBOutlet weak var groupTextView: UITextView!
     @IBOutlet weak var membarCountLabel: UILabel!
+    @IBOutlet weak var exitButtonOutlet: UIButton!
+    
+    var groupId:String?
+    var nowGroup:String?
+    var groupNameData = [String]()
+    var membarCount = [String]()
+    var groupIdList = [String]()
+    let db = Firestore.firestore()
+
+    
+    @IBAction func editAction(_ sender: Any) {
+        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
+        let groupEditViewController = storyboar.instantiateViewController(identifier: "groupEditViewController") as! groupEditViewController
+        groupEditViewController.groupId = self.groupId
+        let nav = UINavigationController(rootViewController: groupEditViewController)
+        present(nav, animated: true, completion: nil)
+    }
     
     @IBAction func hidden(_ sender: Any) {
-//        let storyboar = UIStoryboard(name: "Home", bundle: nil)
-//        let tabbarController = storyboar.instantiateViewController(withIdentifier: "TabBarControllerID") as! UITabBarController
-//        tabbarController.selectedIndex = 2
-//        tabbarController.modalPresentationStyle = .fullScreen
-//        present(tabbarController, animated: true, completion: nil)
         self.dismiss(animated: true, completion: nil)
     }
     
-    var id:String?
-    var groupNameData = [String]()
-    
+    @IBAction func exitButton(_ sender: Any) {
+        var GroupUpdateValue: FieldValue
+        var UserUpdateValue: FieldValue
+        
+        if let uid = Auth.auth().currentUser?.uid {
+            GroupUpdateValue = FieldValue.arrayRemove([uid])
+            UserUpdateValue = FieldValue.arrayRemove([groupId!])
+            
+            let groupRef = db.collection(Const.ChatRooms).document(groupId!)
+            let userRef = db.collection(Const.User).document(uid)
+            userRef.getDocument() {(doument,err) in
+                if let err = err {
+                    print(err)
+                    return
+                }
+                if self.nowGroup == self.groupId {
+                    groupRef.updateData(["membar":GroupUpdateValue])
+                    userRef.updateData(["groupId":UserUpdateValue])
+                    userRef.updateData(["nowGroup":self.groupIdList[0]])
+                } else {
+                    groupRef.updateData(["membar":GroupUpdateValue])
+                    userRef.updateData(["groupId":UserUpdateValue])
+                }
+                let storyboar = UIStoryboard(name: "Home", bundle: nil)
+                let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+                let nav = UINavigationController(rootViewController: homeViewController)
+                nav.modalPresentationStyle = .overFullScreen
+                nav.modalTransitionStyle = .coverVertical
+                self.present(nav, animated: true, completion: nil)
+            }
+        }
+    }
+            
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        groupImageView.layer.cornerRadius = 40
+        groupImageView.layer.cornerRadius = 25
         groupTextView.layer.cornerRadius = 10
         groupTextView.backgroundColor = .rgb(red: 240, green: 240, blue: 240)
         groupTextView.layer.borderColor = UIColor.rgb(red: 200, green: 200, blue: 200).cgColor
@@ -121,8 +157,6 @@ class groupProfileSettingViewController: UIViewController {
         view.backgroundColor = .rgb(red: 245, green: 245, blue: 245)
         navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
         groupTextView.isEditable = false
-        editButton.isEnabled = false
-        editButton.accessibilityElementsHidden = true
         
         setGroupfirebase()
     }
@@ -130,19 +164,35 @@ class groupProfileSettingViewController: UIViewController {
     
     private func setGroupfirebase() {
         if Auth.auth().currentUser != nil {
-            let db = Firestore.firestore()
-            let imageRef = Storage.storage().reference().child(Const.GroupImage).child(id! + ".jpg")
+            let imageRef = Storage.storage().reference().child(Const.GroupImage).child(groupId! + ".jpg")
             self.groupImageView.sd_setImage(with: imageRef)
-            let groupRef = db.collection(Const.ChatRooms).document(id ?? "err")
+            let groupRef = db.collection(Const.ChatRooms).document(groupId ?? "err")
             groupRef.getDocument { (documents, err) in
                 guard let groupData = documents else { return }
                 guard let groupName = groupData["groupName"] else { return }
                 self.groupNameLabel.text = groupName as? String
-                let membarCount:[String] = groupData["membar"] as! [String]
-                self.membarCountLabel.text = String(membarCount.count)
+                self.membarCount = groupData["membar"] as! [String]
+                self.membarCountLabel.text = String(self.membarCount.count)
                 let groupProfileText:String = groupData["groupProfileText"] as! String
                 if groupProfileText != "" {
                     self.groupTextView.text = groupProfileText
+                }
+            }
+            
+            if let uid = Auth.auth().currentUser?.uid {
+                let userRef = db.collection(Const.User).document(uid)
+                userRef.getDocument() {(doument,err) in
+                    if let err = err {
+                        print(err)
+                        return
+                    }
+                    let userData = doument?.data()
+                    self.nowGroup = userData?["nowGroup"] as? String
+                    self.groupIdList = userData?["groupId"] as! [String]
+                    self.groupIdList.removeAll(where: {$0 == self.nowGroup!})
+                    if self.groupIdList.isEmpty == true {
+                        self.exitButtonOutlet.isHidden = true
+                    }
                 }
             }
         }
