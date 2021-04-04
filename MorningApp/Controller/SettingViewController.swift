@@ -8,6 +8,7 @@
 import UIKit
 import Firebase
 import FirebaseUI
+import GoogleMobileAds
 
 class SettingViewController: UIViewController {
 
@@ -34,6 +35,17 @@ class SettingViewController: UIViewController {
             // 文字の色
             .foregroundColor: UIColor.rgb(red: 100, green: 150, blue: 255)
         ]
+        
+        guard let tabbarSize = tabBarController?.tabBar.frame.size.height else { return }
+        
+        var admobView = GADBannerView()
+        admobView = GADBannerView(adSize: kGADAdSizeBanner)
+        admobView.frame.origin = CGPoint(x: 0, y: self.view.frame.size.height - admobView.frame.height - tabbarSize)
+        admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
+        admobView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        admobView.rootViewController = self
+        admobView.load(GADRequest())
+        self.view.addSubview(admobView)
     }
     
     private func logOut() {

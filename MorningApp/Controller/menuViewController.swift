@@ -60,6 +60,16 @@ class menuViewController: UIViewController {
         
         setUser()
 
+        guard let tabbarSize = tabBarController?.tabBar.frame.size.height else {return }
+
+        var admobView = GADBannerView()
+        admobView = GADBannerView(adSize: kGADAdSizeBanner)
+        admobView.frame.origin = CGPoint(x: 0, y: self.view.frame.size.height - admobView.frame.height - tabbarSize - 34)
+        admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
+        admobView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        admobView.rootViewController = self
+        admobView.load(GADRequest())
+        self.view.addSubview(admobView)
     }
     
     @objc func swiped(_ sender: UISwipeGestureRecognizer) {
@@ -244,6 +254,7 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
             userRef.updateData([
                 "nowGroup": groupIdList[indexPath.row]
             ])
+            
             let storyboar = UIStoryboard(name: "Home", bundle: nil)
             let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
             let nav = UINavigationController(rootViewController: homeViewController)

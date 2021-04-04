@@ -28,12 +28,13 @@ class MorningChuckViewController: UIViewController, AVAudioPlayerDelegate {
         // デリゲートをセット
         tapGesture.delegate = self
         // 再生する audio ファイルのパスを取得
-        let audioPath = Bundle.main.path(forResource: "おはようアラーム", ofType:"mp3")!
+        let audioPath = Bundle.main.path(forResource: "霧雨", ofType:"mp3")!
         let audioUrl = URL(fileURLWithPath: audioPath)
         // auido を再生するプレイヤーを作成する
         var audioError:NSError?
         do {
             audioPlayer = try AVAudioPlayer(contentsOf: audioUrl)
+            audioPlayer.numberOfLoops = -1
         } catch let error as NSError {
             audioError = error
             audioPlayer = nil
@@ -98,23 +99,20 @@ class MorningRecrdViewController: UIViewController {
     }
     
     private func setMorningRecrdViewController() {
-        
         let now = Date()
         //今日かどうかを判定するために、保存
         UserDefaults.standard.set(now, forKey: "NOWDATE")
-        
         let storyboar = UIStoryboard(name: "Home", bundle: nil)
         let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
         let nav = UINavigationController(rootViewController: homeViewController)
         nav.modalPresentationStyle = .fullScreen
         self.present(nav, animated: true, completion: nil)
-        
     }
     
     func morningFirebase() {
         let db = Firestore.firestore()
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        let userRef = db.collection("users").document(uid)
+        let userRef = db.collection(Const.User).document(uid)
         userRef.getDocument { (document, err) in
             if let err = err {
                 print(err)
@@ -123,19 +121,32 @@ class MorningRecrdViewController: UIViewController {
             guard let dic = document?.data() else { return }
             guard let username = dic["username"] else { return }
             guard let text = self.targetSettingTextView.text else { return }
-            guard let groupId = dic["groupId"] else { return }
-
-            let chatroomRef = db.collection(Const.ChatRooms).document(groupId as! String).collection(Const.Chat).document()
-            let chatroomDic = [
-                "name": username,
-                "text": text,
-                "stamp": true,
-                "date": Timestamp(),
-                "uid": uid,
-                "chatId": chatroomRef.documentID
-            ] as [String : Any]
-            chatroomRef.setData(chatroomDic)
-            print("tappedMorningButtonの情報が保存されました")
+            guard let groupIdList:[String] = dic["groupId"] as? [String] else { return }
+            
+            for groupId in groupIdList {
+                let chatroomRef = db.collection(Const.ChatRooms).document(groupId).collection(Const.Chat).document()
+                let chatroomDic = [
+                    "name": username,
+                    "text": text,
+                    "stamp": true,
+                    "date": Timestamp(),
+                    "uid": uid,
+                    "chatId": chatroomRef.documentID,
+                    "supports": []
+                ] as [String : Any]
+                chatroomRef.setData(chatroomDic)
+                print("tappedMorningButtonの情報が保存されました")
+            }
+            
+            let userData = document?.data()
+            let morningCount:Int = userData?["morningCount"] as! Int
+            let newMorningCount = morningCount + 1
+            
+            print("***newMorningCount",newMorningCount)
+            
+            userRef.updateData([
+                "morningCount": newMorningCount
+            ])
         }
     }
 }

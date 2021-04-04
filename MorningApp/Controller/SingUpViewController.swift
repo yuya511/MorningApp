@@ -124,6 +124,7 @@ class SingUpViewController: UIViewController {
                 "username": username,
                 "createdAt": Timestamp(),
                 "uid": uid,
+                "morningCount": 0,
                 "groupId": "",
                 "profileText": ""
             ] as [String : Any]

@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import UserNotifications
 
 class HomeViewController: UIViewController {
     
@@ -22,6 +23,8 @@ class HomeViewController: UIViewController {
             //datePickerの時間の値をStringに変換して、UserDefaultsに保存している->表示用
             let japanTime:String = formatChang(date: targetTime ?? Date())
             UserDefaults.standard.set(japanTime, forKey: "SETTIME")
+            setNotification()
+
         }
     }
     
@@ -29,6 +32,7 @@ class HomeViewController: UIViewController {
     
     private var users = [User]()
     private var chat = [Chatroom]()
+    private var nowGroup:String?
     
     //監視するやつ
     private var listener: ListenerRegistration?
@@ -107,10 +111,38 @@ class HomeViewController: UIViewController {
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
         listener?.remove()
+        super.viewWillDisappear(animated)
     }
     
+    func setNotification() {
+        guard let setTimeDate = load(key: "SETDATE") else { return }
+        print("*** 通知が設定された")
+        //通知の内容を設定
+        let content = UNMutableNotificationContent()
+        content.title = ""
+        content.body = "おはようございます"
+        content.sound = UNNotificationSound.init(named: UNNotificationSoundName(rawValue: "霧雨.mp3"))
+        //通知の発動のトリガーを設定
+        let calendar = Calendar.current
+        var trigger : UNNotificationTrigger
+        let dateComponents = calendar.dateComponents([.hour,.minute], from: setTimeDate)
+        print("***dateComponents",dateComponents)
+        trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+        //identifier, content, triggerからローカル通知を作成（identifierが同じだとローカル通知を上書き保存)
+        let request = UNNotificationRequest(identifier: "id", content: content, trigger: trigger)
+        //ローカル通知を登録する
+        let center = UNUserNotificationCenter.current()
+        center.add(request) { (error) in
+            print(error ?? "***ローカル通知の登録完了")
+        }
+        //未通知のローカル通知一覧をログ出力
+        center.getPendingNotificationRequests { (requests: [UNNotificationRequest]) in
+            for request in requests {
+                print("***request",request)
+            }
+        }
+    }
     
     private func setUpNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -394,7 +426,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             } else {
                 updateValue = FieldValue.arrayUnion([myUid])
             }
-            let chatRoomRef = Firestore.firestore().collection(Const.ChatRooms).document(chatData.chatId ?? myUid)
+            let chatRoomRef = Firestore.firestore().collection(Const.ChatRooms).document(chatData.chatId ?? "").collection(Const.Chat).document(chatData.chatId ?? myUid)
             chatRoomRef.updateData(["supports": updateValue])
         }
     }
