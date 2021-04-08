@@ -213,7 +213,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate & UI
 
 
 
-
+//グループ編集画面
 class groupEditViewController: UIViewController, UITextViewDelegate, UITextFieldDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
     
     @IBOutlet weak var groupImageButton: UIButton!
@@ -363,6 +363,7 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
             SDImageCache.shared.clearMemory()
             SDImageCache.shared.clearDisk()
         }
+       
         let storyboar = UIStoryboard(name: "Home", bundle: nil)
         let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
         let nav = UINavigationController(rootViewController: homeViewController)

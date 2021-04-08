@@ -11,16 +11,23 @@ import Firebase
 class ProfileSettingViewController: UIViewController {
     
     @IBOutlet weak var editButton: UIBarButtonItem!
+    @IBOutlet weak var logOutButton: UIButton!
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var profileTextView: UITextView!
     @IBOutlet weak var saveButton: UIBarButtonItem!
+    @IBOutlet weak var doSupportCountLabel: UILabel!
+    @IBOutlet weak var BeDoneSupportCountLabel: UILabel!
+    
     
     var listener: ListenerRegistration?
     var id:String?
     
     @IBAction func hiddenButton(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
+    }
+    @IBAction func logOutButton(_ sender: Any) {
+        logOut()
     }
     
     
@@ -37,7 +44,22 @@ class ProfileSettingViewController: UIViewController {
         profileTextView.isEditable = false
         editButton.accessibilityElementsHidden = true
         editButton.isEnabled = false
-        
+        logOutButton.isHidden = true
+        logOutButton.isEnabled = false
+    }
+    
+    private func logOut() {
+        do {
+            try Auth.auth().signOut()
+            let storyboard = UIStoryboard(name: "SingUp", bundle: nil)
+            let singupViewController = storyboard.instantiateViewController(withIdentifier: "SingUpViewController")
+            
+            let nav = UINavigationController(rootViewController: singupViewController)
+            nav.modalPresentationStyle = .fullScreen
+            self.present(nav, animated: true, completion: nil)
+        } catch {
+            print("ログアウトに失敗しました。\(error)")
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -55,7 +77,8 @@ class ProfileSettingViewController: UIViewController {
         if id == uid {
             editButton.accessibilityElementsHidden = false
             editButton.isEnabled = true
-        }
+            logOutButton.isHidden = false
+            logOutButton.isEnabled = true        }
         let db = Firestore.firestore()
         let userRef = db.collection(Const.User).document(self.id ?? uid)
         listener = userRef.addSnapshotListener() { (doucuments,err) in
@@ -77,7 +100,8 @@ class ProfileSettingViewController: UIViewController {
             if userData.profileText != "" {
                 self.profileTextView.text = userData.profileText
             }
-            
+            self.doSupportCountLabel.text = String(userData.doSupport ?? 0)
+            self.BeDoneSupportCountLabel.text = String(userData.BedoneSupport ?? 0)
         }
     }
 }

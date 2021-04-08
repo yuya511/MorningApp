@@ -24,7 +24,6 @@ class HomeViewController: UIViewController {
             let japanTime:String = formatChang(date: targetTime ?? Date())
             UserDefaults.standard.set(japanTime, forKey: "SETTIME")
             setNotification()
-
         }
     }
     
@@ -33,6 +32,13 @@ class HomeViewController: UIViewController {
     private var users = [User]()
     private var chat = [Chatroom]()
     private var nowGroup:String?
+    private var groupName:String? {
+        didSet {
+            if let groupName = groupName {
+                self.navigationItem.title = "\(String(describing: groupName))"
+            }
+        }
+    }
     
     //監視するやつ
     private var listener: ListenerRegistration?
@@ -168,6 +174,11 @@ class HomeViewController: UIViewController {
             // 文字の色
             .foregroundColor: UIColor.rgb(red: 150, green: 150, blue: 255)
         ]
+        
+        self.navigationController?.navigationBar.titleTextAttributes = [
+            // 文字の色
+            .foregroundColor: UIColor.rgb(red: 100, green: 150, blue: 255)
+        ]
 
         //カスタムセルの登録
         HomeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
@@ -205,6 +216,7 @@ class HomeViewController: UIViewController {
                 }
                 guard let UserData = querySnapshot?.data() else { return }
                 guard let nowGroup = UserData["nowGroup"] else { return }
+                self.nowGroup = nowGroup as? String
                 self.setChatrooms(nowGroup: nowGroup as? String ?? "")
             }
             
@@ -216,12 +228,17 @@ class HomeViewController: UIViewController {
         
         if Auth.auth().currentUser != nil {
             let db = Firestore.firestore()
-            guard let uid = Auth.auth().currentUser?.uid else { return }
-            let userRef = db.collection(Const.User).document(uid)
-            userRef.getDocument { (documents, err) in
+
+            let groupRef = db.collection(Const.ChatRooms).document(nowGroup)
+            groupRef.getDocument() { (document,err) in
                 if let err = err {
-                    print("err",err)
+                    print(err)
+                    return
                 }
+                let groupData = document?.data()
+                guard let groupName = groupData?["groupName"] else { return }
+                self.groupName = groupName as? String
+            }
                 let chatroomsRef = db.collection(Const.ChatRooms).document(nowGroup).collection(Const.Chat).order(by: "date", descending: true)
                 //チャットの内容を監視
                 self.listener = chatroomsRef.addSnapshotListener() {(querysnapshot, err) in
@@ -231,29 +248,24 @@ class HomeViewController: UIViewController {
                     }
                     self.chat = querysnapshot!.documents.map { document in
                         let chatData = Chatroom(document: document)
+                        
                         return chatData
                     }
                     
                     self.HomeTableView.reloadData()
                 }
-            }
         }
     }
     
     
-    private func timeMonitor() {
+    func timeMonitor() {
         let now = Date()
-        
         let nowString = formatChang(date: now)
-        
         guard let setTimeDate = load(key: "SETDATE") else { return }
-            
         let pullModifiedDate = Calendar.current.date(byAdding: .minute, value: -15, to: setTimeDate)!
         let pullModifiedString = formatChang(date: pullModifiedDate)
-        
         let addModifiedDate = Calendar.current.date(byAdding: .minute, value: 15, to: setTimeDate)!
         let addModifiedString = formatChang(date: addModifiedDate)
-        
         if pullModifiedString <= nowString && nowString <= addModifiedString {
             
             print("***範囲内です")
@@ -368,7 +380,7 @@ extension HomeViewController: ChatInputAccessoryDelegate {
             ] as [String : Any]
             chatroomRef.setData(chatroomDic)
             print("chatroomの情報が保存されました")
-    }
+        }
     }
 }
 
@@ -426,8 +438,52 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
             } else {
                 updateValue = FieldValue.arrayUnion([myUid])
             }
-            let chatRoomRef = Firestore.firestore().collection(Const.ChatRooms).document(chatData.chatId ?? "").collection(Const.Chat).document(chatData.chatId ?? myUid)
+            let chatRoomRef = Firestore.firestore().collection(Const.ChatRooms).document(nowGroup ?? "").collection(Const.Chat).document(chatData.chatId ?? myUid)
             chatRoomRef.updateData(["supports": updateValue])
+            
+            let userRef = Firestore.firestore().collection(Const.User).document(myUid)
+            userRef.getDocument() {(document,err) in
+                if let err = err {
+                    print(err)
+                    return
+                }
+                var newDoSupport: Int
+                let userData = document?.data()
+                let doSupport:Int = userData?["doSupport"] as? Int ?? 0
+                
+                if chatData.isSupport {
+                    newDoSupport = doSupport - 1
+                } else {
+                    newDoSupport = doSupport + 1
+                }
+                
+                userRef.updateData([
+                    "doSupport": newDoSupport
+                ])
+            }
+            
+            guard let uid = chatData.uid else { return }
+            let usersRef = Firestore.firestore().collection(Const.User).document(uid)
+            usersRef.getDocument() {(document,err)in
+                if let err = err {
+                    print(err)
+                    return
+                }
+                let usersData = document?.data()
+                var newDoSupport: Int
+                let BedoneSupport:Int = usersData?["BedoneSupport"] as? Int ?? 0
+                
+                if chatData.isSupport {
+                    newDoSupport = BedoneSupport - 1
+                } else {
+                    newDoSupport = BedoneSupport + 1
+                }
+                
+                usersRef.updateData([
+                    "BedoneSupport": newDoSupport
+                ])
+            }
+            
         }
     }
 }

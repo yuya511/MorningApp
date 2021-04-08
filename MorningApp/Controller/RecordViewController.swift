@@ -52,6 +52,13 @@ class RecordViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         setChartData()
+        timeCheck()
+    }
+    
+    func timeCheck() {
+        let storyboar = UIStoryboard(name: "Home", bundle: nil)
+        let HomeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+        HomeViewController.timeMonitor()
     }
     
     
@@ -80,10 +87,13 @@ class RecordViewController: UIViewController {
                 guard let data = document?.data() else {return}
                 let createdAt :Timestamp = data["createdAt"] as! Timestamp
                 let createdAtDate :Date = createdAt.dateValue()
-                //現在時刻を取得
-                let nowTime :Date = Date()
+                
+                let calendar = Calendar(identifier: .gregorian)
+                let nowTime = calendar.startOfDay(for: createdAtDate)
+                print("***nowTime",nowTime)
+                
                 //経過日数を取得
-                guard let elapsedDays = Calendar.current.dateComponents([.day], from: createdAtDate, to: nowTime).day else { return }
+                guard let elapsedDays = Calendar.current.dateComponents([.day], from: nowTime, to: Date()).day else { return }
                 let didcount = elapsedDays
                 
                 self.didCount = Double(didcount)
@@ -94,8 +104,16 @@ class RecordViewController: UIViewController {
                 self.successLabel.text = "\(morningCount) 日"
                 self.successCount = Double(morningCount)
                 self.mistakeLabel.text = "\(self.miss) 日"
-                self.percentLabel.text = "\(self.parsent)%"
+                print("***self.parent",String(self.parsent))
+                if self.parsent.isNaN {
+                    self.percentLabel.text = "データなし"
+                    self.percentLabel.font = self.percentLabel.font.withSize(15)
+                } else {
+                    self.percentLabel.text = "\(self.parsent)%"
+                }
                 self.setChart()
+
+               
                 
 //                let chatRef = Firestore.firestore().collection(Const.ChatRooms)
 //                let query = chatRef.whereField("uid", isEqualTo: uid).whereField("stamp", isEqualTo: true)

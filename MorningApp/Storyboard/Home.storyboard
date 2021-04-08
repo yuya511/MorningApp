@@ -95,7 +95,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="UFx-fi-BIH">
-                                        <rect key="frame" x="0.0" y="188" width="320" height="532"/>
+                                        <rect key="frame" x="0.0" y="188" width="320" height="492"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                     </tableView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="email" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Bsk-FT-VWr">
@@ -135,7 +135,7 @@
                                     <constraint firstItem="UFx-fi-BIH" firstAttribute="centerX" secondItem="w7p-50-9Xq" secondAttribute="centerX" id="5vZ-jn-g6m"/>
                                     <constraint firstAttribute="width" constant="320" id="EOi-cx-gdK"/>
                                     <constraint firstItem="gbf-DN-lRc" firstAttribute="top" secondItem="Bsk-FT-VWr" secondAttribute="bottom" constant="15" id="F0l-OB-Hkw"/>
-                                    <constraint firstAttribute="bottom" secondItem="UFx-fi-BIH" secondAttribute="bottom" id="F0t-no-YEG"/>
+                                    <constraint firstAttribute="bottom" secondItem="UFx-fi-BIH" secondAttribute="bottom" constant="40" id="F0t-no-YEG"/>
                                     <constraint firstItem="4wB-5Y-mus" firstAttribute="leading" secondItem="EIV-aI-G8y" secondAttribute="trailing" constant="20" id="IYI-4s-s4c"/>
                                     <constraint firstItem="gbf-DN-lRc" firstAttribute="leading" secondItem="Bsk-FT-VWr" secondAttribute="leading" id="Mps-qH-UT6"/>
                                     <constraint firstItem="2pf-IB-wDS" firstAttribute="leading" secondItem="6D1-nG-xzy" secondAttribute="leading" id="SmW-Kp-1Zq"/>

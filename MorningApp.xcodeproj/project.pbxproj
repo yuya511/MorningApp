@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8631B2A5261B55E6000767CF /* SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8631B2A4261B55E6000767CF /* SendViewController.swift */; };
 		864111262614980600B86EB6 /* 霧雨.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 864111252614980600B86EB6 /* 霧雨.mp3 */; };
 		864738EC25FBA50C00D7CDC6 /* chatroomSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864738EB25FBA50C00D7CDC6 /* chatroomSettingViewController.swift */; };
 		864738F025FC5C7400D7CDC6 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864738EF25FC5C7400D7CDC6 /* Group.swift */; };
@@ -50,6 +51,7 @@
 
 /* Begin PBXFileReference section */
 		724C37C5510A6D0309D6546F /* Pods_MorningApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MorningApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8631B2A4261B55E6000767CF /* SendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendViewController.swift; sourceTree = "<group>"; };
 		864111252614980600B86EB6 /* 霧雨.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "霧雨.mp3"; sourceTree = "<group>"; };
 		864738EB25FBA50C00D7CDC6 /* chatroomSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = chatroomSettingViewController.swift; sourceTree = "<group>"; };
 		864738EF25FC5C7400D7CDC6 /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 				86FDA35F2602695500C04B18 /* EditViewController.swift */,
 				865490D225E2360F006C8354 /* SingUpViewController.swift */,
 				8654916325E5FCF6006C8354 /* LoginViewController.swift */,
+				8631B2A4261B55E6000767CF /* SendViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -367,6 +370,7 @@
 				8654916425E5FCF6006C8354 /* LoginViewController.swift in Sources */,
 				86DEF4C125EF82200051DB7A /* RecordViewController.swift in Sources */,
 				86F9250B25DF8A4400A91DEB /* UIColer-Extention.swift in Sources */,
+				8631B2A5261B55E6000767CF /* SendViewController.swift in Sources */,
 				86C9DF1425F9141B00E58895 /* SettingViewController.swift in Sources */,
 				86FDA36426028C5F00C04B18 /* ProfileViewController.swift in Sources */,
 				864738F025FC5C7400D7CDC6 /* Group.swift in Sources */,
@@ -524,13 +528,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = CNKXDRW937;
+				DEVELOPMENT_TEAM = NNTM8J6ZCU;
 				INFOPLIST_FILE = MorningApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = jp.yuya.yamamoto.MorningApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yuya.yamamoto.MorningApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -544,13 +548,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = CNKXDRW937;
+				DEVELOPMENT_TEAM = NNTM8J6ZCU;
 				INFOPLIST_FILE = MorningApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = jp.yuya.yamamoto.MorningApp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.yuya.yamamoto.MorningApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;

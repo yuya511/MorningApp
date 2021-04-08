@@ -131,11 +131,10 @@ class MorningRecrdViewController: UIViewController {
                     "stamp": true,
                     "date": Timestamp(),
                     "uid": uid,
-                    "chatId": chatroomRef.documentID,
-                    "supports": []
+                    "chatId": chatroomRef.documentID
                 ] as [String : Any]
                 chatroomRef.setData(chatroomDic)
-                print("tappedMorningButtonの情報が保存されました")
+                print("***朝の目標の情報が保存されました")
             }
             
             let userData = document?.data()
@@ -148,6 +147,10 @@ class MorningRecrdViewController: UIViewController {
                 "morningCount": newMorningCount
             ])
         }
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
     }
 }
 

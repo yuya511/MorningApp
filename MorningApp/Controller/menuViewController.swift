@@ -76,6 +76,7 @@ class menuViewController: UIViewController {
         switch sender.direction {
         case .left:
             print("left Swipe")
+            self.dismiss(animated: true, completion: nil)
         case .right:
            print("right Swipe")
         default:
@@ -100,6 +101,14 @@ class menuViewController: UIViewController {
             },
             completion: { bool in
             })
+        
+        timeCheck()
+    }
+    
+    func timeCheck() {
+        let storyboar = UIStoryboard(name: "Home", bundle: nil)
+        let HomeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+        HomeViewController.timeMonitor()
     }
    
     func setUser() {

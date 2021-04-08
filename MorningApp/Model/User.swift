@@ -17,6 +17,8 @@ class User {
     let groupId: String?
     let profileText: String?
     let createdAt: Data?
+    let doSupport: Int?
+    let BedoneSupport: Int?
     
     
 //    init(document: QueryDocumentSnapshot) {
@@ -33,7 +35,8 @@ class User {
         self.profileText = userDic?["profileText"] as? String ?? ""
         let timestamp = userDic?["createdAt"] as? Timestamp
         self.createdAt = timestamp?.dateValue() as? Data
-        
+        self.doSupport = userDic?["doSupport"] as? Int ?? 0
+        self.BedoneSupport = userDic?["BedoneSupport"] as? Int ?? 0
         
     }
     

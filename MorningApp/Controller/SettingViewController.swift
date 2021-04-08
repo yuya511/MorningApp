@@ -17,9 +17,9 @@ class SettingViewController: UIViewController {
     
     private let sectionList:[String] = ["ユーザ・グループ設定","その他"]
     private let userSettingList:[String] = ["ユーザ設定","グループ設定"]
-    private let otherSettingList:[String] = ["ご意見・ご要望","通知"]
+    private let otherSettingList:[String] = ["ご意見・ご要望"]
     private let userImageList:[String] = ["oneUser","weUser"]
-    private let otherImageList:[String] = ["mail","notice"]
+    private let otherImageList:[String] = ["mail"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +46,17 @@ class SettingViewController: UIViewController {
         admobView.rootViewController = self
         admobView.load(GADRequest())
         self.view.addSubview(admobView)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        timeCheck()
+    }
+    
+    func timeCheck() {
+        let storyboar = UIStoryboard(name: "Home", bundle: nil)
+        let HomeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+        HomeViewController.timeMonitor()
     }
     
     private func logOut() {
@@ -83,6 +94,13 @@ class SettingViewController: UIViewController {
         let nav = UINavigationController(rootViewController: groupSelectViewController)
         present(nav, animated: true, completion: nil)
     }
+    
+    private func sendView() {
+        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
+        let SendViewController = storyboar.instantiateViewController(identifier: "SendViewController") as! SendViewController
+        let nav = UINavigationController(rootViewController: SendViewController)
+        present(nav, animated: true, completion: nil)
+    }
 }
 
 
@@ -93,7 +111,7 @@ extension SettingViewController: UITableViewDelegate,UITableViewDataSource {
         case 0:
             return 2
         case 1:
-            return 2
+            return 1
         default:
             return 0
         }
@@ -127,7 +145,11 @@ extension SettingViewController: UITableViewDelegate,UITableViewDataSource {
                 groupSelect()
             }
         } else if indexPath.section == 1 {
-            logOut()
+            if indexPath.row == 0 {
+                sendView()
+            } else {
+                
+            }
         } else {
         }
     }
