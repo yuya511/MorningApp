@@ -14,4 +14,5 @@ struct Const {
     static let Chat = "chat"
     static let User = "users"
     static let Opinion = "opinion"
+    static let Ban = "ban"
 }

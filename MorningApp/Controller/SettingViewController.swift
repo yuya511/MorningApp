@@ -23,6 +23,9 @@ class SettingViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        UITabBar.appearance().barTintColor = UIColor.white
+        self.overrideUserInterfaceStyle = .light
+
 
         settingTabelView.delegate = self
         settingTabelView.dataSource = self
@@ -42,7 +45,8 @@ class SettingViewController: UIViewController {
         admobView = GADBannerView(adSize: kGADAdSizeBanner)
         admobView.frame.origin = CGPoint(x: 0, y: self.view.frame.size.height - admobView.frame.height - tabbarSize)
         admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
-        admobView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+//        admobView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        admobView.adUnitID = "ca-app-pub-7475127346409545/8974259664"
         admobView.rootViewController = self
         admobView.load(GADRequest())
         self.view.addSubview(admobView)

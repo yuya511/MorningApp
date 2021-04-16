@@ -37,14 +37,17 @@ class RecordViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setNav()
-        
+        UITabBar.appearance().barTintColor = UIColor.white
+        self.overrideUserInterfaceStyle = .light
+
         guard let tabbarSize = tabBarController?.tabBar.frame.size.height else { return }
         
         var admobView = GADBannerView()
         admobView = GADBannerView(adSize: kGADAdSizeBanner)
         admobView.frame.origin = CGPoint(x: 0, y: self.view.frame.size.height - admobView.frame.height - tabbarSize)
         admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
-        admobView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+//        admobView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        admobView.adUnitID = "ca-app-pub-7475127346409545/8974259664"
         admobView.rootViewController = self
         admobView.load(GADRequest())
         self.view.addSubview(admobView)
@@ -87,9 +90,12 @@ class RecordViewController: UIViewController {
                 guard let data = document?.data() else {return}
                 let createdAt :Timestamp = data["createdAt"] as! Timestamp
                 let createdAtDate :Date = createdAt.dateValue()
+                print("***createdAtDate",createdAtDate)
                 
-                let calendar = Calendar(identifier: .gregorian)
-                let nowTime = calendar.startOfDay(for: createdAtDate)
+                
+                
+                let ccalendar = Calendar(identifier: .gregorian)
+                let nowTime = ccalendar.startOfDay(for: createdAtDate)
                 print("***nowTime",nowTime)
                 
                 //経過日数を取得
@@ -99,42 +105,27 @@ class RecordViewController: UIViewController {
                 self.didCount = Double(didcount)
                 //経過日数のデータ
                 self.didLabel.text = "\(didcount) 日"
+                print("***didcount",didcount)
                 //成功した日にちの数
                 let morningCount:Int = data["morningCount"] as? Int ?? 0
                 self.successLabel.text = "\(morningCount) 日"
                 self.successCount = Double(morningCount)
-                self.mistakeLabel.text = "\(self.miss) 日"
-                print("***self.parent",String(self.parsent))
+                if self.miss < 0 {
+                    self.mistakeLabel.text = "\(0) 日"
+                } else {
+                    self.mistakeLabel.text = "\(self.miss) 日"
+                }
                 if self.parsent.isNaN {
                     self.percentLabel.text = "データなし"
                     self.percentLabel.font = self.percentLabel.font.withSize(15)
                 } else {
-                    self.percentLabel.text = "\(self.parsent)%"
+                    if self.parsent.isInfinite == true {
+                        self.percentLabel.text = "データなし"
+                    } else {
+                        self.percentLabel.text = "\(self.parsent)%"
+                    }
                 }
                 self.setChart()
-
-               
-                
-//                let chatRef = Firestore.firestore().collection(Const.ChatRooms)
-//                let query = chatRef.whereField("uid", isEqualTo: uid).whereField("stamp", isEqualTo: true)
-//                query.getDocuments { (snaps, err) in
-//                    if let err = err {
-//                        print(err)
-//                        return
-//                    }
-//                    guard let snaps = snaps else {return}
-//                    let successcount = snaps.documents.count
-//                    self.successCount = Double(successcount)
-//                    //成功日数のデータ
-//                    self.successLabel.text = "\(successcount) 日"
-//                    //失敗日数のデータ
-//                    self.mistakeLabel.text = "\(String(self.miss)) 日"
-//                    print("didCount",self.didCount)
-//                    print("miss",self.miss)
-//                    //グラフの中心のデータ
-//                    self.percentLabel.text = "\(String(self.parsent))%"
-//                    self.setChart()
-//                }
             }
         }
     }

@@ -36,7 +36,7 @@
                         <nil key="highlightedColor"/>
                     </label>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="まだ説明がありません" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pPO-ZG-GaJ">
-                        <rect key="frame" x="35" y="55" width="133" height="67"/>
+                        <rect key="frame" x="35" y="55" width="310" height="67"/>
                         <fontDescription key="fontDescription" type="system" pointSize="13"/>
                         <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <nil key="highlightedColor"/>
@@ -58,6 +58,7 @@
                     <constraint firstAttribute="bottomMargin" secondItem="pPO-ZG-GaJ" secondAttribute="bottom" constant="10" id="ABs-Ei-Nbr"/>
                     <constraint firstItem="pPO-ZG-GaJ" firstAttribute="leading" secondItem="Tmd-me-CNH" secondAttribute="leading" constant="30" id="GSr-ei-RzE"/>
                     <constraint firstItem="Tmd-me-CNH" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="5" id="Lf8-3c-m1u"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="pPO-ZG-GaJ" secondAttribute="trailing" constant="10" id="Ubb-w7-xMX"/>
                     <constraint firstItem="38G-N7-iOc" firstAttribute="leading" secondItem="Tmd-me-CNH" secondAttribute="trailing" constant="20" id="dgS-KB-bVg"/>
                     <constraint firstItem="pPO-ZG-GaJ" firstAttribute="top" secondItem="Tmd-me-CNH" secondAttribute="bottom" constant="20" id="oX9-o8-tcB"/>
                     <constraint firstItem="Tmd-me-CNH" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="5" id="xuF-5B-NkO"/>

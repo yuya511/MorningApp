@@ -24,7 +24,7 @@ class SendViewController: UIViewController, UITextViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        self.overrideUserInterfaceStyle = .light
         sendTextView.delegate = self
         sendTextView.layer.borderColor = UIColor.rgb(red: 200, green: 200, blue: 200).cgColor
         sendTextView.layer.borderWidth = 1.0
@@ -71,7 +71,7 @@ class SendViewController: UIViewController, UITextViewDelegate {
         
         opinionRef.setData(docData)
         print("意見が送られました")
-        SVProgressHUD.showSuccess(withStatus: "ありがとうございます！")
+        SVProgressHUD.showSuccess(withStatus: "ご意見ありがとうございます！")
         self.dismiss(animated: true, completion: nil)
     }
     

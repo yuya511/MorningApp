@@ -7,6 +7,7 @@
 
 import UIKit
 import Firebase
+import SVProgressHUD
 
 //グループ作成の画面
 class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
@@ -15,11 +16,13 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
     @IBOutlet weak var groupNameTextFeld: UITextField!
     @IBOutlet weak var groupPasswordTextField: UITextField!
     @IBOutlet weak var groupRegisterButtonOutlet: UIButton!
+    @IBOutlet weak var endOutlet: UIBarButtonItem!
     
     @IBAction func endButton(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
     }
     var groupPasswordIsEmpty:Bool = true
+    
     
     @IBAction func groupRegisterButton(_ sender: Any) {
         firebase()
@@ -27,6 +30,8 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        firestCheck()
+        self.overrideUserInterfaceStyle = .light
         
         groupRegisterButtonOutlet.layer.cornerRadius = 10
         groupRegisterButtonOutlet.isEnabled = false
@@ -48,6 +53,24 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
         ]
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    private func firestCheck() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let userRef = Firestore.firestore().collection(Const.User).document(uid)
+        userRef.getDocument { (documents, err) in
+            if let err = err {
+                print("err",err)
+            }
+
+            guard let document = documents?.data() else { return }
+            if let _:String = document["nowGroup"] as? String {
+                
+            } else {
+                self.endOutlet.isEnabled = false
+                self.endOutlet.accessibilityElementsHidden = true
+            }
+        }
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
@@ -100,7 +123,8 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
             "date": Timestamp(),
             "membar": [uid],
             "groupName": groupText,
-            "groupProfileText": ""
+            "groupProfileText": "",
+            "myChat":false
         ] as [String : Any]
         chatroomRef.setData(chatroomDic)
         print("***chatroomの情報が保存されました")
@@ -115,6 +139,7 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
         ])
         
         let image = self.groupImageButton.imageView?.image ?? UIImage(named: "男シルエットイラスト")
+
         //画像をjpgに変更
         guard let uploadImage = image?.jpegData(compressionQuality: 0.3) else { return }
         //画像の保存場所を指定
@@ -129,13 +154,22 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
             }
             print("DEBUG_PRINT: 画像の保存に成功しました。")
         }
+
         
-        let storyboar = UIStoryboard(name: "Home", bundle: nil)
-        let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
-        let nav = UINavigationController(rootViewController: homeViewController)
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: true, completion: nil)
-        
+        if UserDefaults.standard.bool(forKey: "firestTime") {
+            let storyboar = UIStoryboard(name: "Home", bundle: nil)
+            let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+            let nav = UINavigationController(rootViewController: homeViewController)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: true, completion: nil)
+        } else {
+            UserDefaults.standard.set(true, forKey: "firestTime")
+            let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
+            let MorningSettingViewController = storyboar.instantiateViewController(identifier: "MorningSettingViewController") as! MorningSettingViewController
+            let nav = UINavigationController(rootViewController: MorningSettingViewController)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: true, completion: nil)
+        }
     }
     
     func textFieldDidChangeSelection(_ textField: UITextField) {
@@ -207,11 +241,20 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
                     "membar": FieldValue.arrayUnion([uid])
                 ])
                 
-                let storyboar = UIStoryboard(name: "Home", bundle: nil)
-                let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
-                let nav = UINavigationController(rootViewController: homeViewController)
-                nav.modalPresentationStyle = .fullScreen
-                self.present(nav, animated: true, completion: nil)
+                if UserDefaults.standard.bool(forKey: "firestTime") {
+                    let storyboar = UIStoryboard(name: "Home", bundle: nil)
+                    let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+                    let nav = UINavigationController(rootViewController: homeViewController)
+                    nav.modalPresentationStyle = .fullScreen
+                    self.present(nav, animated: true, completion: nil)
+                } else {
+                    UserDefaults.standard.set(true, forKey: "firestTime")
+                    let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
+                    let MorningSettingViewController = storyboar.instantiateViewController(identifier: "MorningSettingViewController") as! MorningSettingViewController
+                    let nav = UINavigationController(rootViewController: MorningSettingViewController)
+                    nav.modalPresentationStyle = .fullScreen
+                    self.present(nav, animated: true, completion: nil)
+                }
             } else {
                 print("***パスワードが設定されている")
                 let storybor = UIStoryboard(name: "Setting", bundle: nil)
@@ -238,6 +281,8 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.overrideUserInterfaceStyle = .light
+
         //デリゲート先を自分に設定する。
         groupSerchBar.delegate = self
         groupTableView.delegate = self
@@ -263,12 +308,13 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         //キーボードを閉じる。
         groupSerchBar.endEditing(true)
+        
     }
     
    
     private func firebaseGroup() {
         if Auth.auth().currentUser != nil {
-            let groupRef = Firestore.firestore().collection(Const.ChatRooms).order(by: "date",descending: true)
+            let groupRef = Firestore.firestore().collection(Const.ChatRooms).whereField("myChat", isEqualTo: false).order(by: "date",descending: true)
             listener = groupRef.addSnapshotListener() {
                 (querySnapshot, err) in
                 if let err = err {
@@ -314,6 +360,9 @@ extension chatroomEnterViewController:UITableViewDelegate,UITableViewDataSource 
     //選ばれたセル
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+        
+        groupSerchBar.endEditing(true)
+        
         didSelectRowLabel.text = searchGroupNameList[indexPath.row]
         pickGroupId = searchGroupIdList[indexPath.row]
         
@@ -327,6 +376,7 @@ extension chatroomEnterViewController:UITableViewDelegate,UITableViewDataSource 
         resultChatgroup.removeAll()
         searchGroupNameList.removeAll()
         searchGroupIdList.removeAll()
+        
 
         if groupSerchBar.text == "" {
             //検索文字列が空の場合はすべてを表示する。
@@ -380,6 +430,7 @@ class passwordViewController:UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.overrideUserInterfaceStyle = .light
         
         passwordTextFiled.layer.cornerRadius = 10
         enterButton.layer.cornerRadius = 7
@@ -401,13 +452,26 @@ class passwordViewController:UIViewController, UITextFieldDelegate {
                 "membar": FieldValue.arrayUnion([uid ?? ""])
             ])
             
-            let storyboar = UIStoryboard(name: "Home", bundle: nil)
-            let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
-            let nav = UINavigationController(rootViewController: homeViewController)
-            nav.modalPresentationStyle = .fullScreen
-            self.present(nav, animated: true, completion: nil)
+            if UserDefaults.standard.bool(forKey: "firestTime") {
+                let storyboar = UIStoryboard(name: "Home", bundle: nil)
+                let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+                let nav = UINavigationController(rootViewController: homeViewController)
+                nav.modalPresentationStyle = .fullScreen
+                self.present(nav, animated: true, completion: nil)
+            } else {
+                UserDefaults.standard.set(true, forKey: "firestTime")
+                let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
+                let MorningSettingViewController = storyboar.instantiateViewController(identifier: "MorningSettingViewController") as! MorningSettingViewController
+                let nav = UINavigationController(rootViewController: MorningSettingViewController)
+                nav.modalPresentationStyle = .fullScreen
+                self.present(nav, animated: true, completion: nil)
+            }
+            
         } else {
             print("パスワードが違う")
+            SVProgressHUD.showError(withStatus: "有効なパスワードでは、ありません")
+
+            
         }
     }
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {

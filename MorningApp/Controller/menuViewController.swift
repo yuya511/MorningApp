@@ -33,12 +33,18 @@ class menuViewController: UIViewController {
     private var groups = [Group]()
     private var membarUidList = [String]()
     private var groupIdList = [String]()
+    private var myNowGroup : String?
+    private var myNowGroupNmae : String?
+
     
     var sectionArry = ["グループ","メンバー"]
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        UITabBar.appearance().barTintColor = UIColor.white
+        self.overrideUserInterfaceStyle = .light
+
         menuView.backgroundColor = .rgb(red: 240, green: 240, blue: 255)
         menuView.layer.cornerRadius = 10
         menuImageView.layer.cornerRadius = 25
@@ -48,6 +54,7 @@ class menuViewController: UIViewController {
         menuTabelView.dataSource = self
         menuTabelView.register(UINib(nibName: "menuMemberTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
         menuTargetLabel.text = UserDefaults.standard.string(forKey: "SETTIME") ?? "設定する"
+        self.overrideUserInterfaceStyle = .light
         //右へ
         let rightSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
         rightSwipeGesture.direction = .right
@@ -64,9 +71,44 @@ class menuViewController: UIViewController {
 
         var admobView = GADBannerView()
         admobView = GADBannerView(adSize: kGADAdSizeBanner)
-        admobView.frame.origin = CGPoint(x: 0, y: self.view.frame.size.height - admobView.frame.height - tabbarSize - 34)
-        admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
-        admobView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        
+        let screenSize = UIScreen.main.bounds.size
+        switch (screenSize.height) {
+        case 480.0:
+            admobView.frame.origin = CGPoint(x: 0, y: self.view.frame.size.height - admobView.frame.height - tabbarSize)
+            admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
+             break
+        case 568.0:
+            admobView.frame.origin = CGPoint(x: 0, y: self.view.frame.size.height - admobView.frame.height - tabbarSize)
+            admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
+             break
+        case 667.0:
+            //iPhone8とか
+            admobView.frame.origin = CGPoint(x: 0, y: self.view.frame.size.height - admobView.frame.height - tabbarSize)
+            admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
+             break
+        case 736.0:
+            admobView.frame.origin = CGPoint(x: 0, y: self.view.frame.size.height - admobView.frame.height - tabbarSize - 34)
+            admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
+             break
+        case 812.0:
+            admobView.frame.origin = CGPoint(x: 0, y: self.view.frame.size.height - admobView.frame.height - tabbarSize - 34)
+            admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
+             break
+        case 896.0:
+            admobView.frame.origin = CGPoint(x: 0, y: self.view.frame.size.height - admobView.frame.height - tabbarSize - 34)
+            admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
+             break
+        default:
+            admobView.frame.origin = CGPoint(x: 0, y: self.view.frame.size.height - admobView.frame.height - tabbarSize - 34)
+            admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
+             break
+        }
+        
+        
+//        admobView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        admobView.adUnitID = "ca-app-pub-7475127346409545/8974259664"
+
         admobView.rootViewController = self
         admobView.load(GADRequest())
         self.view.addSubview(admobView)
@@ -118,17 +160,16 @@ class menuViewController: UIViewController {
             let UserRef = Firestore.firestore().collection(Const.User).document(uid)
             UserRef.addSnapshotListener() { (querySnapshot, err) in
                 if let err = err {
-                    print("err",err)
+                    print("***err",err)
                     return
                 }
                 guard let UserData = querySnapshot?.data() else { return }
                 guard let nowGroup = UserData["nowGroup"] else { return }
+                self.myNowGroup = nowGroup as? String
                 self.fetchUserInfoFromFirestore(nowGroup: nowGroup as? String ?? "")
             }
             
             //ログインしているユーザーの画像と名前を表示する
-            
-            
             let imageRef = Storage.storage().reference().child(Const.ImagePath).child(uid + ".jpg")
             menuImageView.sd_setImage(with: imageRef)
             
@@ -147,15 +188,17 @@ class menuViewController: UIViewController {
         }
     }
     
+    //nowGroupがあったら呼ばれるようにしている
     private func fetchUserInfoFromFirestore(nowGroup:String) {
-        
+        print("****",nowGroup)
         //ユーザのメンバーの監視
         if Auth.auth().currentUser != nil{
+            //userからGroupIdを取得し、groupsにデータをセットしている
             guard let uid = Auth.auth().currentUser?.uid else { return }
             let userRef = Firestore.firestore().collection(Const.User).document(uid)
             userRef.getDocument { (documents, err) in
                 if let err = err {
-                    print("err",err)
+                    print("***err",err)
                 }
                 guard let document = documents?.data() else { return }
                 guard let groupId:[String] = document["groupId"] as? [String] else { return }
@@ -164,13 +207,15 @@ class menuViewController: UIViewController {
                     let groupRef = Firestore.firestore().collection(Const.ChatRooms).document(id)
                     groupRef.addSnapshotListener() {(querySnapshot,err) in
                         if let err = err {
-                            print("err",err)
+                            print("***err",err)
                             return
                         }
                         guard let querySnapshot = querySnapshot else {return}
+                        print("self.呼ばれている")
                         self.groups.append(Group(docu: querySnapshot))
                     }
                 }
+                //nowGroupを使ってmembarを取得し、membarのUIDからuserのデータを取得しusersにデータをセットしている
                 let chatroomMembarRef = Firestore.firestore().collection(Const.ChatRooms).document(nowGroup)
                 chatroomMembarRef.addSnapshotListener() { (querySnapshot, error) in
                     if let error = error {
@@ -178,31 +223,23 @@ class menuViewController: UIViewController {
                         return
                     }
                     guard let chatroomData = querySnapshot?.data() else { return }
-                    self.membarUidList = chatroomData["membar"] as? [String] ?? ["err"]
+                    self.myNowGroupNmae = chatroomData["groupName"] as? String
+                    self.membarUidList = chatroomData["membar"] as? [String] ?? ["メンバーなし"]
                     guard let chatroomMembar:[String] = chatroomData["membar"] as? [String] else { return }
                     for membar in chatroomMembar {
                         let membarRef = Firestore.firestore().collection(Const.User).document(membar)
                         membarRef.addSnapshotListener() {(document,err) in
                             if let err = err {
-                                print(err)
+                                print("***err",err)
                             }
                             guard let document = document else { return }
                             let user = User(document: document)
+
                             self.users.append(user)
                             self.menuTabelView.reloadData()
                         }
                     }
-                }
-            }
-            for groupId in groupIdList {
-                let groupRef = Firestore.firestore().collection(Const.ChatRooms).document(groupId)
-                groupRef.addSnapshotListener() {(querySnapshot,err) in
-                    if let err = err {
-                        print("err",err)
-                        return
-                    }
-                    guard let querySnapshot = querySnapshot else {return}
-                    self.groups.append(Group(docu: querySnapshot))
+                    self.menuTabelView.reloadData()
                 }
             }
         }
@@ -287,8 +324,11 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 0 {
+            print("***groups.count",groups.count)
             return groups.count
+            
         } else if section == 1 {
+            print("***users.count",users.count)
             return users.count
         } else {
             return 0
@@ -305,6 +345,118 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
             return cellMembar
         } else {
             return cellMembar
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath)-> UITableViewCell.EditingStyle {
+        if indexPath.section == 0 {
+            return .none
+        } else if indexPath.section == 1 {
+            return .delete
+        } else {
+            return .none
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, titleForDeleteConfirmationButtonForRowAt indexPath: IndexPath) -> String? {
+        guard let nowId = Auth.auth().currentUser?.uid else { return ""}
+        if users[indexPath.row].uid == nowId {
+            return "グループから抜ける"
+        } else {
+            return "削除"
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        let db = Firestore.firestore()
+        guard let myUid = Auth.auth().currentUser?.uid else {return}
+        let userUid = users[indexPath.row].uid
+        guard let userName = users[indexPath.row].username else { return }
+        
+        if editingStyle == .delete {
+            if userUid == myUid {
+                let alertController:UIAlertController = UIAlertController(title:"「\(self.myNowGroupNmae ?? "")」から退会しますか？", message: "", preferredStyle: .alert)
+                let doAction:UIAlertAction = UIAlertAction(title: "退会", style: .destructive, handler: {(action:UIAlertAction!) -> Void in
+                    
+                    var GroupUpdateValue: FieldValue
+                    var UserUpdateValue: FieldValue
+                    
+                    GroupUpdateValue = FieldValue.arrayRemove([myUid])
+                    UserUpdateValue = FieldValue.arrayRemove([self.myNowGroup!])
+                    
+                    let groupRef = db.collection(Const.ChatRooms).document(self.myNowGroup!)
+                    let userRef = db.collection(Const.User).document(myUid)
+                    userRef.getDocument() {(doument,err) in
+                        if let err = err {
+                            print(err)
+                            return
+                        }
+                            groupRef.updateData(["membar":GroupUpdateValue])
+                            userRef.updateData(["groupId":UserUpdateValue])
+                        
+                        SVProgressHUD.showSuccess(withStatus: "「\(self.myNowGroupNmae ?? "")」から退会しました。")
+                        
+                        let storyboar = UIStoryboard(name: "Home", bundle: nil)
+                        let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+                        let nav = UINavigationController(rootViewController: homeViewController)
+                        nav.modalPresentationStyle = .overFullScreen
+                        nav.modalTransitionStyle = .coverVertical
+                        self.present(nav, animated: true, completion: nil)
+                    }
+                })
+                let canselAction:UIAlertAction = UIAlertAction(title: "キャンセル", style: .default, handler: {(action:UIAlertAction!) -> Void in
+                    print("キャンセルが呼ばれた。")
+                })
+                
+                alertController.addAction(canselAction)
+                alertController.addAction(doAction)
+                
+                present(alertController, animated: true, completion: nil)
+                
+            } else {
+                
+                let alertController:UIAlertController = UIAlertController(title:"「\(userName)」をグループから削除しますか？", message: "", preferredStyle: .alert)
+                let doAction:UIAlertAction = UIAlertAction(title: "削除", style: .destructive, handler: {(action:UIAlertAction!) -> Void in
+                    
+                    var GroupUpdateValue: FieldValue
+                    var UserUpdateValue: FieldValue
+                    
+                    GroupUpdateValue = FieldValue.arrayRemove([userUid])
+                    UserUpdateValue = FieldValue.arrayRemove([self.myNowGroup!])
+                    
+                    let groupRef = db.collection(Const.ChatRooms).document(self.myNowGroup!)
+                    let userRef = db.collection(Const.User).document(userUid)
+                    userRef.getDocument() {(doument,err) in
+                        if let err = err {
+                            print(err)
+                            return
+                        }
+                            groupRef.updateData(["membar":GroupUpdateValue])
+                            userRef.updateData(["groupId":UserUpdateValue])
+                        }
+                        
+                        SVProgressHUD.showSuccess(withStatus: "「\(userName))」を削除しました。")
+                        
+                        let storyboar = UIStoryboard(name: "Home", bundle: nil)
+                        let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+                        let nav = UINavigationController(rootViewController: homeViewController)
+                        nav.modalPresentationStyle = .overFullScreen
+                        nav.modalTransitionStyle = .coverVertical
+                        self.present(nav, animated: true, completion: nil)
+                    
+                })
+                let canselAction:UIAlertAction = UIAlertAction(title: "キャンセル", style: .default, handler: {(action:UIAlertAction!) -> Void in
+                    print("キャンセルが呼ばれた。")
+                })
+
+                alertController.addAction(canselAction)
+                alertController.addAction(doAction)
+
+                present(alertController, animated: true, completion: nil)
+
+            }
+        } else {
+            
         }
     }
 }

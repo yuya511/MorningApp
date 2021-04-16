@@ -35,6 +35,8 @@ class GroupCell: UITableViewCell {
         }
         if groupData.password == "" {
             LockButton.isHidden = true
+        } else {
+            LockButton.isHidden = false
         }
     }
 

@@ -21,7 +21,8 @@ class MorningChuckViewController: UIViewController, AVAudioPlayerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.overrideUserInterfaceStyle = .light
+
         let tapGesture:UITapGestureRecognizer = UITapGestureRecognizer(
             target: self,
             action: #selector(MorningChuckViewController.tapped(_:)))
@@ -93,7 +94,8 @@ class MorningRecrdViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.overrideUserInterfaceStyle = .light
+
         targetSettingTextView.layer.cornerRadius = 10
         decisionButtonOutlet.layer.cornerRadius = 5
     }
@@ -102,6 +104,7 @@ class MorningRecrdViewController: UIViewController {
         let now = Date()
         //今日かどうかを判定するために、保存
         UserDefaults.standard.set(now, forKey: "NOWDATE")
+        
         let storyboar = UIStoryboard(name: "Home", bundle: nil)
         let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
         let nav = UINavigationController(rootViewController: homeViewController)
@@ -158,8 +161,8 @@ class MorningRecrdViewController: UIViewController {
 
 
 
-//目標時間の設定画面
-class MorningSettingViewController: UIViewController {
+//朝の目標時間の設定画面
+class MorningSettingViewController: UIViewController, UNUserNotificationCenterDelegate {
     
     var settingTime:Date?
     var time:String?
@@ -179,7 +182,10 @@ class MorningSettingViewController: UIViewController {
         super.viewDidLoad()
         
         setLayout()
-       
+        self.overrideUserInterfaceStyle = .light
+        UITabBar.appearance().barTintColor = UIColor.white
+
+        
     }
    
     func setLayout() {
@@ -209,12 +215,27 @@ class MorningSettingViewController: UIViewController {
     }
     
     @objc func backButton() {
-        self.dismiss(animated: true, completion: nil)
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { ( granted, error) in
+            
+        }
+        center.delegate = self
+        print("***呼ばれている")
+        let storyboar = UIStoryboard(name: "Home", bundle: nil)
+        let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+        let nav = UINavigationController(rootViewController: homeViewController)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true, completion: nil)
+
     }
     
     
     @objc func tappedSettingButton() {
-
+        let center = UNUserNotificationCenter.current()
+        center.requestAuthorization(options: [.alert, .sound, .badge]) { ( granted, error) in
+            
+        }
+        center.delegate = self
         let storyboar = UIStoryboard(name: "Home", bundle: nil)
         let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
         homeViewController.targetTime = settingTime

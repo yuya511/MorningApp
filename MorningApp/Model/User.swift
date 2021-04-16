@@ -19,6 +19,7 @@ class User {
     let createdAt: Data?
     let doSupport: Int?
     let BedoneSupport: Int?
+    let nowGroup: String?
     
     
 //    init(document: QueryDocumentSnapshot) {
@@ -37,6 +38,7 @@ class User {
         self.createdAt = timestamp?.dateValue() as? Data
         self.doSupport = userDic?["doSupport"] as? Int ?? 0
         self.BedoneSupport = userDic?["BedoneSupport"] as? Int ?? 0
+        self.nowGroup = userDic?["nowGroup"] as? String ?? ""
         
     }
     

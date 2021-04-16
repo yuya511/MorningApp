@@ -66,8 +66,15 @@ class HomeViewController: UIViewController {
         menuReload()
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        self.overrideUserInterfaceStyle = .light
+
         
         setUpHomeTableView()
         setUpNotification()
@@ -75,7 +82,6 @@ class HomeViewController: UIViewController {
         //右へ
         let rightSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
         rightSwipeGesture.direction = .right
-        
         //左へ
         let leftSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
         leftSwipeGesture.direction = .left
@@ -174,12 +180,10 @@ class HomeViewController: UIViewController {
             // 文字の色
             .foregroundColor: UIColor.rgb(red: 150, green: 150, blue: 255)
         ]
-        
         self.navigationController?.navigationBar.titleTextAttributes = [
             // 文字の色
             .foregroundColor: UIColor.rgb(red: 100, green: 150, blue: 255)
         ]
-
         //カスタムセルの登録
         HomeTableView.register(UINib(nibName: "HomeTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
         HomeTableView.register(UINib(nibName: "MorningTableViewCell", bundle: nil), forCellReuseIdentifier: cellId02)
@@ -189,10 +193,9 @@ class HomeViewController: UIViewController {
         //ログインの確認
         if Auth.auth().currentUser?.uid == nil {
             let storyboar = UIStoryboard(name: "SingUp",bundle: nil)
-            let singUpViewController = storyboar.instantiateViewController(identifier: "SingUpViewController") as! SingUpViewController
-            let nav = UINavigationController(rootViewController: singUpViewController)
-            nav.modalPresentationStyle = .fullScreen
-            self.present(nav, animated: true, completion: nil)
+            let FirestViewController = storyboar.instantiateViewController(identifier: "FirestViewController") as! FirestViewController
+            FirestViewController.modalPresentationStyle = .fullScreen
+            self.present(FirestViewController, animated: true, completion: nil)
         }
     }
     
@@ -219,7 +222,6 @@ class HomeViewController: UIViewController {
                 self.nowGroup = nowGroup as? String
                 self.setChatrooms(nowGroup: nowGroup as? String ?? "")
             }
-            
         }
     }
     

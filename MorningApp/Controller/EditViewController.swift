@@ -21,6 +21,8 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate & UI
     @IBOutlet weak var saveButton: UIButton!
     
     override func viewDidLoad() {
+        self.overrideUserInterfaceStyle = .light
+
         super.viewDidLoad()
 
         setLayout()
@@ -149,7 +151,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate & UI
             let nav = UINavigationController(rootViewController: homeViewController)
             nav.modalPresentationStyle = .overFullScreen
             nav.modalTransitionStyle = .coverVertical
-            present(nav, animated: true, completion: nil)
+            self.present(nav, animated: true, completion: nil)
             return
         }
         //画像をjpgに変更
@@ -230,6 +232,8 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.overrideUserInterfaceStyle = .light
+
         setLayout()
         setFirebase()
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
@@ -339,11 +343,12 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
         ])
 
         guard let image = self.groupImageButton.imageView?.image else {
-            print("画像の変更はありませんでした。")
-            let storyboar = UIStoryboard(name: "Setting", bundle: nil)
-            let profileViewController = storyboar.instantiateViewController(identifier: "ProfileSettingViewController") as! ProfileSettingViewController
-            let nav = UINavigationController(rootViewController: profileViewController)
-            nav.modalPresentationStyle = .fullScreen
+            print("***画像の変更はありませんでした。")
+            let storyboar = UIStoryboard(name: "Home", bundle: nil)
+            let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+            let nav = UINavigationController(rootViewController: homeViewController)
+            nav.modalPresentationStyle = .overFullScreen
+            nav.modalTransitionStyle = .coverVertical
             present(nav, animated: true, completion: nil)
             return
         }
@@ -364,12 +369,13 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
             SDImageCache.shared.clearDisk()
         }
        
+        print("呼ばれている")
         let storyboar = UIStoryboard(name: "Home", bundle: nil)
         let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
         let nav = UINavigationController(rootViewController: homeViewController)
         nav.modalPresentationStyle = .overFullScreen
         nav.modalTransitionStyle = .coverVertical
-        present(nav, animated: true, completion: nil)
+        self.present(nav, animated: true, completion: nil)
     }
     
     
@@ -430,6 +436,8 @@ class groupSelectViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.overrideUserInterfaceStyle = .light
+
         groupSelectTableView.delegate = self
         groupSelectTableView.dataSource = self
         groupSelectTableView.register(UINib(nibName: "GroupCell", bundle: nil), forCellReuseIdentifier: "cell")
@@ -454,6 +462,8 @@ class groupSelectViewController: UIViewController, UITableViewDelegate, UITableV
             }
             let userData = document?.data()
             self.groupIdList = userData?["groupId"] as! [String]
+            self.groupIdList.removeAll(where: {$0 == uid})
+            
             for groupId in self.groupIdList {
                 let groupRef = db.collection(Const.ChatRooms).document(groupId)
                 groupRef.getDocument() {(document,err) in

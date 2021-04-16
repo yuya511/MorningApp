@@ -31,6 +31,7 @@ class Group: NSObject {
        
     }
     
+    
     init(docu: DocumentSnapshot) {
                 
         self.groupId = docu.documentID
