@@ -85,7 +85,11 @@ class ProfileSettingViewController: UIViewController {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         if id == uid {
             logOutButton.addTarget(self, action: #selector(logOut), for: .touchUpInside)
+            editButton.accessibilityElementsHidden = false
+            editButton.isEnabled = true
         } else {
+            editButton.accessibilityElementsHidden = true
+            editButton.isEnabled = false
             logOutButton.setTitle("通報する", for: .normal)
             logOutButton.addTarget(self, action: #selector(report), for: .touchUpInside)
         }

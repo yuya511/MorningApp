@@ -314,7 +314,8 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
    
     private func firebaseGroup() {
         if Auth.auth().currentUser != nil {
-            let groupRef = Firestore.firestore().collection(Const.ChatRooms).whereField("myChat", isEqualTo: false).order(by: "date",descending: true)
+            let groupRef = Firestore.firestore().collection(Const.ChatRooms)
+                .whereField("myChat", isEqualTo: false)
             listener = groupRef.addSnapshotListener() {
                 (querySnapshot, err) in
                 if let err = err {
