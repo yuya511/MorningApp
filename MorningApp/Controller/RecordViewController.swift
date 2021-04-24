@@ -10,10 +10,11 @@ import Charts
 import Firebase
 import GoogleMobileAds
 
+
+
 class RecordViewController: UIViewController {
 
     @IBOutlet weak var pieChartView: PieChartView!
-    
     @IBOutlet weak var percentLabel: UILabel!
     @IBOutlet weak var didLabel: UILabel!
     @IBOutlet weak var successLabel: UILabel!
@@ -27,7 +28,6 @@ class RecordViewController: UIViewController {
             return round(successCount / didCount * 100)
         }
     }
-    
     var miss: Int {
         get {
             return Int(didCount) - Int(successCount)
@@ -36,21 +36,8 @@ class RecordViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setNav()
-        UITabBar.appearance().barTintColor = UIColor.white
-        self.overrideUserInterfaceStyle = .light
+        setDefault()
 
-        guard let tabbarSize = tabBarController?.tabBar.frame.size.height else { return }
-        
-        var admobView = GADBannerView()
-        admobView = GADBannerView(adSize: kGADAdSizeBanner)
-        admobView.frame.origin = CGPoint(x: 0, y: self.view.frame.size.height - admobView.frame.height - tabbarSize)
-        admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
-//        admobView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
-        admobView.adUnitID = "ca-app-pub-7475127346409545/8974259664"
-        admobView.rootViewController = self
-        admobView.load(GADRequest())
-        self.view.addSubview(admobView)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -58,14 +45,28 @@ class RecordViewController: UIViewController {
         timeCheck()
     }
     
-    func timeCheck() {
+    private func timeCheck() {
         let storyboar = UIStoryboard(name: "Home", bundle: nil)
         let HomeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
         HomeViewController.timeCheck()
     }
     
     
-    func setNav() {
+    private func setDefault() {
+        UITabBar.appearance().barTintColor = UIColor.white
+        self.overrideUserInterfaceStyle = .light
+        guard let tabbarSize = tabBarController?.tabBar.frame.size.height else { return }
+        var admobView = GADBannerView()
+        admobView = GADBannerView(adSize: kGADAdSizeBanner)
+        admobView.frame.origin = CGPoint(x: 0, y: self.view.frame.size.height - admobView.frame.height - tabbarSize)
+        admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
+        //練習
+//        admobView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
+        //本番用
+        admobView.adUnitID = "ca-app-pub-7475127346409545/8974259664"
+        admobView.rootViewController = self
+        admobView.load(GADRequest())
+        self.view.addSubview(admobView)
         view.backgroundColor = .rgb(red: 220, green: 230, blue: 245)
         //ナビゲーションバーの設定
         navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
@@ -77,7 +78,7 @@ class RecordViewController: UIViewController {
         self.targetTimeLabel.text = UserDefaults.standard.string(forKey: "SETTIME") ?? "設定する"
     }
     
-    func setChartData() {
+    private func setChartData() {
         if Auth.auth().currentUser !=  nil {
             //userを作ったときの時間を取得
             guard let uid = Auth.auth().currentUser?.uid else { return  }
@@ -136,13 +137,11 @@ class RecordViewController: UIViewController {
         pieChartView.chartDescription?.enabled = false  // グラフの説明を非表示
         pieChartView.drawEntryLabelsEnabled = false  // グラフ上のデータラベルを非表示
         pieChartView.legend.enabled = false  // グラフの注釈を非表示
-        
         // グラフに表示するデータのタイトルと値
         let dataEntries = [
             PieChartDataEntry(value: successCount, label: ""),
             PieChartDataEntry(value: Double(miss), label: "")
         ]
-        
         //データをセットする
         let dataSet = PieChartDataSet(entries: dataEntries, label: "")
         //データの数字を消す
@@ -150,14 +149,11 @@ class RecordViewController: UIViewController {
         // グラフの色
         let colors = [UIColor(named: "GoodColor"), UIColor(named: "NoColor")]
         dataSet.colors = colors as! [NSUIColor]
-        
         //viewにデータを入れる
         self.pieChartView.data = PieChartData(dataSet: dataSet)
         pieChartView.backgroundColor = .rgb(red: 220, green: 230, blue: 245)
-        
         //アニメーションをつける
         pieChartView.animate(xAxisDuration: 1.5, yAxisDuration: 1.5)
-        
         view.addSubview(self.pieChartView)
     }
     
