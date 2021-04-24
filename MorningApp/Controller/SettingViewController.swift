@@ -60,7 +60,7 @@ class SettingViewController: UIViewController {
     func timeCheck() {
         let storyboar = UIStoryboard(name: "Home", bundle: nil)
         let HomeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
-        HomeViewController.timeMonitor()
+        HomeViewController.timeCheck()
     }
     
     private func logOut() {

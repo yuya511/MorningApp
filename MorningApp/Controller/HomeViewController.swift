@@ -11,9 +11,6 @@ import UserNotifications
 
 class HomeViewController: UIViewController {
     
-    private let cellId = "cellId"
-    private let cellId02 = "cellId02"
-    
     var targetTime:Date? {
         //ストアドプロパティを監視する。変更されたら呼ばれる
         didSet {
@@ -21,14 +18,18 @@ class HomeViewController: UIViewController {
             //比較のためにdate型の状態で保存している
             UserDefaults.standard.set(targetTime, forKey: "SETDATE")
             //datePickerの時間の値をStringに変換して、UserDefaultsに保存している->表示用
-            let japanTime:String = formatChang(date: targetTime ?? Date())
-            UserDefaults.standard.set(japanTime, forKey: "SETTIME")
+            let displayTime:String = formatChang(date: targetTime ?? Date())
+            UserDefaults.standard.set(displayTime, forKey: "SETTIME")
             setNotification()
         }
     }
     
-    var firest:Bool?
+    private let cellId = "cellId"
+    private let cellId02 = "cellId02"
     
+    private var listener: ListenerRegistration?
+    var firest:Bool?
+    var timer:Timer?
     private var users = [User]()
     private var chat = [Chatroom]()
     private var nowGroup:String?
@@ -39,9 +40,6 @@ class HomeViewController: UIViewController {
             }
         }
     }
-    
-    //監視するやつ
-    private var listener: ListenerRegistration?
     
     private let chatInputAccessoryHeight: CGFloat = 100
     private let tableViewContentInset: UIEdgeInsets = .init(top: 60, left: 0, bottom: 0, right: 0)
@@ -59,40 +57,42 @@ class HomeViewController: UIViewController {
         view.delegate = self
         return view
     }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
 
-   
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+        self.overrideUserInterfaceStyle = .light
+        setUpHomeTableView()
+        setUpNotification()
+
+        let rightSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
+        rightSwipeGesture.direction = .right
+        let leftSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
+        leftSwipeGesture.direction = .left
+        view.addGestureRecognizer(rightSwipeGesture)
+        view.addGestureRecognizer(leftSwipeGesture)
+        
+        checkLogin()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setUser()
+        checkLogin()
+        timeCheck()
         menuReload()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        listener?.remove()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        self.overrideUserInterfaceStyle = .light
-
-        
-        setUpHomeTableView()
-        setUpNotification()
-        
-        //右へ
-        let rightSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
-        rightSwipeGesture.direction = .right
-        //左へ
-        let leftSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
-        leftSwipeGesture.direction = .left
-        
-        view.addGestureRecognizer(rightSwipeGesture)
-        view.addGestureRecognizer(leftSwipeGesture)
-        checkLogin()
-    }
-    
     @objc func swiped(_ sender: UISwipeGestureRecognizer) {
-
         switch sender.direction {
         case .left:
             print("***swiped left menuViewController")
@@ -106,14 +106,7 @@ class HomeViewController: UIViewController {
             break
         }
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        checkLogin()
-        setUser()
-        timeMonitor()
-    }
-    
+   
     func menuReload() {
         let tabbarController = self.storyboard?.instantiateViewController(withIdentifier: "TabBarControllerID") as! UITabBarController
         tabbarController.selectedIndex = 0
@@ -122,11 +115,7 @@ class HomeViewController: UIViewController {
         present(tabbarController, animated: true, completion: nil)
     }
     
-    override func viewWillDisappear(_ animated: Bool) {
-        listener?.remove()
-        super.viewWillDisappear(animated)
-    }
-    
+   
     func setNotification() {
         guard let setTimeDate = load(key: "SETDATE") else { return }
         print("*** 通知が設定された")
@@ -259,9 +248,14 @@ class HomeViewController: UIViewController {
         }
     }
     
+    func timeCheck() {
+        timer = Timer.scheduledTimer(timeInterval: 5, target: self, selector: #selector(self.timeMonitor), userInfo: nil, repeats: true)
+        timer?.fire()
+    }
     
-    func timeMonitor() {
+    @objc func timeMonitor() {
         let now = Date()
+                
         let nowString = formatChang(date: now)
         guard let setTimeDate = load(key: "SETDATE") else { return }
         let pullModifiedDate = Calendar.current.date(byAdding: .minute, value: -15, to: setTimeDate)!
