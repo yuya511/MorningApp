@@ -9,6 +9,8 @@ import UIKit
 import Firebase
 import FirebaseUI
 
+
+//プロフィール編集画面
 class EditViewController: UIViewController, UIImagePickerControllerDelegate & UITextFieldDelegate, UINavigationControllerDelegate, UITextViewDelegate {
 
     @IBAction func hiddenButton(_ sender: Any) {
@@ -37,8 +39,6 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate & UI
             if self.view.frame.origin.y == 0 {
                 self.view.frame.origin.y -= keyboardSize.height - 150
             } else {
-                let suggestionHeight = self.view.frame.origin.y + keyboardSize.height
-                self.view.frame.origin.y -= suggestionHeight
             }
         }
     }
@@ -243,10 +243,8 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             if self.view.frame.origin.y == 0 {
-                self.view.frame.origin.y -= keyboardSize.height - 180
+                self.view.frame.origin.y -= keyboardSize.height - 150
             } else {
-                let suggestionHeight = self.view.frame.origin.y + keyboardSize.height
-                self.view.frame.origin.y -= suggestionHeight
             }
         }
     }

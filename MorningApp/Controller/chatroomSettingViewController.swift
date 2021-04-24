@@ -48,7 +48,6 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
         navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
         navigationItem.title = "グループを作成"
         navigationController?.navigationBar.titleTextAttributes = [
-            // 文字の色
             .foregroundColor: UIColor.rgb(red: 79, green: 109, blue: 220)
         ]
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
@@ -76,10 +75,10 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             if self.view.frame.origin.y == 0 {
-                self.view.frame.origin.y -= keyboardSize.height - 170
+                self.view.frame.origin.y -= keyboardSize.height - 150
             } else {
-                let suggestionHeight = self.view.frame.origin.y + keyboardSize.height
-                self.view.frame.origin.y -= suggestionHeight
+//                let suggestionHeight = self.view.frame.origin.y + keyboardSize.height
+//                self.view.frame.origin.y -= suggestionHeight
             }
         }
     }

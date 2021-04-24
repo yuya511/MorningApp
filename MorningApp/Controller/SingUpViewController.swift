@@ -20,26 +20,29 @@ class SingUpViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-       setUpViews()
         self.overrideUserInterfaceStyle = .light
-
+        
+        setUpViews()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         navigationController?.navigationBar.isHidden = true
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
     private func setUpViews() {
-        
         profileImageButton.layer.cornerRadius = 85
         profileImageButton.layer.borderWidth = 1
         profileImageButton.layer.borderColor = UIColor.rgb(red: 240, green: 240, blue: 240).cgColor
         RegisterButton.layer.cornerRadius = 10
         
         profileImageButton.addTarget(self, action: #selector(tappedProfileImageButton), for: .touchUpInside)
-        
         alreadyHaveAccountButton.addTarget(self, action: #selector(tappedAlredyHaveAccountButton), for: .touchUpInside)
         
         emailTextFiled.delegate = self
@@ -53,6 +56,8 @@ class SingUpViewController: UIViewController {
         RegisterButton.isEnabled = false
         RegisterButton.backgroundColor = .rgb(red: 150, green: 150, blue: 150)
         RegisterButton.addTarget(self, action: #selector(tappedRegisterButton), for: .touchUpInside)
+        
+        //キーボードの出現を知らせてくれる
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
@@ -60,31 +65,22 @@ class SingUpViewController: UIViewController {
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             if self.view.frame.origin.y == 0 {
-                self.view.frame.origin.y -= keyboardSize.height - 100
+                self.view.frame.origin.y -= keyboardSize.height - 150
             } else {
-                let suggestionHeight = self.view.frame.origin.y + keyboardSize.height
-                self.view.frame.origin.y -= suggestionHeight
             }
         }
     }
-    
     @objc func keyboardWillHide() {
         if self.view.frame.origin.y != 0 {
             self.view.frame.origin.y = 0
         }
     }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
+
     
     @objc private func tappedProfileImageButton() {
         let imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
         imagePickerController.allowsEditing = true
-        
         self.present(imagePickerController, animated: true, completion: nil)
     }
     
