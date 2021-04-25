@@ -105,6 +105,14 @@ class SettingViewController: UIViewController {
         let nav = UINavigationController(rootViewController: SendViewController)
         present(nav, animated: true, completion: nil)
     }
+    
+    private func descriptionView() {
+        let storyboar = UIStoryboard(name: "Description", bundle: nil)
+        let PageViewController = storyboar.instantiateViewController(identifier: "PageViewController") as! PageViewController
+//        let nav = UINavigationController(rootViewController: DescriptionViewController)
+        PageViewController.modalPresentationStyle = .fullScreen
+        present(PageViewController, animated: true, completion: nil)
+    }
 }
 
 
@@ -150,7 +158,8 @@ extension SettingViewController: UITableViewDelegate,UITableViewDataSource {
             }
         } else if indexPath.section == 1 {
             if indexPath.row == 0 {
-                sendView()
+//                sendView()
+                descriptionView()
             } else {
                 
             }
