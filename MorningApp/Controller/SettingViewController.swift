@@ -109,9 +109,9 @@ class SettingViewController: UIViewController {
     private func descriptionView() {
         let storyboar = UIStoryboard(name: "Description", bundle: nil)
         let PageViewController = storyboar.instantiateViewController(identifier: "PageViewController") as! PageViewController
-//        let nav = UINavigationController(rootViewController: DescriptionViewController)
-        PageViewController.modalPresentationStyle = .fullScreen
-        present(PageViewController, animated: true, completion: nil)
+        let nav = UINavigationController(rootViewController: PageViewController)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true, completion: nil)
     }
 }
 

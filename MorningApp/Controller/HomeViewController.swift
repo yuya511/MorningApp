@@ -49,7 +49,7 @@ class HomeViewController: UIViewController {
     }
    
     @IBOutlet weak var HomeTableView: UITableView!
-    
+   
     //インプットアクセサリービューの設置
     private lazy var chatInputAccessoryView: ChatInputAccessory = {
         let view = ChatInputAccessory()
@@ -58,10 +58,20 @@ class HomeViewController: UIViewController {
         return view
     }()
     
+    override var inputAccessoryView: UIView? {
+        get {
+            return chatInputAccessoryView
+        }
+    }
+    
+    override var canBecomeFirstResponder: Bool {
+        return true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
         self.overrideUserInterfaceStyle = .light
+        
         setUpHomeTableView()
         setUpNotification()
 
@@ -71,7 +81,7 @@ class HomeViewController: UIViewController {
         leftSwipeGesture.direction = .left
         view.addGestureRecognizer(rightSwipeGesture)
         view.addGestureRecognizer(leftSwipeGesture)
-        
+//        menuReload()
         checkLogin()
     }
     
@@ -133,17 +143,7 @@ class HomeViewController: UIViewController {
         HomeTableView.contentInset = tableViewContentInset
         HomeTableView.scrollIndicatorInsets = tableViewIndicateorInset
     }
-    
-    override var inputAccessoryView: UIView? {
-        get {
-            return chatInputAccessoryView
-        }
-    }
-    
-    override var canBecomeFirstResponder: Bool {
-        return true
-    }
-    
+       
     private func setUpNotification() {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -154,6 +154,7 @@ class HomeViewController: UIViewController {
         tabbarController.selectedIndex = 0
         tabbarController.modalPresentationStyle = .overFullScreen
         tabbarController.modalTransitionStyle = .crossDissolve
+        
         present(tabbarController, animated: true, completion: nil)
     }
     

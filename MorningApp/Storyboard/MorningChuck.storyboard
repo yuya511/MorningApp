@@ -104,15 +104,28 @@
                                     <action selector="decisionButton:" destination="gHg-RF-Dtn" eventType="touchUpInside" id="K8l-49-Dnk"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="空白でもOK！決定を押して起きたことを知らせよう！！" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aav-Nh-BeZ">
+                                <rect key="frame" x="20" y="616.33333333333337" width="335" height="70"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="70" id="1oA-ui-HyK"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="bs6-Lc-1ek"/>
                         <color key="backgroundColor" red="0.86274509803921573" green="0.90196078431372551" blue="0.96078431372549022" alpha="1" colorSpace="calibratedRGB"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="aav-Nh-BeZ" secondAttribute="trailing" constant="20" id="2qA-Yk-SWq"/>
+                            <constraint firstItem="aav-Nh-BeZ" firstAttribute="centerX" secondItem="tpm-sG-hVF" secondAttribute="centerX" id="Fif-0g-XIX"/>
                             <constraint firstItem="cCE-Oa-gp8" firstAttribute="top" secondItem="bs6-Lc-1ek" secondAttribute="top" constant="200" id="H2F-3M-yc5"/>
                             <constraint firstItem="zP0-e8-Zse" firstAttribute="top" secondItem="Vf1-1i-51F" secondAttribute="bottom" constant="70" id="ITx-3r-n2d"/>
                             <constraint firstItem="Vf1-1i-51F" firstAttribute="centerX" secondItem="tpm-sG-hVF" secondAttribute="centerX" id="IcC-I6-G8y"/>
                             <constraint firstItem="cCE-Oa-gp8" firstAttribute="centerX" secondItem="tpm-sG-hVF" secondAttribute="centerX" id="KBh-Kc-M7e"/>
                             <constraint firstItem="zP0-e8-Zse" firstAttribute="centerX" secondItem="tpm-sG-hVF" secondAttribute="centerX" id="Lc6-Sp-xvu"/>
+                            <constraint firstItem="aav-Nh-BeZ" firstAttribute="leading" secondItem="tpm-sG-hVF" secondAttribute="leading" constant="20" id="Z30-NK-fA8"/>
+                            <constraint firstItem="aav-Nh-BeZ" firstAttribute="top" secondItem="zP0-e8-Zse" secondAttribute="bottom" constant="30" id="doK-rj-2S7"/>
                             <constraint firstItem="Vf1-1i-51F" firstAttribute="top" secondItem="cCE-Oa-gp8" secondAttribute="bottom" constant="40" id="jsm-qm-85Y"/>
                         </constraints>
                     </view>

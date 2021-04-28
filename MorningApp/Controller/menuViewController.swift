@@ -109,12 +109,12 @@ class menuViewController: UIViewController {
         // メニューの位置を取得する
         let menuPos = self.menuView.layer.position
         // 初期位置を画面の外側にするため、メニューの幅の分だけマイナスする
-        self.menuView.layer.position.x = self.menuView.frame.width / 2
+        self.menuView.layer.position.x =  -self.menuView.frame.width
         // 表示時のアニメーションを作成する
         UIView.animate(
-            withDuration: 0,
+            withDuration: 0.25,
             delay: 0,
-            options: .curveEaseOut,
+            options: .curveEaseIn,
             animations: {
                 self.menuView.layer.position.x = menuPos.x
             },
@@ -127,7 +127,6 @@ class menuViewController: UIViewController {
     @objc func swiped(_ sender: UISwipeGestureRecognizer) {
         switch sender.direction {
         case .left:
-            print("left Swipe")
             self.dismiss(animated: true, completion: nil)
         case .right:
            print("right Swipe")
@@ -237,6 +236,7 @@ class menuViewController: UIViewController {
         }
     }
 }
+
 
 
 //menuTabeleView delegate method
