@@ -94,6 +94,7 @@ class menuViewController: UIViewController {
             admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
              break
         }
+        
         //練習用
 //        admobView.adUnitID = "ca-app-pub-3940256099942544/2934735716"
         //本番用

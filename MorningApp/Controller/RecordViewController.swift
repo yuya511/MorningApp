@@ -21,14 +21,14 @@ class RecordViewController: UIViewController {
     @IBOutlet weak var mistakeLabel: UILabel!
     @IBOutlet weak var targetTimeLabel: UILabel!
     
-    var successCount = Double()
-    var didCount = Double()
-    var parsent: Double {
+    private var successCount = Double()
+    private var didCount = Double()
+    private var parsent: Double {
         get {
             return round(successCount / didCount * 100)
         }
     }
-    var miss: Int {
+    private var miss: Int {
         get {
             return Int(didCount) - Int(successCount)
         }
@@ -37,7 +37,6 @@ class RecordViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setDefault()
-
     }
     
     override func viewWillAppear(_ animated: Bool) {

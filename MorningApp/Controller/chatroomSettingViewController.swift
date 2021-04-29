@@ -21,25 +21,31 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
     @IBAction func endButton(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
     }
-    var groupPasswordIsEmpty:Bool = true
-    
     
     @IBAction func groupRegisterButton(_ sender: Any) {
-        firebase()
+        newGroupSetting()
     }
+    
+    private var groupPasswordIsEmpty:Bool = true
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        firestCheck()
         self.overrideUserInterfaceStyle = .light
-        
+        setDefault()
+        newUserFirestCheck()
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+       
+    private func setDefault() {
         groupRegisterButtonOutlet.layer.cornerRadius = 10
         groupRegisterButtonOutlet.isEnabled = false
         groupRegisterButtonOutlet.layer.backgroundColor = UIColor.rgb(red: 200, green: 200, blue: 200).cgColor
         groupImageButton.layer.cornerRadius = 25
         groupImageButton.layer.borderWidth = 1
         groupImageButton.layer.borderColor = UIColor.rgb(red: 240, green: 240, blue: 240).cgColor
-        
         groupImageButton.addTarget(self, action: #selector(tappedImageButton), for: .touchUpInside)
         
         groupNameTextFeld.delegate = self
@@ -54,44 +60,18 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    private func firestCheck() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        let userRef = Firestore.firestore().collection(Const.User).document(uid)
-        userRef.getDocument { (documents, err) in
-            if let err = err {
-                print("err",err)
-            }
-
-            guard let document = documents?.data() else { return }
-            if let _:String = document["nowGroup"] as? String {
-                
-            } else {
-                self.endOutlet.isEnabled = false
-                self.endOutlet.accessibilityElementsHidden = true
-            }
-        }
-    }
-    
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             if self.view.frame.origin.y == 0 {
                 self.view.frame.origin.y -= keyboardSize.height - 150
             } else {
-//                let suggestionHeight = self.view.frame.origin.y + keyboardSize.height
-//                self.view.frame.origin.y -= suggestionHeight
             }
         }
     }
-    
     @objc func keyboardWillHide() {
         if self.view.frame.origin.y != 0 {
             self.view.frame.origin.y = 0
         }
-    }
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        self.view.endEditing(true)
-        return false
     }
     
     @objc func tappedImageButton() {
@@ -101,16 +81,28 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
         
         self.present(imagePickerController, animated: true, completion: nil)
     }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
+  
+    private func newUserFirestCheck() {
+        guard let uid = Auth.auth().currentUser?.uid else { return }
+        let userRef = Firestore.firestore().collection(Const.User).document(uid)
+        userRef.getDocument { (documents, err) in
+            if let err = err {
+                print("err",err)
+            }
+            guard let document = documents?.data() else { return }
+            if let _:String = document["nowGroup"] as? String {
+                
+            } else {
+                self.endOutlet.isEnabled = false
+                self.endOutlet.accessibilityElementsHidden = true
+            }
+        }
     }
-    
-    //新しいグループの作成
-    private func firebase() {
+  
+    private func newGroupSetting() {
         let db = Firestore.firestore()
         guard let uid = Auth.auth().currentUser?.uid else { return }
-                
+        
         guard let groupText = groupNameTextFeld.text else { return }
         guard let groupPasswordText = groupPasswordTextField.text else { return }
         let chatroomRef = db.collection(Const.ChatRooms).document()
@@ -136,25 +128,19 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
         userRef.updateData([
             "nowGroup": chatroomRef.documentID
         ])
-        
         let image = self.groupImageButton.imageView?.image ?? UIImage(named: "男シルエットイラスト")
-
-        //画像をjpgに変更
         guard let uploadImage = image?.jpegData(compressionQuality: 0.3) else { return }
-        //画像の保存場所を指定
         let imageRef = Storage.storage().reference().child(Const.GroupImage).child(chatroomRef.documentID + ".jpg")
-        //storageに画像を保存する
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpeg"
         imageRef.putData(uploadImage, metadata: metadata) { (metadata, err) in
             if let err = err {
-                print("画像のアップロードに失敗しました。\(err)")
+                print("***画像のアップロードに失敗しました。\(err)")
                 return
             }
-            print("DEBUG_PRINT: 画像の保存に成功しました。")
+            print("***画像の保存に成功しました。")
         }
-
-        
+        //アプリを使うのが初めてかどうかをチェック
         if UserDefaults.standard.bool(forKey: "firestTime") {
             let storyboar = UIStoryboard(name: "Home", bundle: nil)
             let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
@@ -169,6 +155,12 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
             nav.modalPresentationStyle = .fullScreen
             present(nav, animated: true, completion: nil)
         }
+    }
+    
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return false
     }
     
     func textFieldDidChangeSelection(_ textField: UITextField) {
@@ -190,7 +182,6 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
         } else if let originalImage = info[.originalImage] as? UIImage {
             groupImageButton.setImage(originalImage.withRenderingMode(.alwaysOriginal), for: .normal)
         }
-        
         groupImageButton.setTitle("", for: .normal)
         groupImageButton.imageView?.contentMode = .scaleAspectFill
         groupImageButton.contentHorizontalAlignment = .fill
@@ -214,24 +205,99 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
     @IBOutlet weak var groupSerchBar: UISearchBar!
     @IBOutlet weak var didSelectRowLabel: UILabel!
     @IBOutlet weak var enterButtonOutlet: UIButton!
-    
     //グループを選択してからの決定ボタン
     @IBAction func EnterButton(_ sender: Any) {
+       enterGroup()
+    }
+    
+    private var Chatgroup = [Group]()
+    private var resultChatgroup = [Group]()
+    
+    private var groupNameList = [String]()
+    private var searchGroupNameList = [String]()
+    
+    private var groupIdList = [String]()
+    private var searchGroupIdList = [String]()
+    
+    private var pickGroupId:String?
+    private var listener:ListenerRegistration?
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        self.overrideUserInterfaceStyle = .light
+        setDefault()
+        GroupsSetting()
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    //検索ボタン押下時の呼び出しメソッド
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        //キーボードを閉じる。
+        groupSerchBar.endEditing(true)
+    }
+    
+    private func setDefault() {
+        groupSerchBar.delegate = self
+        groupTableView.delegate = self
+        groupTableView.dataSource = self
+        groupSerchBar.keyboardType = .default
+        groupSerchBar.enablesReturnKeyAutomatically = false
+        enterButtonOutlet.layer.cornerRadius = 10
+        enterButtonOutlet.isEnabled = false
+        enterButtonOutlet.layer.backgroundColor = UIColor.rgb(red: 200, green: 200, blue: 200).cgColor
+        groupTableView.register(UINib(nibName: "GroupCell", bundle: nil), forCellReuseIdentifier: "GroupCell")
+    }
+    
+    private func GroupsSetting() {
+        if Auth.auth().currentUser != nil {
+            let groupRef = Firestore.firestore().collection(Const.ChatRooms)
+                .whereField("myChat", isEqualTo: false)
+            listener = groupRef.addSnapshotListener() { querySnapshot, err in
+                if let err = err {
+                    print("***err",err)
+                    return
+                }
+                self.Chatgroup = querySnapshot!.documents.map { document in
+                    let groupData = Group(document: document)
+                    return groupData
+                }
+                self.resultChatgroup = self.Chatgroup
+                
+                guard let groupData = querySnapshot?.documents else { return }
+                for data in groupData {
+                    self.groupIdList.append(data.documentID)
+//                    self.searchGroupIdList.append(data.documentID)
+                    let data = data.data()
+                    if let groupName:String = data["groupName"] as? String {
+                        self.groupNameList.append(groupName)
+//                        self.searchGroupNameList.append(groupName)
+                    }
+                }
+                self.searchGroupIdList = self.groupIdList
+                self.searchGroupNameList = self.groupNameList
+                self.groupTableView.reloadData()
+            }
+        }
+    }
+    
+    private func enterGroup() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let db = Firestore.firestore()
         guard pickGroupId != nil else { return }
         let userRef = db.collection(Const.User).document(uid)
-        let groupRef = db.collection(Const.ChatRooms).document(pickGroupId ?? "")
-        
-        groupRef.getDocument() {(document,err) in
+        let groupRef = db.collection(Const.ChatRooms).document(pickGroupId ?? "err")
+        groupRef.getDocument() { document,err in
             if let err = err {
-                print(err)
+                print("***err",err)
                 return
             }
             guard let groupData = document?.data() else { return }
             guard let password = groupData["password"] else { return }
-            
             if password as? String == "" {
+                
+                print("***パスワードなし")
                 userRef.updateData([
                     "groupId": FieldValue.arrayUnion([self.pickGroupId!]),
                     "nowGroup": self.pickGroupId!
@@ -239,7 +305,6 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
                 groupRef.updateData([
                     "membar": FieldValue.arrayUnion([uid])
                 ])
-                
                 if UserDefaults.standard.bool(forKey: "firestTime") {
                     let storyboar = UIStoryboard(name: "Home", bundle: nil)
                     let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
@@ -266,86 +331,10 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
             }
         }
     }
-    
-    var Chatgroup = [Group]()
-    var resultChatgroup = [Group]()
-    var groupNameList = [String]()
-    var searchGroupNameList = [String]()
-    var groupIdList = [String]()
-    var searchGroupIdList = [String]()
-    
-    var pickGroupId:String?
-    var listener:ListenerRegistration?
-
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        self.overrideUserInterfaceStyle = .light
-
-        //デリゲート先を自分に設定する。
-        groupSerchBar.delegate = self
-        groupTableView.delegate = self
-        groupTableView.dataSource = self
-        
-        groupSerchBar.keyboardType = .default
-        //何も入力されていなくてもReturnキーを押せるようにする。
-        groupSerchBar.enablesReturnKeyAutomatically = false
-        enterButtonOutlet.layer.cornerRadius = 10
-        
-        enterButtonOutlet.isEnabled = false
-        enterButtonOutlet.layer.backgroundColor = UIColor.rgb(red: 200, green: 200, blue: 200).cgColor
-        
-        groupTableView.register(UINib(nibName: "GroupCell", bundle: nil), forCellReuseIdentifier: "GroupCell")
-        firebaseGroup()
-    }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
-    }
-    
-    //検索ボタン押下時の呼び出しメソッド
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        //キーボードを閉じる。
-        groupSerchBar.endEditing(true)
-        
-    }
-    
-   
-    private func firebaseGroup() {
-        if Auth.auth().currentUser != nil {
-            let groupRef = Firestore.firestore().collection(Const.ChatRooms)
-                .whereField("myChat", isEqualTo: false)
-            listener = groupRef.addSnapshotListener() {
-                (querySnapshot, err) in
-                if let err = err {
-                    print("err",err)
-                    return
-                }
-                self.Chatgroup = querySnapshot!.documents.map {
-                    document in
-                    let groupData = Group(document: document)
-                    return groupData
-                }
-                self.resultChatgroup = self.Chatgroup
-                
-                guard let groupData = querySnapshot?.documents else { return }
-                for data in groupData {
-                    self.groupIdList.append(data.documentID)
-                    self.searchGroupIdList.append(data.documentID)
-                    let data = data.data()
-                    if let groupName:String = data["groupName"] as? String {
-                        self.groupNameList.append(groupName)
-                        self.searchGroupNameList.append(groupName)
-                    }
-                }
-                self.groupTableView.reloadData()
-            }
-        }
-    }
 }
 
 
-extension chatroomEnterViewController:UITableViewDelegate,UITableViewDataSource {
+extension chatroomEnterViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return resultChatgroup.count
@@ -355,17 +344,12 @@ extension chatroomEnterViewController:UITableViewDelegate,UITableViewDataSource 
         let cell = tableView.dequeueReusableCell(withIdentifier: "GroupCell",for: indexPath) as! GroupCell
         cell.setGroupData(resultChatgroup[indexPath.row])
         return cell
-       
     }
     //選ばれたセル
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-        
         groupSerchBar.endEditing(true)
-        
         didSelectRowLabel.text = searchGroupNameList[indexPath.row]
         pickGroupId = searchGroupIdList[indexPath.row]
-        
         enterButtonOutlet.isEnabled = true
         enterButtonOutlet.layer.backgroundColor = UIColor.rgb(red: 100, green: 150, blue: 255).cgColor
     }
@@ -376,14 +360,14 @@ extension chatroomEnterViewController:UITableViewDelegate,UITableViewDataSource 
         resultChatgroup.removeAll()
         searchGroupNameList.removeAll()
         searchGroupIdList.removeAll()
-        
-
+        //検索文字列が空の場合はすべてを表示する。
         if groupSerchBar.text == "" {
-            //検索文字列が空の場合はすべてを表示する。
+            
             searchGroupNameList = groupNameList
             searchGroupIdList = groupIdList
             resultChatgroup = Chatgroup
             self.groupTableView.reloadData()
+            
         } else {
             //検索文字列を含むデータを検索結果配列に追加する。
             for group in groupNameList {
@@ -391,14 +375,12 @@ extension chatroomEnterViewController:UITableViewDelegate,UITableViewDataSource 
                     searchGroupNameList.append(group)
                     for groupName in searchGroupNameList {
                         let groupRef = Firestore.firestore().collection(Const.ChatRooms).order(by: "date",descending: true).whereField("groupName", isEqualTo:groupName)
-                        listener = groupRef.addSnapshotListener() {
-                            (querySnapshot, err) in
+                        listener = groupRef.addSnapshotListener() { querySnapshot, err in
                             if let err = err {
-                                print("err",err)
+                                print("***err",err)
                                 return
                             }
-                            self.resultChatgroup = querySnapshot!.documents.map {
-                                document in
+                            self.resultChatgroup = querySnapshot!.documents.map { document in
                                 let groupData = Group(document: document)
                                 return groupData
                             }
@@ -416,6 +398,9 @@ extension chatroomEnterViewController:UITableViewDelegate,UITableViewDataSource 
 }
     
 
+
+
+//パスワード入力画面
 class passwordViewController:UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var passwordTextFiled: UITextField!
@@ -432,15 +417,20 @@ class passwordViewController:UIViewController, UITextFieldDelegate {
         super.viewDidLoad()
         self.overrideUserInterfaceStyle = .light
         
+       setDefault()
+    }
+    
+    private func setDefault() {
         passwordTextFiled.layer.cornerRadius = 10
         enterButton.layer.cornerRadius = 7
-        enterButton.addTarget(self, action: #selector(enterButtonAction), for: .touchUpInside)
         passwordTextFiled.delegate = self
         navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
+        enterButton.addTarget(self, action: #selector(enterButtonAction), for: .touchUpInside)
     }
     
     @objc func enterButtonAction() {
         if passwordTextFiled.text == password {
+            
             let db = Firestore.firestore()
             let userRef = db.collection(Const.User).document(uid ?? "")
             let groupRef = db.collection(Const.ChatRooms).document(groupId ?? "")
@@ -468,21 +458,18 @@ class passwordViewController:UIViewController, UITextFieldDelegate {
             }
             
         } else {
-            print("パスワードが違う")
             SVProgressHUD.showError(withStatus: "有効なパスワードでは、ありません")
-
-            
         }
     }
+    
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
     
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-           // キーボードを閉じる
-           textField.resignFirstResponder()
-           return true
-       }
-    
-    
+        // キーボードを閉じる
+        textField.resignFirstResponder()
+        return true
+    }
 }

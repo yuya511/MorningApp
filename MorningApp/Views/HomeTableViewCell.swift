@@ -22,17 +22,19 @@ class HomeTableViewCell: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
+        setDefaultXibs()
+    }
+
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
+    }
+    
+    private func setDefaultXibs() {
         backgroundColor = .clear
         userImgeView.layer.cornerRadius = 17.5
         userTextView.layer.cornerRadius = 10
         myTextView.layer.cornerRadius = 10
         usernameLabel.textAlignment = NSTextAlignment.center
-        
-    }
-
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
     }
  
     
@@ -42,30 +44,24 @@ class HomeTableViewCell: UITableViewCell {
             let imageRef = Storage.storage().reference().child(Const.ImagePath).child(uid + ".jpg")
             userImgeView.sd_setImage(with: imageRef)
         }
-        
         //ユーザーの名前
         self.usernameLabel.text = chatrooms.name
-        
         //メッセージの表示
         self.userTextView.text = chatrooms.text
-        
         //日時の表示
         self.userDateLabel.text = ""
         if let date = chatrooms.date {
             let formatter = DateFormatter()
-            formatter.dateStyle = .none
-            formatter.timeStyle = .short
+            formatter.dateFormat = "M/d H:m"
             formatter.locale = Locale(identifier: "ja_JP")
             let dateString = formatter.string(from: date)
             self.userDateLabel.text = dateString
         }
-        
         //テキストサイズに揃える
         guard let text = chatrooms.text else { return }
         let width = estimateFrameForTextView(text: text).width + 20
         userTextWidthConstraint.constant = width
         userTextView.text = text
-        
         //メッセージの切り分け
         guard let uid = Auth.auth().currentUser?.uid else { return }
         if uid == chatrooms.uid {
@@ -87,19 +83,16 @@ class HomeTableViewCell: UITableViewCell {
             self.myDateLabel.text = ""
             if let date = chatrooms.date {
                 let formatter = DateFormatter()
-                formatter.dateStyle = .none
-                formatter.timeStyle = .short
+                formatter.dateFormat = "M/d H:m"
                 formatter.locale = Locale(identifier: "ja_JP")
                 let dateString = formatter.string(from: date)
                 self.myDateLabel.text = dateString
             }
-            
         } else {
             userTextView.isHidden = false
             userDateLabel.isHidden = false
             usernameLabel.isHidden = false
             userImgeView.isHidden = false
-            
             myTextView.isHidden = true
             myDateLabel.isHidden = true
         }
@@ -110,7 +103,6 @@ class HomeTableViewCell: UITableViewCell {
     private func estimateFrameForTextView(text: String) -> CGRect {
         let size = CGSize(width: 200, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        
         return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14)], context: nil)
     }
 

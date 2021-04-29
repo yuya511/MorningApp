@@ -11,6 +11,8 @@ import UserNotifications
 
 class HomeViewController: UIViewController {
     
+    @IBOutlet weak var HomeTableView: UITableView!
+    
     var targetTime:Date? {
         //ストアドプロパティを監視する。変更されたら呼ばれる
         didSet {
@@ -48,7 +50,6 @@ class HomeViewController: UIViewController {
         self.view.safeAreaInsets.bottom
     }
    
-    @IBOutlet weak var HomeTableView: UITableView!
    
     //インプットアクセサリービューの設置
     private lazy var chatInputAccessoryView: ChatInputAccessory = {
@@ -300,7 +301,7 @@ class HomeViewController: UIViewController {
                 print("***2回目")
             }
         } else {
-            print("***範囲外")
+            print("+範囲外")
         }
     }
     //userdafaultsでdate型を取り出すために型をキャストするためのメソッド
