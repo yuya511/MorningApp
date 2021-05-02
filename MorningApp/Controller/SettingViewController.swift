@@ -9,26 +9,31 @@ import UIKit
 import Firebase
 import FirebaseUI
 import GoogleMobileAds
+import SVProgressHUD
 
 class SettingViewController: UIViewController {
 
-    
     @IBOutlet weak var settingTabelView: UITableView!
     
     private let sectionList:[String] = ["ユーザ・グループ設定","その他"]
     private let userSettingList:[String] = ["ユーザ設定","グループ設定"]
-    private let otherSettingList:[String] = ["ご意見・ご要望"]
+    private let otherSettingList:[String] = ["ご意見・ご要望","アプリの使い方"]
     private let userImageList:[String] = ["oneUser","weUser"]
-    private let otherImageList:[String] = ["mail"]
+    private let otherImageList:[String] = ["mail","Description"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        UITabBar.appearance().barTintColor = UIColor.white
         self.overrideUserInterfaceStyle = .light
-
-
+        
+        timeCheck()
+        setDefault()
+    }
+    
+    private func setDefault() {
+        UITabBar.appearance().barTintColor = UIColor.white
         settingTabelView.delegate = self
         settingTabelView.dataSource = self
+        
         settingTabelView.backgroundColor = .rgb(red: 220, green: 230, blue: 245)
         navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
         settingTabelView.sectionHeaderHeight = 75
@@ -38,7 +43,6 @@ class SettingViewController: UIViewController {
             // 文字の色
             .foregroundColor: UIColor.rgb(red: 100, green: 150, blue: 255)
         ]
-        
         guard let tabbarSize = tabBarController?.tabBar.frame.size.height else { return }
         
         var admobView = GADBannerView()
@@ -52,12 +56,7 @@ class SettingViewController: UIViewController {
         self.view.addSubview(admobView)
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        timeCheck()
-    }
-    
-    func timeCheck() {
+    private func timeCheck() {
         let storyboar = UIStoryboard(name: "Home", bundle: nil)
         let HomeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
         HomeViewController.timeCheck()
@@ -73,7 +72,8 @@ class SettingViewController: UIViewController {
             nav.modalPresentationStyle = .fullScreen
             self.present(nav, animated: true, completion: nil)
         } catch {
-            print("ログアウトに失敗しました。\(error)")
+            SVProgressHUD.showError(withStatus: "ログアウトに失敗しました")
+            print("***ログアウトに失敗しました。\(error)")
         }
     }
     
@@ -116,14 +116,14 @@ class SettingViewController: UIViewController {
 }
 
 
-extension SettingViewController: UITableViewDelegate,UITableViewDataSource {
+extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         switch section {
         case 0:
-            return 2
+            return userSettingList.count
         case 1:
-            return 1
+            return otherSettingList.count
         default:
             return 0
         }
@@ -147,23 +147,36 @@ extension SettingViewController: UITableViewDelegate,UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        //セルの選択を解除
         tableView.deselectRow(at: indexPath, animated: true)
         guard let uid = Auth.auth().currentUser?.uid else { return }
-        if indexPath.section == 0 {
+//        if indexPath.section == 0 {
+//            if indexPath.row == 0 {
+//                userChange(id: uid)
+//            } else {
+//                groupSelect()
+//            }
+//        } else if indexPath.section == 1 {
+//            if indexPath.row == 0 {
+//                sendView()
+//            } else {
+//                descriptionView()
+//            }
+//        }
+        switch indexPath.section {
+        case 0:
             if indexPath.row == 0 {
                 userChange(id: uid)
-            } else {
+            } else if indexPath.row == 1 {
                 groupSelect()
             }
-        } else if indexPath.section == 1 {
+        case 1:
             if indexPath.row == 0 {
-//                sendView()
+                sendView()
+            } else if indexPath.row == 1 {
                 descriptionView()
-            } else {
-                
             }
-        } else {
+        default:
+            return
         }
     }
     //セクションの数
@@ -198,9 +211,9 @@ extension SettingViewController: UITableViewDelegate,UITableViewDataSource {
 
 
 class settingCell: UITableViewCell {
-    
     @IBOutlet weak var settingImage: UIImageView!
     @IBOutlet weak var settingLabel: UILabel!
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }

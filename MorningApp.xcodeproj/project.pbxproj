@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8631B2A5261B55E6000767CF /* SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8631B2A4261B55E6000767CF /* SendViewController.swift */; };
+		86398660263BE75E002E4F38 /* FourthViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8639865F263BE75E002E4F38 /* FourthViewController.swift */; };
 		864111262614980600B86EB6 /* 霧雨.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 864111252614980600B86EB6 /* 霧雨.mp3 */; };
 		864738EC25FBA50C00D7CDC6 /* chatroomSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864738EB25FBA50C00D7CDC6 /* chatroomSettingViewController.swift */; };
 		864738F025FC5C7400D7CDC6 /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864738EF25FC5C7400D7CDC6 /* Group.swift */; };
@@ -57,6 +58,7 @@
 /* Begin PBXFileReference section */
 		724C37C5510A6D0309D6546F /* Pods_MorningApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MorningApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8631B2A4261B55E6000767CF /* SendViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SendViewController.swift; sourceTree = "<group>"; };
+		8639865F263BE75E002E4F38 /* FourthViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FourthViewController.swift; sourceTree = "<group>"; };
 		864111252614980600B86EB6 /* 霧雨.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "霧雨.mp3"; sourceTree = "<group>"; };
 		864738EB25FBA50C00D7CDC6 /* chatroomSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = chatroomSettingViewController.swift; sourceTree = "<group>"; };
 		864738EF25FC5C7400D7CDC6 /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 				86E9F9632635251F0063001B /* PageViewController.swift */,
 				86E9F966263526660063001B /* SecondViewController.swift */,
 				86E9F969263526760063001B /* ThirdViewController.swift */,
+				8639865F263BE75E002E4F38 /* FourthViewController.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -405,6 +408,7 @@
 				865490DF25E3B5A7006C8354 /* User.swift in Sources */,
 				86A2AA6125F5E64300646C80 /* MorningChuckViewController.swift in Sources */,
 				86F924D525DF6CC800A91DEB /* SceneDelegate.swift in Sources */,
+				86398660263BE75E002E4F38 /* FourthViewController.swift in Sources */,
 				86E9F96026345F350063001B /* DescriptionViewController.swift in Sources */,
 				865490DC25E36F47006C8354 /* Const.swift in Sources */,
 				86FDA3602602695500C04B18 /* EditViewController.swift in Sources */,

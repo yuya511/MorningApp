@@ -355,7 +355,11 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
                             return
                         }
                             groupRef.updateData(["membar":GroupUpdateValue])
-                            userRef.updateData(["groupId":UserUpdateValue])
+                            userRef.updateData([
+                                "groupId":UserUpdateValue,
+                                "nowGroup":self.groupIdList[0]
+                            ])
+                            
                         SVProgressHUD.showSuccess(withStatus: "「\(self.myNowGroupNmae ?? "")」から退会しました。")
                         
                         let storyboar = UIStoryboard(name: "Home", bundle: nil)
@@ -400,7 +404,7 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
                         self.present(nav, animated: true, completion: nil)
                 })
                 let canselAction:UIAlertAction = UIAlertAction(title: "キャンセル", style: .default, handler: {(action:UIAlertAction!) -> Void in
-                    print("キャンセルが呼ばれた。")
+                    print("***キャンセル")
                 })
                 alertController.addAction(canselAction)
                 alertController.addAction(doAction)

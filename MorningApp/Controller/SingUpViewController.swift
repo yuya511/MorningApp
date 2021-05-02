@@ -22,12 +22,7 @@ class SingUpViewController: UIViewController {
         super.viewDidLoad()
         self.overrideUserInterfaceStyle = .light
         
-        setUpViews()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.navigationBar.isHidden = true
+        settingDefault()
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -36,14 +31,18 @@ class SingUpViewController: UIViewController {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
-    private func setUpViews() {
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+    }
+    
+    private func settingDefault() {
         profileImageButton.layer.cornerRadius = 85
         profileImageButton.layer.borderWidth = 1
         profileImageButton.layer.borderColor = UIColor.rgb(red: 240, green: 240, blue: 240).cgColor
         RegisterButton.layer.cornerRadius = 10
         
         profileImageButton.addTarget(self, action: #selector(tappedProfileImageButton), for: .touchUpInside)
-        alreadyHaveAccountButton.addTarget(self, action: #selector(tappedAlredyHaveAccountButton), for: .touchUpInside)
+        alreadyHaveAccountButton.addTarget(self, action: #selector(alredyHaveAccountButton), for: .touchUpInside)
         
         emailTextFiled.delegate = self
         passwordTextFiled.delegate = self
@@ -76,7 +75,6 @@ class SingUpViewController: UIViewController {
         }
     }
 
-    
     @objc private func tappedProfileImageButton() {
         let imagePickerController = UIImagePickerController()
         imagePickerController.delegate = self
@@ -84,7 +82,7 @@ class SingUpViewController: UIViewController {
         self.present(imagePickerController, animated: true, completion: nil)
     }
     
-    @objc private func tappedAlredyHaveAccountButton() {
+    @objc private func alredyHaveAccountButton() {
         let storyboard = UIStoryboard(name: "Login", bundle: nil)
         let LoginViewController = storyboard.instantiateViewController(withIdentifier: "LoginViewController") as! LoginViewController
         LoginViewController.modalPresentationStyle = .fullScreen
@@ -92,19 +90,18 @@ class SingUpViewController: UIViewController {
     }
     
     @objc private func tappedRegisterButton() {
-        createUserToFiresore()
+        createUser()
     }
     
-    private func createUserToFiresore() {
+    private func createUser() {
         guard let email = emailTextFiled.text else { return }
         guard let password = passwordTextFiled.text else { return }
         
         SVProgressHUD.show()
-        
-        Auth.auth().createUser(withEmail: email, password: password) { (res, err) in
+        Auth.auth().createUser(withEmail: email, password: password) { res, err in
             if let err = err {
                 SVProgressHUD.dismiss()
-                print("認証情報の保存に失敗しました。\(err)")
+                print("***err",err)
                 SVProgressHUD.showError(withStatus: "有効なメールアドレスまたは,パスワードではありません")
                 return
 
@@ -116,16 +113,16 @@ class SingUpViewController: UIViewController {
             if let user = user {
                 let changRequest = user.createProfileChangeRequest()
                 changRequest.displayName = username
-                changRequest.commitChanges { error in
-                    if let error = error {
-                        print("DEBUG_PRINT* \(error)")
+                changRequest.commitChanges { err in
+                    if let err = err {
+                        print("***error",err)
+                        SVProgressHUD.dismiss()
+                        SVProgressHUD.showError(withStatus: "有効なメールアドレスまたはパスワードではありません")
+                        return
                     }
                 }
             }
-            
-            print(" DEBUG_PRINT: 認証情報の保存に成功しました。")
-            
-            
+            print("***認証情報の保存に成功しました。")
             
             let db = Firestore.firestore()
             let chatroomRef = db.collection(Const.ChatRooms).document(uid)
@@ -138,18 +135,19 @@ class SingUpViewController: UIViewController {
                 "groupName": "マイチャット",
                 "groupProfileText": "",
                 "myChat": true
-                
             ] as [String : Any]
             chatroomRef.setData(chatroomDic) { err in
                 if let err = err {
                     SVProgressHUD.dismiss()
                     SVProgressHUD.showError(withStatus: "有効なメールアドレスまたはパスワードではありません")
-                    print("Firestoreへの保存に失敗しました。\(err)")
+                    print("***err",err)
                     return
                 }
             }
+            print("***マイチャットの作成に成功しました")
             
-            let docData = [
+            let userRef = db.collection(Const.User).document(uid)
+            let userDic = [
                 "email": email,
                 "username": username,
                 "createdAt": Timestamp(),
@@ -160,18 +158,16 @@ class SingUpViewController: UIViewController {
                 "groupId": [uid],
                 "profileText": ""
             ] as [String : Any]
-            
-            //uidをドキュメントに指定
-            Firestore.firestore().collection(Const.User).document(uid).setData(docData) {
-                (err) in
+            userRef.setData(userDic) { err in
                 if let err = err {
                     SVProgressHUD.dismiss()
                     SVProgressHUD.showError(withStatus: "有効なメールアドレスまたはパスワードではありません")
-                    print("Firestoreへの保存に失敗しました。\(err)")
+                    print("err",err)
                     return
                 }
             }
-            print("DEBUG_PRINT: Firestoreへの情報の保存に成功しました。")
+            print("***userの情報の保存に成功しました")
+            
             let image = self.profileImageButton.imageView?.image ?? UIImage(named: "男シルエットイラスト")
             //画像をjpgに変更
             guard let uploadImage = image?.jpegData(compressionQuality: 0.3) else { return }
@@ -180,47 +176,18 @@ class SingUpViewController: UIViewController {
             //storageに画像を保存する
             let metadata = StorageMetadata()
             metadata.contentType = "image/jpeg"
-            imageRef.putData(uploadImage, metadata: metadata) { (metadata, err) in
+            imageRef.putData(uploadImage, metadata: metadata) { metadata, err in
                 if let err = err {
+                    SVProgressHUD.showError(withStatus: "有効なメールアドレスまたはパスワードではありません")
                     SVProgressHUD.dismiss()
-                    print("画像のアップロードに失敗しました。\(err)")
+                    print("***err",err)
                     return
                 }
-                print("DEBUG_PRINT: 画像の保存に成功しました。")
+                print("***userの画像の保存に成功しました")
             }
-
-            print("***chatroomの情報が保存されました")
-            
-//            //ユーザーの情報にグループの名前が入る
-//            let userRef = Firestore.firestore().collection(Const.User).document(uid)
-//            userRef.updateData([
-//                "groupId": FieldValue.arrayUnion([chatroomRef.documentID])
-//            ])
-//            userRef.updateData([
-//                "nowGroup": chatroomRef.documentID
-//            ])
-//
-//            let image = self.groupImageButton.imageView?.image ?? UIImage(named: "男シルエットイラスト")
-//
-//            //画像をjpgに変更
-//            guard let uploadImage = image?.jpegData(compressionQuality: 0.3) else { return }
-//            //画像の保存場所を指定
-//            let imageRef = Storage.storage().reference().child(Const.GroupImage).child(chatroomRef.documentID + ".jpg")
-//            //storageに画像を保存する
-//            let metadata = StorageMetadata()
-//            metadata.contentType = "image/jpeg"
-//            imageRef.putData(uploadImage, metadata: metadata) { (metadata, err) in
-//                if let err = err {
-//                    print("画像のアップロードに失敗しました。\(err)")
-//                    return
-//                }
-//                print("DEBUG_PRINT: 画像の保存に成功しました。")
-//            }
-//
-            
+            print("***新規登録の処理を完了しました")
             
             SVProgressHUD.dismiss()
-            SVProgressHUD.showSuccess(withStatus: "")
             let storyboar = UIStoryboard(name: "Setting", bundle: nil)
             let chatroomSettingViewController = storyboar.instantiateViewController(identifier: "chatroomSettingViewController") as! chatroomSettingViewController
             let nav = UINavigationController(rootViewController: chatroomSettingViewController)
@@ -228,15 +195,9 @@ class SingUpViewController: UIViewController {
             self.present(nav, animated: true, completion: nil)
         }
     }
-    
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
-    }
-    
 }
 
 extension SingUpViewController:UITextFieldDelegate {
-    
     func textFieldDidChangeSelection(_ textField: UITextField) {
         let emailIsEmpty = emailTextFiled.text?.isEmpty ?? false
         let passwordIsEmpty = passwordTextFiled.text?.isEmpty ?? false
@@ -255,18 +216,16 @@ extension SingUpViewController:UITextFieldDelegate {
         self.view.endEditing(true)
         return false
     }
-  
 }
 
+
 extension SingUpViewController: UIImagePickerControllerDelegate,UINavigationControllerDelegate {
-    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let editImage = info[.editedImage] as? UIImage {
             profileImageButton.setImage(editImage.withRenderingMode(.alwaysOriginal), for: .normal)
         } else if let originalImage = info[.originalImage] as? UIImage {
             profileImageButton.setImage(originalImage.withRenderingMode(.alwaysOriginal), for: .normal)
         }
-        
         profileImageButton.setTitle("", for: .normal)
         profileImageButton.imageView?.contentMode = .scaleAspectFill
         profileImageButton.contentHorizontalAlignment = .fill
@@ -274,13 +233,12 @@ extension SingUpViewController: UIImagePickerControllerDelegate,UINavigationCont
         profileImageButton.clipsToBounds = true
         dismiss(animated: true, completion: nil)
     }
-    
 }
 
 
 
 
-//一番最初の画面
+//Firest Screen
 class FirestViewController: UIViewController {
     
     @IBOutlet weak var singUpButtonOutlet: UIButton!
@@ -291,17 +249,21 @@ class FirestViewController: UIViewController {
         LoginViewController.modalPresentationStyle = .fullScreen
         present(LoginViewController, animated: true, completion: nil)
     }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.overrideUserInterfaceStyle = .light
-
+        setDefault()
+    }
+    
+    private func setDefault() {
         singUpButtonOutlet.layer.cornerRadius = 10
         singUpButtonOutlet.layer.borderColor = UIColor.rgb(red: 100, green: 150, blue: 255).cgColor
         singUpButtonOutlet.layer.borderWidth = 1.0
-        singUpButtonOutlet.addTarget(self, action: #selector(agereement), for: .touchUpInside)
+        singUpButtonOutlet.addTarget(self, action: #selector(singUp), for: .touchUpInside)
     }
     
-    @objc func agereement() {
+    @objc func singUp() {
         let storbor = UIStoryboard(name: "SingUp", bundle: nil)
         let AgreementViewController = storbor.instantiateViewController(identifier: "AgreementViewController") as! AgreementViewController
         let nav = UINavigationController(rootViewController: AgreementViewController)
@@ -311,7 +273,7 @@ class FirestViewController: UIViewController {
 
 
 
-//利用規約の部分
+//利用規約のview
 class AgreementViewController: UIViewController {
     @IBAction func endButton(_ sender: Any) {
         self.dismiss(animated: true, completion: nil)
@@ -324,7 +286,6 @@ class AgreementViewController: UIViewController {
         present(SingUpViewController, animated: true, completion: nil)
     }
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.overrideUserInterfaceStyle = .light
@@ -332,7 +293,6 @@ class AgreementViewController: UIViewController {
         navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
         self.navigationItem.title = "利用規約"
         self.navigationController?.navigationBar.titleTextAttributes = [
-            // 文字の色
             .foregroundColor: UIColor.rgb(red: 100, green: 150, blue: 255)
         ]
     }

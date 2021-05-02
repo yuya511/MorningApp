@@ -6,12 +6,25 @@
 //
 
 import UIKit
+import SVProgressHUD
 
 class DescriptionViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        setDefault()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        SVProgressHUD.showSuccess(withStatus: "スクロールでページ変更！")
+    }
+    
+    private func setDefault() {
+      
+    }
 }

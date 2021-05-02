@@ -36,6 +36,7 @@ class RecordViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.overrideUserInterfaceStyle = .light
         setDefault()
     }
     
@@ -53,7 +54,6 @@ class RecordViewController: UIViewController {
     
     private func setDefault() {
         UITabBar.appearance().barTintColor = UIColor.white
-        self.overrideUserInterfaceStyle = .light
         guard let tabbarSize = tabBarController?.tabBar.frame.size.height else { return }
         var admobView = GADBannerView()
         admobView = GADBannerView(adSize: kGADAdSizeBanner)

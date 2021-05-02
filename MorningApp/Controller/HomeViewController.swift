@@ -14,7 +14,6 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var HomeTableView: UITableView!
     
     var targetTime:Date? {
-        //ストアドプロパティを監視する。変更されたら呼ばれる
         didSet {
             timeMonitor()
             //比較のためにdate型の状態で保存している
@@ -82,7 +81,6 @@ class HomeViewController: UIViewController {
         leftSwipeGesture.direction = .left
         view.addGestureRecognizer(rightSwipeGesture)
         view.addGestureRecognizer(leftSwipeGesture)
-//        menuReload()
         checkLogin()
     }
     
@@ -91,6 +89,10 @@ class HomeViewController: UIViewController {
         setUser()
         checkLogin()
         timeCheck()
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
         menuReload()
     }
     
@@ -123,17 +125,14 @@ class HomeViewController: UIViewController {
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
-        //keyboardの高さを取得
         guard let userInfo = notification.userInfo else { return }
         if let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as AnyObject).cgRectValue {
             
             if keyboardFrame.height <= chatInputAccessoryHeight { return }
-            
             let top = keyboardFrame.height - safeAreaBottom
             var moveY = -(top - HomeTableView.contentOffset.y)
             if HomeTableView.contentOffset.y != -60 { moveY += 60 }
             let contentInset = UIEdgeInsets(top: top, left: 0, bottom: 0, right: 0)
-            
             HomeTableView.contentInset = contentInset
             HomeTableView.scrollIndicatorInsets = contentInset
             HomeTableView.contentOffset = CGPoint(x: 0, y: moveY)
@@ -155,7 +154,6 @@ class HomeViewController: UIViewController {
         tabbarController.selectedIndex = 0
         tabbarController.modalPresentationStyle = .overFullScreen
         tabbarController.modalTransitionStyle = .crossDissolve
-        
         present(tabbarController, animated: true, completion: nil)
     }
     
