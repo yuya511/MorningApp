@@ -6,10 +6,12 @@
 //
 
 import UIKit
-import BackgroundTasks
 import Firebase
+import GoogleMobileAds
 import AVFoundation
 import UserNotifications
+
+
 
 
 @main
@@ -18,7 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UNUserNotificationCenterD
     var window: UIWindow? 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // Use Firebase library to configure APIs.
         FirebaseApp.configure()
+        
         // Initialize the Google Mobile Ads SDK.
         GADMobileAds.sharedInstance().start(completionHandler: nil)
         // Override point for customization after application launch.

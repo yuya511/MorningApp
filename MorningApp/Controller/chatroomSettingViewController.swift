@@ -9,22 +9,18 @@ import UIKit
 import Firebase
 import SVProgressHUD
 
-//グループ作成の画面
 class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIImagePickerControllerDelegate & UINavigationControllerDelegate {
 
     @IBOutlet weak var groupImageButton: UIButton!
     @IBOutlet weak var groupNameTextFeld: UITextField!
     @IBOutlet weak var groupPasswordTextField: UITextField!
     @IBOutlet weak var groupRegisterButtonOutlet: UIButton!
-    @IBOutlet weak var endOutlet: UIBarButtonItem!
-    
-    @IBAction func endButton(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
-    }
     
     @IBAction func groupRegisterButton(_ sender: Any) {
         newGroupSetting()
     }
+    
+    var endButton: UIBarButtonItem!
     
     private var groupPasswordIsEmpty:Bool = true
     
@@ -56,9 +52,17 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
         navigationController?.navigationBar.titleTextAttributes = [
             .foregroundColor: UIColor.rgb(red: 79, green: 109, blue: 220)
         ]
+        endButton = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(leftBarButtonAction))
+        self.navigationItem.leftBarButtonItem = endButton
+        
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
+    
+    @objc func leftBarButtonAction() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
     
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
@@ -83,20 +87,19 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
     }
   
     private func newUserFirestCheck() {
-        guard let uid = Auth.auth().currentUser?.uid else { return }
-        let userRef = Firestore.firestore().collection(Const.User).document(uid)
-        userRef.getDocument { (documents, err) in
-            if let err = err {
-                print("err",err)
-            }
-            guard let document = documents?.data() else { return }
-            if let _:String = document["nowGroup"] as? String {
-                
-            } else {
-                self.endOutlet.isEnabled = false
-                self.endOutlet.accessibilityElementsHidden = true
-            }
-        }
+//        guard let uid = Auth.auth().currentUser?.uid else { return }
+//        let userRef = Firestore.firestore().collection(Const.User).document(uid)
+//        userRef.getDocument { (documents, err) in
+//            if let err = err {
+//                print("***err",err)
+//                return
+//            }
+//            guard let document = documents?.data() else { return }
+//            if let _:String = document["nowGroup"] as? String {
+//
+//            } else {
+//            }
+//        }
     }
   
     private func newGroupSetting() {
@@ -222,6 +225,11 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
     private var pickGroupId:String?
     private var listener:ListenerRegistration?
     
+    var firestFlag:Bool?
+    
+    private var addGroupButton: UIBarButtonItem!
+    private var endButton: UIBarButtonItem!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         self.overrideUserInterfaceStyle = .light
@@ -234,7 +242,6 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
     }
     //検索ボタン押下時の呼び出しメソッド
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        //キーボードを閉じる。
         groupSerchBar.endEditing(true)
     }
     
@@ -248,6 +255,27 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
         enterButtonOutlet.isEnabled = false
         enterButtonOutlet.layer.backgroundColor = UIColor.rgb(red: 200, green: 200, blue: 200).cgColor
         groupTableView.register(UINib(nibName: "GroupCell", bundle: nil), forCellReuseIdentifier: "GroupCell")
+
+        self.navigationController?.navigationBar.barTintColor = UIColor.rgb(red: 240, green: 240, blue: 255)
+        addGroupButton = UIBarButtonItem(title: "新規グループ", style: .done, target: self, action: #selector(rightBarButtonAction))
+        self.navigationItem.rightBarButtonItem = addGroupButton
+        endButton = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(leftBarButtonAction))
+        self.navigationItem.leftBarButtonItem = endButton
+        guard let firestFlag = firestFlag else { return }
+        if firestFlag {
+            endButton.isEnabled = false
+        }
+    }
+    
+    @objc func rightBarButtonAction() {
+        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
+        let chatroomSettingViewController = storyboar.instantiateViewController(identifier: "chatroomSettingViewController") as! chatroomSettingViewController
+        let nav = UINavigationController(rootViewController: chatroomSettingViewController)
+        present(nav, animated: true, completion: nil)
+    }
+    
+    @objc func leftBarButtonAction() {
+        self.dismiss(animated: true, completion: nil)
     }
     
     private func GroupsSetting() {
@@ -264,15 +292,12 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
                     return groupData
                 }
                 self.resultChatgroup = self.Chatgroup
-                
                 guard let groupData = querySnapshot?.documents else { return }
                 for data in groupData {
                     self.groupIdList.append(data.documentID)
-//                    self.searchGroupIdList.append(data.documentID)
                     let data = data.data()
                     if let groupName:String = data["groupName"] as? String {
                         self.groupNameList.append(groupName)
-//                        self.searchGroupNameList.append(groupName)
                     }
                 }
                 self.searchGroupIdList = self.groupIdList

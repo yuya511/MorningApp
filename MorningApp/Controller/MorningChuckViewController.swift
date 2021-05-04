@@ -88,13 +88,19 @@ class MorningRecrdViewController: UIViewController {
         super.viewDidLoad()
         self.overrideUserInterfaceStyle = .light
 
-        targetSettingTextView.layer.cornerRadius = 10
-        decisionButtonOutlet.layer.cornerRadius = 5
+        setDefault()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.view.endEditing(true)
     }
+    
+    private func setDefault() {
+        targetSettingTextView.layer.cornerRadius = 10
+        decisionButtonOutlet.layer.cornerRadius = 5
+
+    }
+  
     
     private func setMorningRecrdViewController() {
         let now = Date()
@@ -164,8 +170,9 @@ class MorningSettingViewController: UIViewController, UNUserNotificationCenterDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setDefault()
         self.overrideUserInterfaceStyle = .light
+        
+        setDefault()
     }
    
     private func setDefault() {
@@ -194,27 +201,52 @@ class MorningSettingViewController: UIViewController, UNUserNotificationCenterDe
     @objc func backButton() {
         //通知を許可するかどうか
         let center = UNUserNotificationCenter.current()
-        center.requestAuthorization(options: [.alert, .sound, .badge]) { ( granted, error) in}
+        center.requestAuthorization(options: [.alert, .sound, .badge]) {(granted, error) in}
         center.delegate = self
-        print("***呼ばれている")
-        let storyboar = UIStoryboard(name: "Home", bundle: nil)
-        let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
-        let nav = UINavigationController(rootViewController: homeViewController)
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: true, completion: nil)
+        
+        if UserDefaults.standard.bool(forKey: "firestTime") {
+            let storyboar = UIStoryboard(name: "Home", bundle: nil)
+            let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+            let nav = UINavigationController(rootViewController: homeViewController)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: true, completion: nil)
+        } else {
+            UserDefaults.standard.set(true, forKey: "firestTime")
+            let storyboar = UIStoryboard(name: "Description", bundle: nil)
+            let PageViewController = storyboar.instantiateViewController(identifier: "PageViewController") as! PageViewController
+            let nav = UINavigationController(rootViewController: PageViewController)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: true, completion: nil)
+        }
     }
     
     @objc func tappedSettingButton() {
+        
         //通知を許可するかどうか
         let center = UNUserNotificationCenter.current()
         center.requestAuthorization(options: [.alert, .sound, .badge]) { ( granted, error) in}
         center.delegate = self
-        let storyboar = UIStoryboard(name: "Home", bundle: nil)
-        let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
-        homeViewController.targetTime = settingTime
-        let nav = UINavigationController(rootViewController: homeViewController)
-        nav.modalPresentationStyle = .fullScreen
-        present(nav, animated: true, completion: nil)
+        
+        if UserDefaults.standard.bool(forKey: "firestTime") {
+            let storyboar = UIStoryboard(name: "Home", bundle: nil)
+            let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+            homeViewController.targetTime = settingTime
+            let nav = UINavigationController(rootViewController: homeViewController)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: true, completion: nil)
+        } else {
+            UserDefaults.standard.set(true, forKey: "firestTime")
+            
+            let storyboar = UIStoryboard(name: "Home", bundle: nil)
+            let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
+            homeViewController.targetTime = settingTime
+            
+            let storyboard = UIStoryboard(name: "Description", bundle: nil)
+            let PageViewController = storyboard.instantiateViewController(identifier: "PageViewController") as! PageViewController
+            let nav = UINavigationController(rootViewController: PageViewController)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: true, completion: nil)
+        }
     }
 }
 

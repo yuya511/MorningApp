@@ -65,7 +65,6 @@ class SingUpViewController: UIViewController {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             if self.view.frame.origin.y == 0 {
                 self.view.frame.origin.y -= keyboardSize.height - 150
-            } else {
             }
         }
     }
@@ -189,15 +188,16 @@ class SingUpViewController: UIViewController {
             
             SVProgressHUD.dismiss()
             let storyboar = UIStoryboard(name: "Setting", bundle: nil)
-            let chatroomSettingViewController = storyboar.instantiateViewController(identifier: "chatroomSettingViewController") as! chatroomSettingViewController
-            let nav = UINavigationController(rootViewController: chatroomSettingViewController)
+            let chatroomEnterViewController = storyboar.instantiateViewController(identifier: "chatroomEnterViewController") as! chatroomEnterViewController
+            chatroomEnterViewController.firestFlag = true
+            let nav = UINavigationController(rootViewController: chatroomEnterViewController)
             nav.modalPresentationStyle = .fullScreen
             self.present(nav, animated: true, completion: nil)
         }
     }
 }
 
-extension SingUpViewController:UITextFieldDelegate {
+extension SingUpViewController: UITextFieldDelegate {
     func textFieldDidChangeSelection(_ textField: UITextField) {
         let emailIsEmpty = emailTextFiled.text?.isEmpty ?? false
         let passwordIsEmpty = passwordTextFiled.text?.isEmpty ?? false
@@ -219,7 +219,7 @@ extension SingUpViewController:UITextFieldDelegate {
 }
 
 
-extension SingUpViewController: UIImagePickerControllerDelegate,UINavigationControllerDelegate {
+extension SingUpViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if let editImage = info[.editedImage] as? UIImage {
             profileImageButton.setImage(editImage.withRenderingMode(.alwaysOriginal), for: .normal)

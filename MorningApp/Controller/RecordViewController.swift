@@ -92,8 +92,6 @@ class RecordViewController: UIViewController {
                 let createdAtDate :Date = createdAt.dateValue()
                 print("***createdAtDate",createdAtDate)
                 
-                
-                
                 let ccalendar = Calendar(identifier: .gregorian)
                 let nowTime = ccalendar.startOfDay(for: createdAtDate)
                 print("***nowTime",nowTime)

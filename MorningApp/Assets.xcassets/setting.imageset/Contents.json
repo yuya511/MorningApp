@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "無料の設定歯車アイコン.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "無料の設定歯車アイコン-1.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "無料の設定歯車アイコン-2.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

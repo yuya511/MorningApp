@@ -15,6 +15,8 @@ pod 'FirebaseUI/Storage'
 pod 'SVProgressHUD','2.2.5'
 pod 'Charts', '~> 3.6'
 pod 'Firebase/AdMob'
+pod 'Google-Mobile-Ads-SDK'
+
 
 
 end

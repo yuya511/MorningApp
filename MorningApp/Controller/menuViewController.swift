@@ -9,12 +9,12 @@ import UIKit
 import Firebase
 import FirebaseUI
 import SVProgressHUD
+import GoogleMobileAds
 
 class menuViewController: UIViewController {
     @IBOutlet weak var menuView: UIView!
     @IBOutlet weak var menuImageView: UIImageView!
     @IBOutlet weak var menuNameLabel: UILabel!
-    @IBOutlet weak var menuEmailLabel: UILabel!
     @IBOutlet weak var menuTabelView: UITableView!
     @IBOutlet weak var menuTargetLabel: UILabel!
     @IBAction func menuEditButton(_ sender: Any) {
@@ -32,6 +32,8 @@ class menuViewController: UIViewController {
     private var groupIdList = [String]()
     private var myNowGroup : String?
     private var myNowGroupNmae : String?
+    
+    var admobView :GADBannerView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -51,7 +53,6 @@ class menuViewController: UIViewController {
         menuTabelView.dataSource = self
         menuTabelView.register(UINib(nibName: "menuMemberTableViewCell", bundle: nil), forCellReuseIdentifier: cellId)
         menuTargetLabel.text = UserDefaults.standard.string(forKey: "SETTIME") ?? "設定する"
-        
         let rightSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
         rightSwipeGesture.direction = .right
         let leftSwipeGesture = UISwipeGestureRecognizer(target: self, action: #selector(swiped(_:)))
@@ -60,7 +61,6 @@ class menuViewController: UIViewController {
         view.addGestureRecognizer(leftSwipeGesture)
         
         guard let tabbarSize = tabBarController?.tabBar.frame.size.height else {return }
-        var admobView = GADBannerView()
         admobView = GADBannerView(adSize: kGADAdSizeBanner)
         let screenSize = UIScreen.main.bounds.size
         switch (screenSize.height) {
@@ -73,7 +73,6 @@ class menuViewController: UIViewController {
             admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
              break
         case 667.0:
-            //iPhone8とか
             admobView.frame.origin = CGPoint(x: 0, y: self.view.frame.size.height - admobView.frame.height - tabbarSize)
             admobView.frame.size = CGSize(width: self.view.frame.width, height: admobView.frame.height)
              break
@@ -105,6 +104,7 @@ class menuViewController: UIViewController {
         self.view.addSubview(admobView)
     }
     
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // メニューの位置を取得する
@@ -121,7 +121,6 @@ class menuViewController: UIViewController {
             },
             completion: { bool in
             })
-        
         DefaultCheck()
     }
     
@@ -147,7 +146,7 @@ class menuViewController: UIViewController {
         if Auth.auth().currentUser != nil {
             guard let uid = Auth.auth().currentUser?.uid else { return }
             let UserRef = db.collection(Const.User).document(uid)
-            UserRef.addSnapshotListener() { (querySnapshot, err) in
+            UserRef.addSnapshotListener() { querySnapshot, err in
                 if let err = err {
                     print("***err",err)
                 }
@@ -156,17 +155,9 @@ class menuViewController: UIViewController {
                 self.myNowGroup = nowGroup as? String
                 self.setGroupMember(nowGroup: nowGroup as? String ?? "")
             }
-            UserRef.addSnapshotListener() { document,err in
-                if let err = err {
-                    print(err)
-                    return
-                }
-                guard let dic = document?.data() else { return }
-                guard let username = Auth.auth().currentUser?.displayName else { return }
-                guard let email = dic["email"] else { return }
-                self.menuNameLabel.text = username
-                self.menuEmailLabel.text = email as? String
-            }
+            guard let username = Auth.auth().currentUser?.displayName else { return }
+            self.menuNameLabel.text = username
+            
             let imageRef = Storage.storage().reference().child(Const.ImagePath).child(uid + ".jpg")
             menuImageView.sd_setImage(with: imageRef)
         }
@@ -235,6 +226,14 @@ class menuViewController: UIViewController {
                     completion: { bool in self.dismiss(animated: true, completion: nil)}
                 )}
         }
+    }
+    
+    private func load(key: String) -> Date? {
+        let value = UserDefaults.standard.object(forKey: key)
+        guard let date = value as? Date else {
+            return nil
+        }
+        return date
     }
 }
 
@@ -310,7 +309,7 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
             present(nav, animated: true, completion: nil)
             
         } else {
-           print("***エラー")
+           print("***err")
         }
     }
 
@@ -349,7 +348,7 @@ extension menuViewController: UITableViewDelegate, UITableViewDataSource {
                     UserUpdateValue = FieldValue.arrayRemove([self.myNowGroup!])
                     let groupRef = db.collection(Const.ChatRooms).document(self.myNowGroup!)
                     let userRef = db.collection(Const.User).document(myUid)
-                    userRef.getDocument() {(doument,err) in
+                    userRef.getDocument() { doument,err in
                         if let err = err {
                             print(err)
                             return

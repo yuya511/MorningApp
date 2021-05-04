@@ -190,6 +190,7 @@ class HomeViewController: UIViewController {
     //通知の処理
     func setNotification() {
         guard let setTimeDate = load(key: "SETDATE") else { return }
+        print("***setTimeDate",setTimeDate)
         print("*** 通知が設定された")
         //通知の内容を設定
         let content = UNMutableNotificationContent()

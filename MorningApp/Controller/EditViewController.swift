@@ -412,23 +412,16 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
 
 
 
-//グループ選択画面
+//現在入っているグループ一覧
 class groupSelectViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
    
     @IBOutlet weak var groupSelectTableView: UITableView!
     
-    @IBAction func groupAddButton(_ sender: Any) {
-        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
-        let chatroomSettingViewController = storyboar.instantiateViewController(identifier: "chatroomSettingViewController") as! chatroomSettingViewController
-        let nav = UINavigationController(rootViewController: chatroomSettingViewController)
-        present(nav, animated: true, completion: nil)
-    }
-    
-    @IBAction func dissmisButton(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
-    }
     var group = [Group]()
     var groupIdList = [String]()
+    
+    var addGroupButton: UIBarButtonItem!
+    var endGroupButton: UIBarButtonItem!
     var listener: ListenerRegistration?
 
     
@@ -436,20 +429,38 @@ class groupSelectViewController: UIViewController, UITableViewDelegate, UITableV
         super.viewDidLoad()
         self.overrideUserInterfaceStyle = .light
 
+        setDefault()
+        setGroupList()
+    }
+  
+    private func setDefault() {
         groupSelectTableView.delegate = self
         groupSelectTableView.dataSource = self
         groupSelectTableView.register(UINib(nibName: "GroupCell", bundle: nil), forCellReuseIdentifier: "cell")
         navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
-        self.navigationItem.title = "グループを選択"
+        self.navigationItem.title = "グループ一覧"
         self.navigationController?.navigationBar.titleTextAttributes = [
-            // 文字の色
             .foregroundColor: UIColor.rgb(red: 100, green: 150, blue: 255)
         ]
-        setFirestore()
-    
+        addGroupButton = UIBarButtonItem(title: "追加", style: .done, target: self, action: #selector(rightBarButtonAction))
+        self.navigationItem.rightBarButtonItem = addGroupButton
+        endGroupButton = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(leftBarButtonAction))
+        self.navigationItem.leftBarButtonItem = endGroupButton
     }
-  
-    private func setFirestore() {
+    
+    @objc func rightBarButtonAction() {
+        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
+        let chatroomEnterViewController = storyboar.instantiateViewController(identifier: "chatroomEnterViewController") as chatroomEnterViewController
+        let nav = UINavigationController(rootViewController: chatroomEnterViewController)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true, completion: nil)
+    }
+    
+    @objc func leftBarButtonAction() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    private func setGroupList() {
         let db = Firestore.firestore()
         guard let uid = Auth.auth().currentUser?.uid else {return}
         let userRef = db.collection(Const.User).document(uid)

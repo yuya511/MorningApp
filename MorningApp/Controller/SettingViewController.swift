@@ -149,19 +149,6 @@ extension SettingViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         guard let uid = Auth.auth().currentUser?.uid else { return }
-//        if indexPath.section == 0 {
-//            if indexPath.row == 0 {
-//                userChange(id: uid)
-//            } else {
-//                groupSelect()
-//            }
-//        } else if indexPath.section == 1 {
-//            if indexPath.row == 0 {
-//                sendView()
-//            } else {
-//                descriptionView()
-//            }
-//        }
         switch indexPath.section {
         case 0:
             if indexPath.row == 0 {
