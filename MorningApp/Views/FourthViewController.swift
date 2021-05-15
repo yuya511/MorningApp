@@ -9,21 +9,32 @@ import UIKit
 
 class FourthViewController: UIViewController {
 
+    @IBOutlet weak var startButton: UIButton!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        
+        setDefault()
+    }
+    private func setDefault() {
+        startButton.layer.cornerRadius = 10
+        startButton.addTarget(self, action: #selector(startButtonAction), for: .touchUpInside)
     }
     
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @objc private func startButtonAction() {
+        if UserDefaults.standard.bool(forKey: "firestTime") {
+            let storyboar = UIStoryboard(name: "Home", bundle: nil)
+            let HomeViewController = storyboar.instantiateViewController(withIdentifier: "Home") as! HomeViewController
+            let nav = UINavigationController(rootViewController: HomeViewController)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: true, completion: nil)
+        } else {
+            UserDefaults.standard.set(true, forKey: "firestTime")
+            let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
+            let MorningSettingViewController = storyboar.instantiateViewController(withIdentifier: "MorningSettingViewController") as! MorningSettingViewController
+            let nav = UINavigationController(rootViewController: MorningSettingViewController)
+            nav.modalPresentationStyle = .fullScreen
+            present(nav, animated: true, completion: nil)
+        }
     }
-    */
-
 }

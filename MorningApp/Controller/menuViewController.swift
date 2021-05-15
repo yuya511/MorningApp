@@ -17,6 +17,19 @@ class menuViewController: UIViewController {
     @IBOutlet weak var menuNameLabel: UILabel!
     @IBOutlet weak var menuTabelView: UITableView!
     @IBOutlet weak var menuTargetLabel: UILabel!
+    @IBOutlet weak var doSupportLabel: UILabel!
+    @IBOutlet weak var BedoneSupportLabel: UILabel!
+   
+    
+    @IBAction func settingButton(_ sender: Any) {
+        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
+        let ProfileSettingViewController = storyboar.instantiateViewController(withIdentifier: "ProfileSettingViewController") as! ProfileSettingViewController
+        ProfileSettingViewController.id = Auth.auth().currentUser?.uid
+        let nav = UINavigationController(rootViewController: ProfileSettingViewController)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true, completion: nil)
+    }
+    
     @IBAction func menuEditButton(_ sender: Any) {
         let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
         let morningSettingViewController = storyboar.instantiateViewController(identifier: "MorningSettingViewController") as! MorningSettingViewController
@@ -37,8 +50,10 @@ class menuViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        SVProgressHUD.show()
         setDefault()
         setUser()
+        SVProgressHUD.dismiss()
     }
     
     private func setDefault() {
@@ -151,6 +166,10 @@ class menuViewController: UIViewController {
                     print("***err",err)
                 }
                 guard let UserData = querySnapshot?.data() else { return }
+                guard let doSupport = UserData["doSupport"] as? Int else { return }
+                guard let BedoneSupport = UserData["BedoneSupport"] as? Int  else { return }
+                self.doSupportLabel.text = String(doSupport)
+                self.BedoneSupportLabel.text = String(BedoneSupport)
                 guard let nowGroup = UserData["nowGroup"] else { return }
                 self.myNowGroup = nowGroup as? String
                 self.setGroupMember(nowGroup: nowGroup as? String ?? "")

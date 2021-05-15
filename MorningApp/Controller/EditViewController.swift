@@ -13,32 +13,25 @@ import FirebaseUI
 //プロフィール編集画面
 class EditViewController: UIViewController, UIImagePickerControllerDelegate & UITextFieldDelegate, UINavigationControllerDelegate, UITextViewDelegate {
 
-    @IBAction func hiddenButton(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
     @IBOutlet weak var profileImageButton: UIButton!
     @IBOutlet weak var userNameTextField: UITextField!
     @IBOutlet weak var profileTextView: UITextView!
     @IBOutlet weak var saveButton: UIButton!
     
+    private var leftBarButtonItem: UIBarButtonItem!
+    
     override func viewDidLoad() {
         self.overrideUserInterfaceStyle = .light
-
         super.viewDidLoad()
 
-        setLayout()
-        setFirebase()
- 
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        setDefault()
+        setUserData()
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
         if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
             if self.view.frame.origin.y == 0 {
                 self.view.frame.origin.y -= keyboardSize.height - 150
-            } else {
             }
         }
     }
@@ -58,7 +51,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate & UI
         self.view.endEditing(true)
     }
     
-    private func setLayout() {
+    private func setDefault() {
         profileImageButton.layer.cornerRadius = 85
         profileImageButton.layer.borderColor = UIColor.rgb(red: 200, green: 200, blue: 200).cgColor
         profileImageButton.layer.borderWidth = 1.0
@@ -71,7 +64,7 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate & UI
         profileTextView.backgroundColor = .rgb(red: 240, green: 240, blue: 240)
         navigationController?.navigationBar.backgroundColor = .rgb(red: 240, green: 240, blue: 255)
         view.backgroundColor = .rgb(red: 245, green: 245, blue: 245)
-        self.navigationItem.title = "ユーザーを編集"
+        self.navigationItem.title = "プロフィールを編集"
         
         self.navigationController?.navigationBar.titleTextAttributes = [
             // 文字の色
@@ -85,6 +78,15 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate & UI
         userNameTextField.delegate = self
         profileTextView.delegate = self
         
+        leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(leftBarButtonItemAction))
+        self.navigationItem.leftBarButtonItem = leftBarButtonItem
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+    
+    @objc private func leftBarButtonItemAction() {
+        self.dismiss(animated: true, completion: nil)
     }
     
     @objc func tappedImageButton() {
@@ -98,11 +100,11 @@ class EditViewController: UIViewController, UIImagePickerControllerDelegate & UI
         updateUser()
     }
     
-    private func setFirebase() {
+    private func setUserData() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let db = Firestore.firestore()
         let userRef = db.collection(Const.User).document(uid)
-        userRef.getDocument { (doucuments,err) in
+        userRef.getDocument { doucuments,err in
             if let err = err {
                 print(err)
                 return
@@ -234,10 +236,8 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
         super.viewDidLoad()
         self.overrideUserInterfaceStyle = .light
 
-        setLayout()
-        setFirebase()
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        setDefault()
+        setGroupData()
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
@@ -264,7 +264,7 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
         self.view.endEditing(true)
     }
     
-    private func setLayout() {
+    private func setDefault() {
         groupImageButton.layer.cornerRadius = 25
         groupImageButton.layer.borderColor = UIColor.rgb(red: 200, green: 200, blue: 200).cgColor
         groupImageButton.layer.borderWidth = 1.0
@@ -293,6 +293,9 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
         groupNameTextFiled.delegate = self
         passwordTextField.delegate = self
         groupProfileTextView.delegate = self
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillChangeFrameNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     @objc func tappedImageButton() {
@@ -306,7 +309,7 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
         updateGroup()
     }
     
-    private func setFirebase() {
+    private func setGroupData() {
         let db = Firestore.firestore()
         let groupRef = db.collection(Const.ChatRooms).document(groupId!)
         groupRef.getDocument {(document,err) in
@@ -367,7 +370,6 @@ class groupEditViewController: UIViewController, UITextViewDelegate, UITextField
             SDImageCache.shared.clearDisk()
         }
        
-        print("呼ばれている")
         let storyboar = UIStoryboard(name: "Home", bundle: nil)
         let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
         let nav = UINavigationController(rootViewController: homeViewController)

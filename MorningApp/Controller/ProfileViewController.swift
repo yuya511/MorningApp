@@ -12,63 +12,24 @@ import SVProgressHUD
 //ユーザのプロフィール画面
 class ProfileSettingViewController: UIViewController {
     
-    @IBOutlet weak var editButton: UIBarButtonItem!
     @IBOutlet weak var logOutButton: UIButton!
     @IBOutlet weak var profileImageView: UIImageView!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var profileTextView: UITextView!
-    @IBOutlet weak var saveButton: UIBarButtonItem!
     @IBOutlet weak var doSupportCountLabel: UILabel!
     @IBOutlet weak var BeDoneSupportCountLabel: UILabel!
     
+    private var rightbarButtonItem: UIBarButtonItem!
+    private var leftbarButtonItem: UIBarButtonItem!
     
     var listener: ListenerRegistration?
     var id:String?
     
-    @IBAction func hiddenButton(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
-    }
-   
     override func viewDidLoad() {
         super.viewDidLoad()
         self.overrideUserInterfaceStyle = .light
-        
-        profileImageView.layer.cornerRadius = 50
-        profileTextView.layer.cornerRadius = 10
-        profileTextView.backgroundColor = .rgb(red: 240, green: 240, blue: 240)
-        profileTextView.layer.borderColor = UIColor.rgb(red: 200, green: 200, blue: 200).cgColor
-        profileTextView.layer.borderWidth = 1.0
-        view.backgroundColor = .rgb(red: 245, green: 245, blue: 245)
-        navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
-        profileTextView.isEditable = false
-        editButton.accessibilityElementsHidden = true
-        editButton.isEnabled = false
-    }
-    
-    @objc private func logOut() {
-        let alertController:UIAlertController = UIAlertController(title:"ログアウトしますか？", message: "", preferredStyle: .alert)
-        let doAction:UIAlertAction = UIAlertAction(title: "ログアウト", style: .destructive, handler: {(action:UIAlertAction!) -> Void in
-            do {
-                try Auth.auth().signOut()
-                SVProgressHUD.showSuccess(withStatus: "ログアウトしました")
-                let storyboard = UIStoryboard(name: "SingUp", bundle: nil)
-                let firestViewController = storyboard.instantiateViewController(withIdentifier: "FirestViewController") as! FirestViewController
-                firestViewController.modalPresentationStyle = .fullScreen
-                self.present(firestViewController, animated: true, completion: nil)
-            } catch {
-                SVProgressHUD.showError(withStatus: "エラー")
-                print("ログアウトに失敗しました。\(error)")
-            }
-        })
-        let canselAction:UIAlertAction = UIAlertAction(title: "キャンセル", style: .default, handler: {(action:UIAlertAction!) -> Void in
-            print("キャンセルが呼ばれた。")
-        })
-        
-        alertController.addAction(canselAction)
-        alertController.addAction(doAction)
-        
-        present(alertController, animated: true, completion: nil)
-
+       
+        setDefault()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -80,16 +41,40 @@ class ProfileSettingViewController: UIViewController {
         super.viewDidAppear(animated)
         listener?.remove()
     }
+    private func setDefault() {
+        profileImageView.layer.cornerRadius = 50
+        profileTextView.layer.cornerRadius = 10
+        profileTextView.backgroundColor = .rgb(red: 240, green: 240, blue: 240)
+        profileTextView.layer.borderColor = UIColor.rgb(red: 200, green: 200, blue: 200).cgColor
+        profileTextView.layer.borderWidth = 1.0
+        view.backgroundColor = .rgb(red: 245, green: 245, blue: 245)
+        navigationController?.navigationBar.barTintColor = .rgb(red: 240, green: 240, blue: 255)
+        profileTextView.isEditable = false
+        
+        rightbarButtonItem = UIBarButtonItem(title: "編集", style: .done, target: self, action: #selector(rightBarButtonAction))
+        leftbarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(leftBarButtonAction))
+        self.navigationItem.rightBarButtonItem = rightbarButtonItem
+        self.navigationItem.leftBarButtonItem = leftbarButtonItem
+        rightbarButtonItem.isEnabled = false
+    }
     
+    @objc private func rightBarButtonAction() {
+        let storyboar = UIStoryboard(name: "Setting", bundle: nil)
+        let EditViewController = storyboar.instantiateViewController(identifier: "EditViewController") as EditViewController
+        let nav = UINavigationController(rootViewController: EditViewController)
+        nav.modalPresentationStyle = .fullScreen
+        present(nav, animated: true, completion: nil)
+    }
+    @objc private func leftBarButtonAction() {
+        self.dismiss(animated: true, completion: nil)
+    }
+   
     private func setUserfirebase() {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         if id == uid {
             logOutButton.addTarget(self, action: #selector(logOut), for: .touchUpInside)
-            editButton.accessibilityElementsHidden = false
-            editButton.isEnabled = true
+            rightbarButtonItem.isEnabled = true
         } else {
-            editButton.accessibilityElementsHidden = true
-            editButton.isEnabled = false
             logOutButton.setTitle("通報する", for: .normal)
             logOutButton.addTarget(self, action: #selector(report), for: .touchUpInside)
         }
@@ -119,7 +104,35 @@ class ProfileSettingViewController: UIViewController {
         }
     }
     
-    @objc func report() {
+    @objc private func logOut() {
+        let alertController:UIAlertController = UIAlertController(title:"ログアウトしますか？", message: "", preferredStyle: .alert)
+        let doAction:UIAlertAction = UIAlertAction(title: "ログアウト", style: .destructive, handler: {(action:UIAlertAction!) -> Void in
+            do {
+                try Auth.auth().signOut()
+                SVProgressHUD.showSuccess(withStatus: "ログアウトしました")
+                let storyboard = UIStoryboard(name: "SingUp", bundle: nil)
+                let firestViewController = storyboard.instantiateViewController(withIdentifier: "FirestViewController") as! FirestViewController
+                firestViewController.modalPresentationStyle = .fullScreen
+                self.present(firestViewController, animated: true, completion: nil)
+            } catch {
+                SVProgressHUD.showError(withStatus: "エラー")
+                print("ログアウトに失敗しました。\(error)")
+            }
+        })
+        let canselAction:UIAlertAction = UIAlertAction(title: "キャンセル", style: .default, handler: {(action:UIAlertAction!) -> Void in
+            print("キャンセルが呼ばれた。")
+        })
+        
+        alertController.addAction(canselAction)
+        alertController.addAction(doAction)
+        
+        present(alertController, animated: true, completion: nil)
+
+    }
+    
+    
+    
+    @objc private func report() {
         let alertController:UIAlertController = UIAlertController(title:"通報しますか？", message: "通報すると該当ユーザの情報を送信します", preferredStyle: .alert)
         let doAction:UIAlertAction = UIAlertAction(title: "通報する", style: .destructive, handler: {(action:UIAlertAction!) -> Void in
             print("通報するが呼ばれた。")
@@ -167,7 +180,6 @@ class ProfileSettingViewController: UIViewController {
 //グループのプロフィール画面
 class groupProfileSettingViewController: UIViewController {
     
-    @IBOutlet weak var editButton: UIBarButtonItem!
     @IBOutlet weak var groupImageView: UIImageView!
     @IBOutlet weak var groupNameLabel: UILabel!
     @IBOutlet weak var groupTextView: UITextView!
@@ -191,9 +203,6 @@ class groupProfileSettingViewController: UIViewController {
         present(nav, animated: true, completion: nil)
     }
     
-    @IBAction func hidden(_ sender: Any) {
-        self.dismiss(animated: true, completion: nil)
-    }
     
     @IBAction func exitButton(_ sender: Any) {
         

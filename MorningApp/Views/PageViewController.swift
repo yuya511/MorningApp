@@ -16,6 +16,7 @@ class PageViewController: UIPageViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         initPageViewController()
+        firestDescription()
     }
     
     private func initPageViewController() {
@@ -39,6 +40,16 @@ class PageViewController: UIPageViewController {
         ]
         backBarButtonItem = UIBarButtonItem(barButtonSystemItem: .stop, target: self, action: #selector(leftBarButtonAction))
         self.navigationItem.leftBarButtonItem = backBarButtonItem
+        self.backBarButtonItem.isEnabled = true
+    }
+    
+    private func firestDescription() {
+        if UserDefaults.standard.bool(forKey: "firestDescription") {
+            backBarButtonItem.isEnabled = true
+        } else {
+            UserDefaults.standard.set(true, forKey: "firestDescription")
+            backBarButtonItem.isEnabled = false
+        }
     }
     
     @objc func leftBarButtonAction() {

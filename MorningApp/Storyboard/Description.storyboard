@@ -4,6 +4,7 @@
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17703"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -13,7 +14,7 @@
                 <pageViewController storyboardIdentifier="PageViewController" autoresizesArchivedViewToFullSize="NO" useStoryboardIdentifierAsRestorationIdentifier="YES" transitionStyle="pageCurl" navigationOrientation="horizontal" spineLocation="min" id="b3Y-0S-SeG" customClass="PageViewController" customModule="MorningApp" customModuleProvider="target" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="tdL-fA-muh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-690" y="23"/>
+            <point key="canvasLocation" x="1057" y="22"/>
         </scene>
         <!--Description View Controller-->
         <scene sceneID="Xfm-KQ-VdJ">
@@ -34,13 +35,13 @@
                                 <nil key="highlightedColor"/>
                             </label>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="MAT-D1-WOf">
-                                <rect key="frame" x="0.0" y="98" width="375" height="610"/>
+                                <rect key="frame" x="0.0" y="54" width="375" height="654"/>
                                 <subviews>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Morning説明.001" translatesAutoresizingMaskIntoConstraints="NO" id="coI-CS-jO3">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="305"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="327"/>
                                     </imageView>
                                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Morning説明.002" translatesAutoresizingMaskIntoConstraints="NO" id="NTt-Vr-2wV">
-                                        <rect key="frame" x="0.0" y="305" width="375" height="305"/>
+                                        <rect key="frame" x="0.0" y="327" width="375" height="327"/>
                                     </imageView>
                                 </subviews>
                             </stackView>
@@ -60,7 +61,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="KAb-22-5gd" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="962.39999999999998" y="22.167487684729064"/>
+            <point key="canvasLocation" x="1904.8" y="22.167487684729064"/>
         </scene>
         <!--Second View Controller-->
         <scene sceneID="jky-Rf-dH5">
@@ -107,7 +108,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="wFl-CI-yex" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1663.2" y="22.167487684729064"/>
+            <point key="canvasLocation" x="2649" y="21"/>
         </scene>
         <!--Third View Controller-->
         <scene sceneID="xYx-T4-x9w">
@@ -153,7 +154,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cVO-yd-9Pu" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2364" y="22.906403940886701"/>
+            <point key="canvasLocation" x="3410" y="21"/>
         </scene>
         <!--Fourth View Controller-->
         <scene sceneID="PfM-5T-F9L">
@@ -173,48 +174,46 @@
                                 <color key="textColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="KvE-to-RXd">
-                                <rect key="frame" x="0.0" y="54" width="375" height="654"/>
-                                <subviews>
-                                    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Morning説明.009" translatesAutoresizingMaskIntoConstraints="NO" id="gAk-5A-bVf">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="654"/>
-                                    </imageView>
-                                </subviews>
-                            </stackView>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Morning説明.009" translatesAutoresizingMaskIntoConstraints="NO" id="OcT-49-2SM">
+                                <rect key="frame" x="0.0" y="74" width="375" height="350"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="350" id="JSX-jh-xvD"/>
+                                </constraints>
+                            </imageView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="rb5-I2-ves">
+                                <rect key="frame" x="100" y="499" width="175" height="50"/>
+                                <color key="backgroundColor" systemColor="linkColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="50" id="5QS-DU-dde"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                <state key="normal" title="スタートする">
+                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                                </state>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="Gbt-K8-QX4"/>
                         <color key="backgroundColor" red="0.9999966025" green="0.99999994039999995" blue="0.94117647059999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="KvE-to-RXd" firstAttribute="leading" secondItem="Gbt-K8-QX4" secondAttribute="leading" id="51l-sx-7uP"/>
-                            <constraint firstItem="Gbt-K8-QX4" firstAttribute="trailing" secondItem="KvE-to-RXd" secondAttribute="trailing" id="Kaq-rf-yhp"/>
+                            <constraint firstItem="Gbt-K8-QX4" firstAttribute="trailing" secondItem="rb5-I2-ves" secondAttribute="trailing" constant="100" id="4Wq-WM-amY"/>
+                            <constraint firstItem="rb5-I2-ves" firstAttribute="centerX" secondItem="Eeo-g6-e5S" secondAttribute="centerX" id="Dvc-gU-apj"/>
+                            <constraint firstItem="rb5-I2-ves" firstAttribute="leading" secondItem="Gbt-K8-QX4" secondAttribute="leading" constant="100" id="Oj6-P4-X8T"/>
                             <constraint firstItem="Ay2-oi-A6a" firstAttribute="centerX" secondItem="Eeo-g6-e5S" secondAttribute="centerX" id="RYG-Le-aFe"/>
                             <constraint firstItem="Gbt-K8-QX4" firstAttribute="bottom" secondItem="Ay2-oi-A6a" secondAttribute="bottom" constant="20" id="TzP-48-j2y"/>
-                            <constraint firstItem="Ay2-oi-A6a" firstAttribute="top" secondItem="KvE-to-RXd" secondAttribute="bottom" id="mLL-ti-85j"/>
-                            <constraint firstItem="KvE-to-RXd" firstAttribute="top" secondItem="Gbt-K8-QX4" secondAttribute="top" constant="10" id="ywd-oL-gIb"/>
+                            <constraint firstItem="rb5-I2-ves" firstAttribute="top" secondItem="OcT-49-2SM" secondAttribute="bottom" constant="75" id="ffe-eJ-SRa"/>
+                            <constraint firstItem="OcT-49-2SM" firstAttribute="top" secondItem="Gbt-K8-QX4" secondAttribute="top" constant="30" id="hZc-i5-2Sy"/>
+                            <constraint firstItem="Gbt-K8-QX4" firstAttribute="trailing" secondItem="OcT-49-2SM" secondAttribute="trailing" id="tBx-uT-Rc2"/>
+                            <constraint firstItem="OcT-49-2SM" firstAttribute="centerX" secondItem="Eeo-g6-e5S" secondAttribute="centerX" id="uzi-y6-lar"/>
+                            <constraint firstItem="OcT-49-2SM" firstAttribute="leading" secondItem="Gbt-K8-QX4" secondAttribute="leading" id="yfN-f7-fMX"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="startButton" destination="rb5-I2-ves" id="HS7-pD-3UU"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bvV-gb-izh" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3116" y="22.906403940886701"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="Yac-6C-je0">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="ZYr-ni-lf0" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="EFG-cW-7qz">
-                        <rect key="frame" x="0.0" y="44" width="375" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="skQ-yq-bVQ" kind="relationship" relationship="rootViewController" id="3AO-mc-WYq"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="V6c-TX-Ncx" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="20" y="22.167487684729064"/>
+            <point key="canvasLocation" x="4169" y="21"/>
         </scene>
     </scenes>
     <resources>
@@ -225,5 +224,8 @@
         <image name="Morning説明.005" width="341.33334350585938" height="256"/>
         <image name="Morning説明.006" width="341.33334350585938" height="256"/>
         <image name="Morning説明.009" width="341.33334350585938" height="256"/>
+        <systemColor name="linkColor">
+            <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
     </resources>
 </document>

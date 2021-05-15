@@ -18,7 +18,6 @@ class Group: NSObject {
     var membar = [String]()
     
     init(document: QueryDocumentSnapshot) {
-                
         self.groupId = document.documentID
         
         let groupDic = document.data()
@@ -28,12 +27,10 @@ class Group: NSObject {
         self.groupProfileText = groupDic["groupProfileText"] as? String ?? ""
         let timestamp = groupDic["date"] as? Timestamp
         self.date = timestamp?.dateValue()
-       
     }
     
     
     init(docu: DocumentSnapshot) {
-                
         self.groupId = docu.documentID
         
         let groupDic = docu.data()
@@ -43,9 +40,5 @@ class Group: NSObject {
         self.groupProfileText = groupDic?["groupProfileText"] as? String ?? ""
         let timestamp = groupDic?["date"] as? Timestamp
         self.date = timestamp?.dateValue()
-       
     }
-
-    
-    
 }

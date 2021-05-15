@@ -19,13 +19,14 @@ class MorningChuckViewController: UIViewController, AVAudioPlayerDelegate {
     var audioPlayer:AVAudioPlayer!
   
     override func viewDidLoad() {
+        super.viewDidLoad()
+        self.overrideUserInterfaceStyle = .light
+
         setDefault()
     }
     
     private func setDefault() {
-        super.viewDidLoad()
-        self.overrideUserInterfaceStyle = .light
-        let tapGesture:UITapGestureRecognizer = UITapGestureRecognizer(
+        let tapGesture:UITapGestureRecognizer = UITapGestureRecognizer (
             target: self,
             action: #selector(MorningChuckViewController.tapped(_:)))
         tapGesture.delegate = self
@@ -55,7 +56,7 @@ class MorningChuckViewController: UIViewController, AVAudioPlayerDelegate {
 extension MorningChuckViewController: UIGestureRecognizerDelegate {
     @objc func tapped(_ sender: UITapGestureRecognizer){
         if sender.state == .ended {
-            if ( audioPlayer.isPlaying ){
+            if ( audioPlayer.isPlaying ) {
                 audioPlayer.stop()
             }
             else{
@@ -235,8 +236,6 @@ class MorningSettingViewController: UIViewController, UNUserNotificationCenterDe
             nav.modalPresentationStyle = .fullScreen
             present(nav, animated: true, completion: nil)
         } else {
-            UserDefaults.standard.set(true, forKey: "firestTime")
-            
             let storyboar = UIStoryboard(name: "Home", bundle: nil)
             let homeViewController = storyboar.instantiateViewController(identifier: "Home") as! HomeViewController
             homeViewController.targetTime = settingTime

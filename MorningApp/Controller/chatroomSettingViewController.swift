@@ -28,7 +28,6 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
         super.viewDidLoad()
         self.overrideUserInterfaceStyle = .light
         setDefault()
-        newUserFirestCheck()
     }
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -86,22 +85,6 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
         self.present(imagePickerController, animated: true, completion: nil)
     }
   
-    private func newUserFirestCheck() {
-//        guard let uid = Auth.auth().currentUser?.uid else { return }
-//        let userRef = Firestore.firestore().collection(Const.User).document(uid)
-//        userRef.getDocument { (documents, err) in
-//            if let err = err {
-//                print("***err",err)
-//                return
-//            }
-//            guard let document = documents?.data() else { return }
-//            if let _:String = document["nowGroup"] as? String {
-//
-//            } else {
-//            }
-//        }
-    }
-  
     private func newGroupSetting() {
         let db = Firestore.firestore()
         guard let uid = Auth.auth().currentUser?.uid else { return }
@@ -151,10 +134,9 @@ class chatroomSettingViewController: UIViewController, UITextFieldDelegate, UIIm
             nav.modalPresentationStyle = .fullScreen
             present(nav, animated: true, completion: nil)
         } else {
-            UserDefaults.standard.set(true, forKey: "firestTime")
-            let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
-            let MorningSettingViewController = storyboar.instantiateViewController(identifier: "MorningSettingViewController") as! MorningSettingViewController
-            let nav = UINavigationController(rootViewController: MorningSettingViewController)
+            let storyboar = UIStoryboard(name: "Description", bundle: nil)
+            let PageViewController = storyboar.instantiateViewController(identifier: "PageViewController") as! PageViewController
+            let nav = UINavigationController(rootViewController: PageViewController)
             nav.modalPresentationStyle = .fullScreen
             present(nav, animated: true, completion: nil)
         }
@@ -337,10 +319,9 @@ class chatroomEnterViewController: UIViewController, UISearchBarDelegate {
                     nav.modalPresentationStyle = .fullScreen
                     self.present(nav, animated: true, completion: nil)
                 } else {
-                    UserDefaults.standard.set(true, forKey: "firestTime")
-                    let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
-                    let MorningSettingViewController = storyboar.instantiateViewController(identifier: "MorningSettingViewController") as! MorningSettingViewController
-                    let nav = UINavigationController(rootViewController: MorningSettingViewController)
+                    let storyboar = UIStoryboard(name: "Description", bundle: nil)
+                    let PageViewController = storyboar.instantiateViewController(identifier: "PageViewController") as! PageViewController
+                    let nav = UINavigationController(rootViewController: PageViewController)
                     nav.modalPresentationStyle = .fullScreen
                     self.present(nav, animated: true, completion: nil)
                 }
@@ -474,10 +455,9 @@ class passwordViewController:UIViewController, UITextFieldDelegate {
                 nav.modalPresentationStyle = .fullScreen
                 self.present(nav, animated: true, completion: nil)
             } else {
-                UserDefaults.standard.set(true, forKey: "firestTime")
-                let storyboar = UIStoryboard(name: "MorningChuck", bundle: nil)
-                let MorningSettingViewController = storyboar.instantiateViewController(identifier: "MorningSettingViewController") as! MorningSettingViewController
-                let nav = UINavigationController(rootViewController: MorningSettingViewController)
+                let storyboar = UIStoryboard(name: "Description", bundle: nil)
+                let PageViewController = storyboar.instantiateViewController(identifier: "PageViewController") as! PageViewController
+                let nav = UINavigationController(rootViewController: PageViewController)
                 nav.modalPresentationStyle = .fullScreen
                 self.present(nav, animated: true, completion: nil)
             }
